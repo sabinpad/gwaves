@@ -2,10 +2,92 @@ package gwaves.collection;
 
 import java.util.ArrayList;
 
-import gwaves.sample.Episode;
+import fileio.input.PodcastInput;
 
-public class Podcast {
-    private String name;
-    private String owner;
+import gwaves.sample.Episode;
+import gwaves.util.Filter;
+
+public class Podcast extends AudioCollection {
     private ArrayList<Episode> episodes;
+
+    public Podcast(PodcastInput podcastInput)
+    {
+        super(podcastInput.getName(), podcastInput.getOwner());
+
+        this.episodes = new ArrayList<>();
+
+        for (var episodeInput : podcastInput.getEpisodes()) {
+            this.episodes.add(new Episode(episodeInput));
+            this.entireDuration += episodeInput.getDuration();
+        }
+    }
+
+    public String getName()
+    {
+        return this.name;
+    }
+    
+    public int getNrOfEpisodes()
+    {
+        return this.episodes.size();
+    }
+
+    public Episode getEpisode(int number)
+    {
+        if (number >= this.episodes.size())
+            return null;
+
+        return this.episodes.get(number);
+    }
+
+    public int getEpisodeNr(Episode episode)
+    {
+        return this.episodes.indexOf(episode);
+    }
+
+    public Episode getEpisodeAfter(Episode episode)
+    {
+        int i;
+
+        i = (this.episodes.indexOf(episode) + 1) % this.episodes.size();
+
+        return this.episodes.get(i);
+    }
+
+    public Episode getEpisodeBefore(Episode episode)
+    {
+        int i;
+
+        i = (this.episodes.indexOf(episode) - 1) % this.episodes.size();
+
+        if (i == -1)
+            i = this.episodes.size() - 1;
+
+        return this.episodes.get(i);
+    }
+
+    public boolean isFirst(Episode episode)
+    {
+        return (this.episodes.indexOf(episode) == 0);
+    }
+
+    public boolean isLast(Episode episode)
+    {
+        return (this.episodes.indexOf(episode) == (this.episodes.size() - 1));
+    }
+
+    public boolean isMatchedByFilter(Filter filter)
+    {
+        if (filter.getName() != null) {
+            if (this.name.startsWith(filter.getName()) == false)
+                return false;
+        }
+
+        if (filter.getOwner() != null) {
+            if (this.owner.equals(filter.getOwner()) == false)
+                return false;
+        }
+
+        return true;
+    }
 }

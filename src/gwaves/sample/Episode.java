@@ -3,14 +3,12 @@ package gwaves.sample;
 import fileio.input.EpisodeInput;
 
 public class Episode extends AudioRec {
-    String description;
+    private String description;
 
-    public Episode() {}
-
-    public Episode(EpisodeInput input)
+    public Episode(EpisodeInput episodeInput)
     {
-        this.name = input.getName();
-        this.duration = input.getDuration();
-        this.description = input.getDescription();
+        this.name = episodeInput.getName();
+        this.duration = episodeInput.getDuration();
+        this.description = episodeInput.getDescription();
     }
 }
