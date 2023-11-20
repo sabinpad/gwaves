@@ -2,6 +2,8 @@ package fileio.output;
 
 import java.util.ArrayList;
 
+import fileio.input.CommandInput;
+
 public abstract class CommandOutput {
     // Standard argument fields
 
@@ -10,11 +12,11 @@ public abstract class CommandOutput {
     protected Integer timestamp;
     protected String message;
 
-    // Methods
-
-    public CommandOutput()
+    public CommandOutput(CommandInput commandInput)
     {
-
+        this.command = commandInput.getCommand();
+        this.user = commandInput.getUsername();
+        this.timestamp = commandInput.getTimestamp();
     }
 
     public void setCommand(final String command)

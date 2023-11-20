@@ -2,12 +2,14 @@ package fileio.output;
 
 import java.util.ArrayList;
 
+import fileio.input.CommandInput;
+
 public class SysCommandOutput extends CommandOutput {
     private ArrayList<String> result;
 
-    public SysCommandOutput()
+    public SysCommandOutput(CommandInput commandInput)
     {
-
+        super(commandInput);
     }
 
     public void setResult(ArrayList<String> result)
