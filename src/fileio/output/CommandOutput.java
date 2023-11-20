@@ -1,5 +1,59 @@
 package fileio.output;
 
-public class CommandOutput {
-    
+import java.util.ArrayList;
+
+public abstract class CommandOutput {
+    // Standard argument fields
+
+    protected String command;
+    protected String user;
+    protected Integer timestamp;
+    protected String message;
+
+    // Methods
+
+    public CommandOutput()
+    {
+
+    }
+
+    public void setCommand(final String command)
+    {
+        this.command = command;
+    }
+
+    public String getCommand()
+    {
+        return this.command;
+    }
+
+    public void setUser(final String user)
+    {
+        this.user = user;
+    }
+
+    public String getUser()
+    {
+        return this.user;
+    }
+
+    public void setTimestamp(final Integer timestamp)
+    {
+        this.timestamp = timestamp;
+    }
+
+    public Integer getTimestamp()
+    {
+        return this.timestamp;
+    }
+
+    public void setMessage(final String message)
+    {
+        this.message = message;
+    }
+
+    public String getMessage()
+    {
+        return this.message;
+    }
 }

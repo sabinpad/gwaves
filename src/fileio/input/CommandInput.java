@@ -1,15 +1,21 @@
 package fileio.input;
 
+import java.util.ArrayList;
+
+import gwaves.util.Filter;
+
 public class CommandInput {
+    // Standard argument fields
+
     private String command;
     private String username;
     private Integer timestamp;
 
-    // Additional arguments depending on command
+    // Additional argument fields based of command
 
     // search
     private String type;
-    // private Filter filters;
+    private Filter filters;
 
     // select
     private Integer itemNumber;
@@ -23,7 +29,7 @@ public class CommandInput {
     // addRemoveInPlaylist, switchVisibility
     private Integer playlistId;
 
-
+    // Methods
 
     public CommandInput()
     {
@@ -68,6 +74,16 @@ public class CommandInput {
     public String getType()
     {
         return this.type;
+    }
+
+    public void setFilters(final Filter filters)
+    {
+        this.filters = filters;
+    }
+
+    public Filter getFilters()
+    {
+        return this.filters;
     }
 
     public void setItemNumber(final Integer itemNumber)
