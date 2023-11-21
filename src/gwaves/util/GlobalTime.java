@@ -5,12 +5,12 @@ public class GlobalTime {
 
     private GlobalTime() {}
 
-    public void setTime(int timestamp)
+    public static void setTime(int timestamp)
     {
         GlobalTime.globaltime = timestamp;
     }
 
-    public int getTime()
+    public static int getTime()
     {
         return GlobalTime.globaltime;
     }
