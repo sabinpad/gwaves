@@ -49,6 +49,16 @@ public class DataBase {
             this.podcasts.add(new Podcast(podcastInput));
     }
 
+    public void addPlaylist(Playlist playlist)
+    {
+        this.publicPlaylists.add(playlist);
+    }
+
+    public void removePlaylist(Playlist playlist)
+    {
+        this.publicPlaylists.remove(playlist);
+    }
+
     public User queryUser(String username)
     {
         return this.users.get(username);
@@ -70,7 +80,7 @@ public class DataBase {
         ArrayList<Playlist> result = new ArrayList<>();
 
         for (var playlist : this.publicPlaylists)
-            if (playlist.isMatchedByFilter(filter))
+            if (playlist.isVisible() && playlist.isMatchedByFilter(filter))
                 result.add(playlist);
 
         return result;
