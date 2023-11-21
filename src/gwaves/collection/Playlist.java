@@ -21,31 +21,6 @@ public class Playlist extends AudioCollection {
         this.followers = 0;
     }
 
-    public String getName()
-    {
-        return this.name;
-    }
-
-    public int getNrOfSongs()
-    {
-        return this.songs.size();
-    }
-
-    public int getNrOfFollowers()
-    {
-        return this.followers.intValue();
-    }
-
-    public boolean isVisible()
-    {
-        return this.visibility;
-    }
-
-    public void changeVisibility()
-    {
-        this.visibility = !this.visibility;
-    }
-
     public void addSong(Song song)
     {
         this.songs.add(song);
@@ -71,17 +46,47 @@ public class Playlist extends AudioCollection {
             this.followers--;
     }
 
+    public void changeVisibility()
+    {
+        this.visibility = !this.visibility;
+    }
+
+    public String getName()
+    {
+        return this.name;
+    }
+
+    public ArrayList<String> getSongsNameList()
+    {
+        ArrayList<String> nameList = new ArrayList<>();
+
+        for (var song : this.songs)
+            nameList.add(song.getName());
+
+        return nameList;
+    }
+
+    public int getNrOfSongs()
+    {
+        return this.songs.size();
+    }
+
+    public int getNrOfFollowers()
+    {
+        return this.followers.intValue();
+    }
+
+    public int getSongNr(Song song)
+    {
+        return this.songs.indexOf(song);
+    }
+
     public Song getSong(int number)
     {
         if (number >= this.songs.size())
             return null;
 
         return this.songs.get(number);
-    }
-
-    public int getSongNr(Song song)
-    {
-        return this.songs.indexOf(song);
     }
 
     public Song getSongAfter(Song song)
@@ -103,6 +108,16 @@ public class Playlist extends AudioCollection {
             i = this.songs.size() - 1;
 
         return this.songs.get(i);
+    }
+
+    public boolean isVisible()
+    {
+        return this.visibility;
+    }
+
+    public boolean hasSong(Song song)
+    {
+        return this.songs.contains(song);
     }
 
     public boolean isFirst(Song song)

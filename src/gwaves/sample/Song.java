@@ -29,11 +29,6 @@ public class Song extends AudioRec {
         this.likes = 0;
     }
 
-    public int getNrOfLikes()
-    {
-        return this.likes.intValue();
-    }
-
     public void addLike()
     {
         this.likes++;
@@ -43,6 +38,11 @@ public class Song extends AudioRec {
     {
         if (this.likes > 0)
             this.likes--;
+    }
+
+    public int getNrOfLikes()
+    {
+        return this.likes.intValue();
     }
 
     public boolean isMatchedByFilter(Filter filter)

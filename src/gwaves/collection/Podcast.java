@@ -9,6 +9,7 @@ import gwaves.util.Filter;
 
 public class Podcast extends AudioCollection {
     private ArrayList<Episode> episodes;
+    private int lastEpisodePlayedIndex;
 
     public Podcast(PodcastInput podcastInput)
     {
@@ -22,14 +23,30 @@ public class Podcast extends AudioCollection {
         }
     }
 
+    public void setLastEpisodePlayedIndex(int index)
+    {
+        if (index < this.episodes.size())
+            this.lastEpisodePlayedIndex = index;
+    }
+
     public String getName()
     {
         return this.name;
     }
     
+    public int getLastEpisodePlayedIndex()
+    {
+        return this.lastEpisodePlayedIndex;
+    }
+
     public int getNrOfEpisodes()
     {
         return this.episodes.size();
+    }
+
+    public int getEpisodeNr(Episode episode)
+    {
+        return this.episodes.indexOf(episode);
     }
 
     public Episode getEpisode(int number)
@@ -38,11 +55,6 @@ public class Podcast extends AudioCollection {
             return null;
 
         return this.episodes.get(number);
-    }
-
-    public int getEpisodeNr(Episode episode)
-    {
-        return this.episodes.indexOf(episode);
     }
 
     public Episode getEpisodeAfter(Episode episode)

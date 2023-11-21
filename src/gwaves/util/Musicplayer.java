@@ -23,66 +23,53 @@ public class Musicplayer {
     private Podcast currentPodcast;
 
     private int remainingTime;
-    private boolean paused;
 
-    private int repeat;
+    private boolean paused;
+    private int repeatMode;
     private boolean shuffle;
 
     private ArrayList<Integer> shuffledIndices;
 
     public Musicplayer()
     {
-        this.remainingTime = -1;
         this.paused = true;
         this.shuffledIndices = new ArrayList<>();
     }
 
-    public void removeSelected()
+    public void unloadCurrent()
     {
         this.currentSong = null;
         this.currentPlaylist = null;
         this.currentPodcast = null;
-        this.remainingTime = -1;
+        this.remainingTime = 0;
         this.paused = true;
-        this.repeat = 0;
+        this.repeatMode = 0;
         this.shuffle = false;
     }
 
-    public void setSelectedSong(Song song)
+    public void loadSong(Song song)
     {
+        this.unloadCurrent();
         this.currentSong = song;
-        this.currentPlaylist = null;
-        this.currentPodcast = null;
+        this.remainingTime = this.currentSong.getDuration();
+        this.paused = false;
     }
 
-    public void setSelectedPlaylist(Playlist playlist)
+    public void loadPlaylist(Playlist playlist)
     {
+        this.unloadCurrent();
         this.currentPlaylist = playlist;
-        this.currentSong = null;
-        this.currentPodcast = null;
+        this.currentSongIndex = 0;
+        this.remainingTime = this.currentPlaylist.getSong(this.currentSongIndex).getDuration();
+        this.paused = false;
     }
 
-    public void setSelectedPodcast(Podcast podcast)
+    public void loadPodcast(Podcast episode)
     {
-        this.currentPodcast = podcast;
-        this.currentSong = null;
-        this.currentPlaylist = null;
+        this.unloadCurrent();
     }
 
-    public void load()
-    {
-        if (this.currentSong != null) {
-            this.remainingTime = this.currentSong.getDuration();
-        } else if (this.currentPlaylist != null) {
-            this.currentSongIndex = 0;
-            this.remainingTime = this.currentPlaylist.getSong(this.currentSongIndex).getDuration();
-        } else if (this.currentPodcast != null) {
-            this.currentEpisodeIndex = 0;
-            this.remainingTime = this.currentPodcast.getEpisode(this.currentEpisodeIndex).getDuration();
-        }
-    }
-
-    public void play(int timeInterval)
+    public void playFor(int timeInterval)
     {
         if (this.paused)
             return;
@@ -103,9 +90,9 @@ public class Musicplayer {
         this.paused = !this.paused;
     }
 
-    public void repeat()
+    public void changeRepeatMode()
     {
-        this.repeat = (this.repeat + 1 ) % 3;
+        this.repeatMode = (this.repeatMode + 1 ) % 3;
     }
 
     public void shufflePlaylist(long seed)
@@ -149,25 +136,25 @@ public class Musicplayer {
 
     public void next()
     {
-        if (this.paused || this.remainingTime == -1)
+        if (this.paused || !this.isLoaded())
             return;
 
         if (this.currentSong != null) {
-            switch (this.repeat) {
+            switch (this.repeatMode) {
             case 0:
-                this.removeSelected();
+                this.unloadCurrent();
                 break;
             case 1:
-                this.repeat = 0;
+                this.repeatMode = 0;
             case 2:
                 this.remainingTime = this.currentSong.getDuration();
                 break;
             }
         } else if (this.currentPlaylist != null) {
-            switch (this.repeat) {
+            switch (this.repeatMode) {
             case 0:
                 if (this.currentSongIndex == this.currentPlaylist.getNrOfSongs() - 1) {
-                    this.removeSelected();
+                    this.unloadCurrent();
                 } else {
                     this.currentSongIndex++;
 
@@ -180,7 +167,7 @@ public class Musicplayer {
             case 1:
                 if (this.currentSongIndex == this.currentPlaylist.getNrOfSongs() - 1) {
                     this.currentSongIndex = 0;
-                    this.repeat = 0;
+                    this.repeatMode = 0;
                 } else {
                     this.currentSongIndex++;
                 }
@@ -192,7 +179,7 @@ public class Musicplayer {
 
                 break;
             case 2:
-                this.repeat = 0;
+                this.repeatMode = 0;
 
                 if (this.shuffle)
                     this.remainingTime = this.currentPlaylist.getSong(this.shuffledIndices.get(this.currentSongIndex)).getDuration();
@@ -201,16 +188,16 @@ public class Musicplayer {
                 break;
             }
         } else if (this.currentPodcast != null) {
-            switch (this.repeat) {
+            switch (this.repeatMode) {
             case 0:
                 if (this.currentEpisodeIndex == this.currentPodcast.getNrOfEpisodes() - 1) {
-                    this.removeSelected();
+                    this.unloadCurrent();
                 } else {
                     this.currentEpisodeIndex++;
                     this.remainingTime = this.currentPodcast.getEpisode(this.currentEpisodeIndex).getDuration();
                 }
             case 1:
-                this.repeat = 0;
+                this.repeatMode = 0;
             case 2:
                 this.remainingTime = this.currentPodcast.getEpisode(this.currentEpisodeIndex).getDuration();
                 break;
@@ -244,21 +231,112 @@ public class Musicplayer {
 
             this.remainingTime = currentEpisode.getDuration();
         }
+
+        this.paused = false;
     }
 
-    public void likeCurrentSong()
+    public Song getLoadedSong()
     {
-        if (this.currentSong != null)
-            this.currentSong.addLike();
+        return this.currentSong;
     }
 
-    public void followCurrentPlaylist()
+    public Playlist getLoadedPlaylist()
     {
-        if (this.currentPlaylist != null)
-            this.currentPlaylist.addFollower();
+        return this.currentPlaylist;
     }
 
-    public MusicPlayerStatusOutput status()
+    public Podcast getLoadedPodcast()
+    {
+        return this.currentPodcast;
+    }
+
+    public String getCurrentRecName()
+    {
+        int shuffledIndex = 0;
+        String name;
+
+        if (!this.isLoaded())
+            return null;
+
+        if (this.currentSong != null) {
+            name = this.currentSong.getName();
+        } else if (this.currentPlaylist != null) {
+            if (this.isShuffled()) {
+                shuffledIndex = this.shuffledIndices.get(this.currentSongIndex);
+                name = this.currentPlaylist.getSong(shuffledIndex).getName();
+            } else {
+                name = this.currentPlaylist.getSong(this.currentSongIndex).getName();
+            }
+        } else {
+            name = this.currentPodcast.getEpisode(this.currentEpisodeIndex).getName();
+        }
+
+        return name;
+    }
+
+    public int getRemainedTime()
+    {
+        return this.remainingTime;
+    }
+
+    public String getRepeatModeName()
+    {
+        String result = "no repeat";
+
+        switch (this.repeatMode) {
+        case 1:
+            if (this.isPlaylistLoaded())
+                result = "repeat all";
+            else if (this.isSongLoaded() || this.isPodcastLoaded())
+                result = "repeat once";
+            break;
+        case 2:
+            if (this.isPlaylistLoaded())
+                result = "repeat current song";
+            else if (this.isSongLoaded() || this.isPodcastLoaded())
+                result = "repeat infinite";
+            break;
+        }
+
+        return result;
+    }
+
+    public boolean isSongLoaded()
+    {
+        return this.currentSong != null;
+    }
+
+    public boolean isPlaylistLoaded()
+    {
+        return this.currentPlaylist != null;
+    }
+
+    public boolean isPodcastLoaded()
+    {
+        return this.currentPodcast != null;
+    }
+
+    public boolean isLoaded()
+    {
+        return this.isSongLoaded() || this.isPlaylistLoaded() || this.isPodcastLoaded();
+    }
+
+    public boolean isPaused()
+    {
+        return this.paused;
+    }
+
+    public boolean isOnRepeat()
+    {
+        return this.repeatMode != 0;
+    }
+
+    public boolean isShuffled()
+    {
+        return this.shuffle;
+    }
+
+    public MusicPlayerStatusOutput getStatus()
     {
         MusicPlayerStatusOutput playerStatus = new MusicPlayerStatusOutput();
 
@@ -275,7 +353,7 @@ public class Musicplayer {
 
         playerStatus.setRemainedTime(this.remainingTime);
 
-        if (this.repeat == 0)
+        if (this.repeatMode == 0)
             playerStatus.setRepeat("No Repeat");
         else
             playerStatus.setRepeat("Repeat");
