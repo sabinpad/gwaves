@@ -115,9 +115,9 @@ public class DataBase {
             public int compare(Song song1, Song song2)
             {
                 if (song1.getNrOfLikes() < song2.getNrOfLikes())
-                    return -1;
-                else if (song1.getNrOfLikes() > song2.getNrOfLikes())
                     return 1;
+                else if (song1.getNrOfLikes() > song2.getNrOfLikes())
+                    return -1;
                 else
                     return 0;
             }
@@ -143,9 +143,9 @@ public class DataBase {
             public int compare(Playlist playlist1, Playlist playlist2)
             {
                 if (playlist1.getNrOfFollowers() < playlist2.getNrOfFollowers())
-                    return -1;
-                else if (playlist1.getNrOfFollowers() > playlist2.getNrOfFollowers())
                     return 1;
+                else if (playlist1.getNrOfFollowers() > playlist2.getNrOfFollowers())
+                    return -1;
                 else
                     return 0;
             }

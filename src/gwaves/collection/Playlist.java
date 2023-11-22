@@ -128,12 +128,12 @@ public class Playlist extends AudioCollection {
     public boolean isMatchedByFilter(Filter filter)
     {
         if (filter.getName() != null) {
-            if (this.name.startsWith(filter.getName()))
+            if (!this.name.startsWith(filter.getName()))
                 return false;
         }
 
         if (filter.getOwner() != null) {
-            if (this.owner.equals(filter.getOwner()) == false)
+            if (!this.owner.equals(filter.getOwner()))
                 return false;
         }
 

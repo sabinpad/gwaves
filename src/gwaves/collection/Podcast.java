@@ -22,6 +22,8 @@ public class Podcast extends AudioCollection {
             this.episodes.add(new Episode(episodeInput));
             this.entireDuration += episodeInput.getDuration();
         }
+
+        this.lastEpisodePlayedRemainedTime = episodes.get(0).getDuration();
     }
 
     public void setLastEpisodePlayedIndex(int index)

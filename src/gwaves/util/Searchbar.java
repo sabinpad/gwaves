@@ -99,28 +99,52 @@ public class Searchbar {
         return this.resultsNumber;
     }
 
-    public Song getSelectedSong()
+    public String getSelectedName()
     {
         if (this.resultsType == 1)
-            return this.resultsSong.get(resultsIndex);
+            return this.resultsSong.get(this.resultsIndex).getName();
+        else if (this.resultsType == 2)
+            return this.resultsPlaylist.get(this.resultsIndex).getName();
+        else if (this.resultsType == 3)
+            return this.resultsPodcast.get(this.resultsIndex).getName();
 
         return null;
+    }
+
+    public Song getSelectedSong()
+    {
+        Song song = null;
+
+        if (this.resultsType == 1) {
+            song = this.resultsSong.get(this.resultsIndex);
+            this.resultsIndex = -1;
+        }
+
+        return song;
     }
 
     public Playlist getSelectedPlaylist()
     {
-        if (this.resultsType == 2)
-            return this.resultsPlaylist.get(resultsIndex);
+        Playlist playlist = null;
+
+        if (this.resultsType == 2) {
+            playlist =  this.resultsPlaylist.get(this.resultsIndex);
+            this.resultsIndex = -1;
+        }
            
-        return null;
+        return playlist;
     }
 
     public Podcast getSelectedPodcast()
     {
-        if (this.resultsType == 3)
-            return this.resultsPodcast.get(resultsIndex);
+        Podcast podcast = null;
+
+        if (this.resultsType == 3) {
+            podcast = this.resultsPodcast.get(this.resultsIndex);
+            this.resultsIndex = -1;
+        }
            
-        return null;
+        return podcast;
     }
 
     public boolean isSelected()

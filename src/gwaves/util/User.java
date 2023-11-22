@@ -170,12 +170,7 @@ public class User {
 
         this.searchbar.selectResult(itemNumber);
 
-        if (this.searchbar.searchedForSongs())
-            this.commandMessage = "Successfully selected " + this.searchbar.getSelectedSong().getName() + ".";
-        else if (this.searchbar.searchedForPlaylists())
-            this.commandMessage = "Successfully selected " + this.searchbar.getSelectedPlaylist().getName() + ".";
-        else if (this.searchbar.searchedForPodcasts())
-            this.commandMessage = "Successfully selected " + this.searchbar.getSelectedPodcast().getName() + ".";
+        this.commandMessage = "Successfully selected " + this.searchbar.getSelectedName() + ".";
     }
 
     private void doLoad()
@@ -245,7 +240,8 @@ public class User {
     private void doForward()
     {
         if (!this.musicplayer.isLoaded()) {
-            this.commandMessage = "Please load a source before skipping forward.";
+            // this.commandMessage = "Please load a source before skipping forward.";
+            this.commandMessage = "Please load a source before attempting to forward.";
             return;
         }
 
@@ -267,7 +263,7 @@ public class User {
         }
 
         if (!this.musicplayer.isPodcastLoaded()) {
-            this.commandMessage = "The loaded source is not a podcast. ";
+            this.commandMessage = "The loaded source is not a podcast.";
             return;
         }
 
@@ -285,12 +281,7 @@ public class User {
             return;
         }
 
-        // if (!this.musicplayer.isSongLoaded()) {
-        //     this.commandMessage = "Loaded source is not a song.";
-        //     return;
-        // }
-
-        if (this.musicplayer.isPodcastLoaded()) {
+        if (!this.musicplayer.isSongLoaded()) {
             this.commandMessage = "Loaded source is not a song.";
             return;
         }
@@ -449,7 +440,10 @@ public class User {
         selectedPlaylist = this.personalPlaylists.get(playlistId);
         selectedPlaylist.changeVisibility();
 
-        this.commandMessage = "Visibility status updated successfully to " + selectedPlaylist.isVisible() + ".";
+        if (selectedPlaylist.isVisible())
+            this.commandMessage = "Visibility status updated successfully to public.";
+        else
+            this.commandMessage = "Visibility status updated successfully to private.";
     }
 
     private void doFollowPlaylist()
