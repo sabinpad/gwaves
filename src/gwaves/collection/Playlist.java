@@ -51,11 +51,6 @@ public class Playlist extends AudioCollection {
         this.visibility = !this.visibility;
     }
 
-    public String getName()
-    {
-        return this.name;
-    }
-
     public ArrayList<String> getSongsNameList()
     {
         ArrayList<String> nameList = new ArrayList<>();

@@ -66,8 +66,13 @@ public class Song extends AudioRec {
                     return false;
         }
 
+        // if (filter.getLyrics() != null) {
+        //     if (this.lyrics.indexOf(filter.getLyrics()) == -1)
+        //         return false;
+        // }
+
         if (filter.getLyrics() != null) {
-            if (this.lyrics.indexOf(filter.getLyrics()) == -1)
+            if (!this.lyrics.toLowerCase().contains(filter.getLyrics().toLowerCase()))
                 return false;
         }
 

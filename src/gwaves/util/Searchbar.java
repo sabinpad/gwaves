@@ -48,11 +48,11 @@ public class Searchbar {
         return resultsName;
     }
 
-    public ArrayList<String> searchPlaylists(Filter filter)
+    public ArrayList<String> searchPlaylistsAndOwnedBy(Filter filter, String owner)
     {
         ArrayList<String> resultsName = new ArrayList<>();
 
-        this.resultsPlaylist = this.database.queryPlaylists(filter);
+        this.resultsPlaylist = this.database.queryPlaylistsAndOwnedBy(filter, owner);
         this.resultsSong.clear();
         this.resultsPodcast.clear();
 

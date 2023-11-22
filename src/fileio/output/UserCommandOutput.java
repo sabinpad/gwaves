@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import fileio.input.CommandInput;
 
 public class UserCommandOutput extends CommandOutput {
+    private String message;
     private ArrayList<String> results;
     private MusicPlayerStatusOutput stats;
     private ArrayList<PlaylistOutput> result;
@@ -12,6 +13,21 @@ public class UserCommandOutput extends CommandOutput {
     public UserCommandOutput(CommandInput commandInput)
     {
         super(commandInput);
+    }
+
+    public UserCommandOutput()
+    {
+        
+    }
+
+    public void setMessage(final String message)
+    {
+        this.message = message;
+    }
+
+    public String getMessage()
+    {
+        return this.message;
     }
 
     public void setResults(final ArrayList<String> results)

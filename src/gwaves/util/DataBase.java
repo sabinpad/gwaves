@@ -8,13 +8,14 @@ import fileio.input.UserInput;
 import fileio.input.SongInput;
 import fileio.input.PodcastInput;
 import fileio.input.LibraryInput;
+
 import gwaves.util.User;
 import gwaves.sample.Song;
 import gwaves.collection.Podcast;
 import gwaves.collection.Playlist;
 
 public class DataBase {
-    private static final DataBase instance;
+    private static DataBase instance;
 
     private HashMap<String, User> users;
     private ArrayList<Song> library;
@@ -30,6 +31,11 @@ public class DataBase {
         this.library = new ArrayList<>();
         this.podcasts = new ArrayList<>();
         this.publicPlaylists = new ArrayList<>();
+    }
+
+    public static void changeInstance()
+    {
+        instance = new DataBase();
     }
 
     public static DataBase getInstance()
@@ -75,13 +81,14 @@ public class DataBase {
         return result;
     }
 
-    public ArrayList<Playlist> queryPlaylists(Filter filter)
+    public ArrayList<Playlist> queryPlaylistsAndOwnedBy(Filter filter, String owner)
     {
         ArrayList<Playlist> result = new ArrayList<>();
 
         for (var playlist : this.publicPlaylists)
-            if (playlist.isVisible() && playlist.isMatchedByFilter(filter))
-                result.add(playlist);
+            if (playlist.isMatchedByFilter(filter))
+                if (playlist.isVisible() || (!playlist.isVisible() && owner.equals(playlist.getOwner())))
+                    result.add(playlist);
 
         return result;
     }
@@ -97,11 +104,13 @@ public class DataBase {
         return result;
     }
 
-    public ArrayList<Song> queryTop5Songs()
+    public ArrayList<String> getTop5SongsName()
     {
-        ArrayList<Song> result = new ArrayList<>(this.library);
+        int resultsNumber;
+        ArrayList<Song> topSongsList = new ArrayList<>(this.library);
+        ArrayList<String> result = new ArrayList<>();
 
-        result.sort(new Comparator<Song>() {
+        topSongsList.sort(new Comparator<Song>() {
             @Override
             public int compare(Song song1, Song song2)
             {
@@ -114,16 +123,22 @@ public class DataBase {
             }
         });
 
-        result.retainAll(result.subList(0, 5));
+        resultsNumber = ((topSongsList.size() > 5) ? 5 : topSongsList.size());
+        topSongsList.retainAll(topSongsList.subList(0, resultsNumber));
+
+        for (var song : topSongsList)
+            result.add(song.getName());
 
         return result;
     }
 
-    public ArrayList<Playlist> queryTop5Playlists()
+    public ArrayList<String> getTop5PlaylistsName()
     {
-        ArrayList<Playlist> result = new ArrayList<>(this.publicPlaylists);
+        int resultsNumber;
+        ArrayList<Playlist> topPlaylistsList = new ArrayList<>(this.publicPlaylists);
+        ArrayList<String> result = new ArrayList<>();
 
-        result.sort(new Comparator<Playlist>() {
+        topPlaylistsList.sort(new Comparator<Playlist>() {
             @Override
             public int compare(Playlist playlist1, Playlist playlist2)
             {
@@ -136,7 +151,11 @@ public class DataBase {
             }
         });
 
-        result.retainAll(result.subList(0, 5));
+        resultsNumber = ((topPlaylistsList.size() > 5) ? 5 : topPlaylistsList.size());
+        topPlaylistsList.retainAll(topPlaylistsList.subList(0, resultsNumber));
+
+        for (var playlist : topPlaylistsList)
+            result.add(playlist.getName());
 
         return result;
     }

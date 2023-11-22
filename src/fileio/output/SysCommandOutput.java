@@ -12,6 +12,11 @@ public class SysCommandOutput extends CommandOutput {
         super(commandInput);
     }
 
+    public SysCommandOutput()
+    {
+        
+    }
+
     public void setResult(ArrayList<String> result)
     {
         this.result = result;

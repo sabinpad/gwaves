@@ -11,4 +11,14 @@ public abstract class AudioCollection {
         this.owner = owner;
         this.entireDuration = 0;
     }
+
+    public String getName()
+    {
+        return this.name;
+    }
+
+    public String getOwner()
+    {
+        return this.owner;
+    }
 }

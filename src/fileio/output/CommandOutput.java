@@ -1,7 +1,5 @@
 package fileio.output;
 
-import java.util.ArrayList;
-
 import fileio.input.CommandInput;
 
 public abstract class CommandOutput {
@@ -10,13 +8,17 @@ public abstract class CommandOutput {
     protected String command;
     protected String user;
     protected Integer timestamp;
-    protected String message;
 
     public CommandOutput(CommandInput commandInput)
     {
         this.command = commandInput.getCommand();
         this.user = commandInput.getUsername();
         this.timestamp = commandInput.getTimestamp();
+    }
+
+    public CommandOutput()
+    {
+        
     }
 
     public void setCommand(final String command)
@@ -47,15 +49,5 @@ public abstract class CommandOutput {
     public Integer getTimestamp()
     {
         return this.timestamp;
-    }
-
-    public void setMessage(final String message)
-    {
-        this.message = message;
-    }
-
-    public String getMessage()
-    {
-        return this.message;
     }
 }
