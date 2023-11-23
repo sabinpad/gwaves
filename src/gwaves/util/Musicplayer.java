@@ -81,6 +81,8 @@ public class Musicplayer {
 
         Musicplayer.rand.setSeed(seed);
         Collections.shuffle(this.shuffledIndices, Musicplayer.rand);
+
+        this.currentSongIndex = this.shuffledIndices.indexOf(this.currentSongIndex);
     }
 
     public void forward()
