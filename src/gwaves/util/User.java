@@ -156,13 +156,6 @@ public class User {
 
     private void doSelect(int itemNumber)
     {
-        // TODO
-
-        // if (this.searchbar.getResultsNumber() == 0) {
-        //     this.commandMessage = "Please conduct a search before making a selection.";
-        //     return;
-        // }
-
         if (!this.searchbar.searchedForSongs() && !this.searchbar.searchedForPlaylists() && !this.searchbar.searchedForPodcasts()) {
             this.commandMessage = "Please conduct a search before making a selection.";
             return;
