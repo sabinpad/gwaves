@@ -163,6 +163,11 @@ public class User {
         //     return;
         // }
 
+        if (!this.searchbar.searchedForSongs() && !this.searchbar.searchedForPlaylists() && !this.searchbar.searchedForPodcasts()) {
+            this.commandMessage = "Please conduct a search before making a selection.";
+            return;
+        }
+
         if (itemNumber > this.searchbar.getResultsNumber()) {
             this.commandMessage = "The selected ID is too high.";
             return;
