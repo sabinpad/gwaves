@@ -472,6 +472,7 @@ public class User {
             this.followedPlaylists.remove(selectedPlaylist);
             selectedPlaylist.removeFollower();
             this.commandMessage = "Playlist unfollowed successfully.";
+            return;
         }
 
         this.followedPlaylists.add(selectedPlaylist);
