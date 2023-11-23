@@ -168,7 +168,7 @@ public class User {
             return;
         }
 
-        this.searchbar.selectResult(itemNumber);
+        this.searchbar.selectResult(itemNumber - 1);
 
         this.commandMessage = "Successfully selected " + this.searchbar.getSelectedName() + ".";
     }

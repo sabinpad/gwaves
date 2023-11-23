@@ -67,22 +67,31 @@ public class Musicplayer {
 
     public void shufflePlaylist(long seed)
     {
-        if (seed == 0) {
-            this.shuffle = false;
-            return;
+        int prevIndex;
+        boolean prevShuffle;
+
+        prevShuffle = this.shuffle;
+        this.shuffle = !this.shuffle;
+
+        if (!this.shuffle) {
+            if (prevShuffle)
+                this.currentSongIndex = this.shuffledIndices.get(this.currentSongIndex);
+        } else {
+            if (prevShuffle)
+                prevIndex = this.shuffledIndices.get(this.currentSongIndex);
+            else
+                prevIndex = this.currentSongIndex;
+
+            this.shuffledIndices.clear();
+
+            for (int i = 0; i < this.currentPlaylist.getNrOfSongs(); ++i)
+                this.shuffledIndices.add(i);
+
+            Musicplayer.rand.setSeed(seed);
+            Collections.shuffle(this.shuffledIndices, Musicplayer.rand);
+
+            this.currentSongIndex = this.shuffledIndices.indexOf(prevIndex);
         }
-
-        this.shuffle = true;
-
-        this.shuffledIndices.clear();
-
-        for (int i = 0; i < this.currentPlaylist.getNrOfSongs(); ++i)
-            this.shuffledIndices.add(i);
-
-        Musicplayer.rand.setSeed(seed);
-        Collections.shuffle(this.shuffledIndices, Musicplayer.rand);
-
-        this.currentSongIndex = this.shuffledIndices.indexOf(this.currentSongIndex);
     }
 
     public void forward()
@@ -124,8 +133,10 @@ public class Musicplayer {
 
     public void next()
     {
-        if (this.paused || !this.isLoaded())
+        if (!this.isLoaded())
             return;
+
+        this.paused = false;
 
         if (this.repeatMode == 2) {
             if (this.currentSong != null)

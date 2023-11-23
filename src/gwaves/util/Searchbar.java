@@ -20,10 +20,6 @@ public class Searchbar {
     public Searchbar()
     {
         this.database = DataBase.getInstance();
-        this.resultsSong = new ArrayList<>();
-        this.resultsPlaylist = new ArrayList<>();
-        this.resultsPodcast = new ArrayList<>();
-        this.resultsType = 0;
         this.resultsIndex = -1;
         this.resultsNumber = 0;
     }
@@ -33,8 +29,8 @@ public class Searchbar {
         ArrayList<String> resultsName = new ArrayList<>();
 
         this.resultsSong = this.database.querySongs(filter);
-        this.resultsPlaylist.clear();
-        this.resultsPodcast.clear();
+        this.resultsPlaylist = null;
+        this.resultsPodcast = null;
 
         this.resultsNumber = ((this.resultsSong.size() > 5) ? 5 : this.resultsSong.size());
         this.resultsSong.retainAll(this.resultsSong.subList(0, this.resultsNumber));
@@ -42,7 +38,6 @@ public class Searchbar {
         for (var song : this.resultsSong)
             resultsName.add(song.getName());
 
-        this.resultsType = 1;
         this.resultsIndex = -1;
 
         return resultsName;
@@ -53,8 +48,8 @@ public class Searchbar {
         ArrayList<String> resultsName = new ArrayList<>();
 
         this.resultsPlaylist = this.database.queryPlaylistsAndOwnedBy(filter, owner);
-        this.resultsSong.clear();
-        this.resultsPodcast.clear();
+        this.resultsSong = null;
+        this.resultsPodcast = null;
 
         this.resultsNumber = ((this.resultsPlaylist.size() > 5) ? 5 : this.resultsPlaylist.size());
         this.resultsPlaylist.retainAll(this.resultsPlaylist.subList(0, this.resultsNumber));
@@ -62,7 +57,6 @@ public class Searchbar {
         for (var playlist : this.resultsPlaylist)
             resultsName.add(playlist.getName());
 
-        this.resultsType = 2;
         this.resultsIndex = -1;
 
         return resultsName;
@@ -73,8 +67,8 @@ public class Searchbar {
         ArrayList<String> resultsName = new ArrayList<>();
 
         this.resultsPodcast = this.database.queryPodcasts(filter);
-        this.resultsSong.clear();
-        this.resultsPlaylist.clear();
+        this.resultsSong = null;
+        this.resultsPlaylist = null;
 
         this.resultsNumber = ((this.resultsPodcast.size() > 5) ? 5 : this.resultsPodcast.size());
         this.resultsPodcast.retainAll(this.resultsPodcast.subList(0, this.resultsNumber));
@@ -82,16 +76,15 @@ public class Searchbar {
         for (var podcast : this.resultsPodcast)
             resultsName.add(podcast.getName());
 
-        this.resultsType = 3;
         this.resultsIndex = -1;
 
         return resultsName;
     }
 
-    public void selectResult(int number)
+    public void selectResult(int resultIndex)
     {
-        if (this.resultsNumber > 0 && number <= this.resultsNumber)
-            this.resultsIndex = number - 1;
+        if (resultIndex >= 0 && resultIndex < this.resultsNumber)
+            this.resultsIndex = resultIndex;
     }
 
     public int getResultsNumber()
@@ -101,11 +94,11 @@ public class Searchbar {
 
     public String getSelectedName()
     {
-        if (this.resultsType == 1)
+        if (this.resultsSong != null)
             return this.resultsSong.get(this.resultsIndex).getName();
-        else if (this.resultsType == 2)
+        else if (this.resultsPlaylist != null)
             return this.resultsPlaylist.get(this.resultsIndex).getName();
-        else if (this.resultsType == 3)
+        else if (this.resultsPodcast != null)
             return this.resultsPodcast.get(this.resultsIndex).getName();
 
         return null;
@@ -115,9 +108,11 @@ public class Searchbar {
     {
         Song song = null;
 
-        if (this.resultsType == 1) {
+        if (this.resultsSong != null) {
             song = this.resultsSong.get(this.resultsIndex);
+            this.resultsSong = null;
             this.resultsIndex = -1;
+            this.resultsNumber = 0;
         }
 
         return song;
@@ -127,9 +122,11 @@ public class Searchbar {
     {
         Playlist playlist = null;
 
-        if (this.resultsType == 2) {
+        if (this.resultsPlaylist != null) {
             playlist =  this.resultsPlaylist.get(this.resultsIndex);
+            this.resultsPlaylist = null;
             this.resultsIndex = -1;
+            this.resultsNumber = 0;
         }
            
         return playlist;
@@ -139,9 +136,11 @@ public class Searchbar {
     {
         Podcast podcast = null;
 
-        if (this.resultsType == 3) {
+        if (this.resultsPodcast != null) {
             podcast = this.resultsPodcast.get(this.resultsIndex);
+            this.resultsPodcast = null;
             this.resultsIndex = -1;
+            this.resultsNumber = 0;
         }
            
         return podcast;
@@ -154,16 +153,16 @@ public class Searchbar {
 
     public boolean searchedForSongs()
     {
-        return this.resultsType == 1;
+        return this.resultsSong != null;
     }
 
     public boolean searchedForPlaylists()
     {
-        return this.resultsType == 2;
+        return this.resultsPlaylist != null;
     }
 
     public boolean searchedForPodcasts()
     {
-        return this.resultsType == 3;
+        return this.resultsPodcast != null;
     }
 }
