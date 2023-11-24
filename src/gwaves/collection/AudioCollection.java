@@ -5,20 +5,27 @@ public abstract class AudioCollection {
     protected String owner;
     protected int entireDuration;
 
-    public AudioCollection(String name, String owner)
-    {
+    /**
+     * @param name
+     * @param owner
+     */
+    public AudioCollection(final String name, final String owner) {
         this.name = name;
         this.owner = owner;
         this.entireDuration = 0;
     }
 
-    public String getName()
-    {
+    /**
+     * @return
+     */
+    public String getName() {
         return this.name;
     }
 
-    public String getOwner()
-    {
+    /**
+     * @return
+     */
+    public String getOwner() {
         return this.owner;
     }
 }

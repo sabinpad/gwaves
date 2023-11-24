@@ -2,54 +2,45 @@ package fileio.output;
 
 import java.util.ArrayList;
 
-public class PlaylistOutput {
+public final class PlaylistOutput {
     private String name;
     private ArrayList<String> songs;
     private String visibility;
     private Integer followers;
 
-    public PlaylistOutput()
-    {
+    public PlaylistOutput() {
 
     }
 
-    public void setName(final String name)
-    {
+    public void setName(final String name) {
         this.name = name;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return this.name;
     }
 
-    public void setSongs(final ArrayList<String> songs)
-    {
+    public void setSongs(final ArrayList<String> songs) {
         this.songs = songs;
     }
 
-    public ArrayList<String> getSongs()
-    {
+    public ArrayList<String> getSongs() {
         return this.songs;
     }
 
-    public void setVisibility(final String visibility)
-    {
+    public void setVisibility(final String visibility) {
         this.visibility = visibility;
     }
 
-    public String getVisibility()
-    {
+    public String getVisibility() {
         return this.visibility;
     }
 
-    public void setFollowers(final Integer followers)
-    {
+    public void setFollowers(final Integer followers) {
         this.followers = followers;
     }
 
-    public Integer getFollowers()
-    {
+    public Integer getFollowers() {
         return this.followers;
     }
 }

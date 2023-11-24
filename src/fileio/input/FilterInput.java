@@ -2,7 +2,7 @@ package fileio.input;
 
 import java.util.ArrayList;
 
-public class FilterInput {
+public final class FilterInput {
     private String owner;
     private String name;
     private String album;
@@ -12,88 +12,70 @@ public class FilterInput {
     private String releaseYear;
     private String artist;
 
-    public FilterInput()
-    {
-        
+    public FilterInput() {
     }
 
-    public void setOwner(final String owner)
-    {
+    public void setOwner(final String owner) {
         this.owner = owner;
     }
 
-    public String getOwner()
-    {
+    public String getOwner() {
         return this.owner;
     }
 
-    public void setName(final String name)
-    {
+    public void setName(final String name) {
         this.name = name;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return this.name;
     }
 
-    public void setAlbum(final String album)
-    {
+    public void setAlbum(final String album) {
         this.album = album;
     }
 
-    public String getAlbum()
-    {
+    public String getAlbum() {
         return this.album;
     }
 
-    public void setTags(final ArrayList<String> tags)
-    {
+    public void setTags(final ArrayList<String> tags) {
         this.tags = tags;
     }
 
-    public ArrayList<String> getTags()
-    {
+    public ArrayList<String> getTags() {
         return this.tags;
     }
 
-    public void setLyrics(final String lyrics)
-    {
+    public void setLyrics(final String lyrics) {
         this.lyrics = lyrics;
     }
 
-    public String getLyrics()
-    {
+    public String getLyrics() {
         return this.lyrics;
     }
 
-    public void setGenre(final String genre)
-    {
+    public void setGenre(final String genre) {
         this.genre = genre;
     }
 
-    public String getGenre()
-    {
+    public String getGenre() {
         return this.genre;
     }
 
-    public void setReleaseYear(final String releaseYear)
-    {
+    public void setReleaseYear(final String releaseYear) {
         this.releaseYear = releaseYear;
     }
 
-    public String getReleaseYear()
-    {
+    public String getReleaseYear() {
         return this.releaseYear;
     }
 
-    public void setArtist(final String artist)
-    {
+    public void setArtist(final String artist) {
         this.artist = artist;
     }
 
-    public String getArtist()
-    {
+    public String getArtist() {
         return this.artist;
     }
 }

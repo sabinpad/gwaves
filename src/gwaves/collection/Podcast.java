@@ -7,13 +7,12 @@ import fileio.input.PodcastInput;
 
 import gwaves.sample.Episode;
 
-public class Podcast extends AudioCollection {
+public final class Podcast extends AudioCollection {
     private ArrayList<Episode> episodes;
     private int lastEpisodePlayedIndex;
     private int lastEpisodePlayedRemainedTime;
 
-    public Podcast(PodcastInput podcastInput)
-    {
+    public Podcast(final PodcastInput podcastInput) {
         super(podcastInput.getName(), podcastInput.getOwner());
 
         this.episodes = new ArrayList<>();
@@ -26,53 +25,77 @@ public class Podcast extends AudioCollection {
         this.lastEpisodePlayedRemainedTime = episodes.get(0).getDuration();
     }
 
-    public void setLastEpisodePlayedIndex(int index)
-    {
-        if (index < this.episodes.size())
+    /**
+     * @param index
+     */
+    public void setLastEpisodePlayedIndex(final int index) {
+        if (index < this.episodes.size()) {
             this.lastEpisodePlayedIndex = index;
+        }
     }
 
-    public void setLastEpisodePlayedRemainedTime(int remainedTime)
-    {
-        if (remainedTime <= this.episodes.get(this.lastEpisodePlayedIndex).getDuration())
+    /**
+     * @param remainedTime
+     */
+    public void setLastEpisodePlayedRemainedTime(final int remainedTime) {
+        if (remainedTime <= this.episodes.get(this.lastEpisodePlayedIndex).getDuration()) {
             this.lastEpisodePlayedRemainedTime = remainedTime;
+        }
     }
 
-    public String getName()
-    {
+    /**
+     * @return
+     */
+    public String getName() {
         return this.name;
     }
-    
-    public int getLastEpisodePlayedIndex()
-    {
+
+    /**
+     * @return
+     */
+    public int getLastEpisodePlayedIndex() {
         return this.lastEpisodePlayedIndex;
     }
 
-    public int getLastEpisodePlayedRemainedTime()
-    {
+    /**
+     * @return
+     */
+    public int getLastEpisodePlayedRemainedTime() {
         return this.lastEpisodePlayedRemainedTime;
     }
 
-    public int getNrOfEpisodes()
-    {
+    /**
+     * @return
+     */
+    public int getNrOfEpisodes() {
         return this.episodes.size();
     }
 
-    public int getEpisodeNr(Episode episode)
-    {
+    /**
+     * @param episode
+     * @return
+     */
+    public int getEpisodeNr(final Episode episode) {
         return this.episodes.indexOf(episode);
     }
 
-    public Episode getEpisode(int number)
-    {
-        if (number >= this.episodes.size())
+    /**
+     * @param number
+     * @return
+     */
+    public Episode getEpisode(final int number) {
+        if (number >= this.episodes.size()) {
             return null;
+        }
 
         return this.episodes.get(number);
     }
 
-    public Episode getEpisodeAfter(Episode episode)
-    {
+    /**
+     * @param episode
+     * @return
+     */
+    public Episode getEpisodeAfter(final Episode episode) {
         int i;
 
         i = (this.episodes.indexOf(episode) + 1) % this.episodes.size();
@@ -80,38 +103,53 @@ public class Podcast extends AudioCollection {
         return this.episodes.get(i);
     }
 
-    public Episode getEpisodeBefore(Episode episode)
-    {
+    /**
+     * @param episode
+     * @return
+     */
+    public Episode getEpisodeBefore(final Episode episode) {
         int i;
 
         i = (this.episodes.indexOf(episode) - 1) % this.episodes.size();
 
-        if (i == -1)
+        if (i == -1) {
             i = this.episodes.size() - 1;
+        }
 
         return this.episodes.get(i);
     }
 
-    public boolean isFirst(Episode episode)
-    {
+    /**
+     * @param episode
+     * @return
+     */
+    public boolean isFirst(final Episode episode) {
         return (this.episodes.indexOf(episode) == 0);
     }
 
-    public boolean isLast(Episode episode)
-    {
+    /**
+     * @param episode
+     * @return
+     */
+    public boolean isLast(final Episode episode) {
         return (this.episodes.indexOf(episode) == (this.episodes.size() - 1));
     }
 
-    public boolean isMatchedByFilter(FilterInput filter)
-    {
+    /**
+     * @param filter
+     * @return
+     */
+    public boolean isMatchedByFilter(final FilterInput filter) {
         if (filter.getName() != null) {
-            if (this.name.startsWith(filter.getName()) == false)
+            if (!this.name.startsWith(filter.getName())) {
                 return false;
+            }
         }
 
         if (filter.getOwner() != null) {
-            if (this.owner.equals(filter.getOwner()) == false)
+            if (!this.owner.equals(filter.getOwner())) {
                 return false;
+            }
         }
 
         return true;

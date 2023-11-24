@@ -4,16 +4,14 @@ import java.util.ArrayList;
 
 import fileio.input.FilterInput;
 import gwaves.sample.Song;
-import gwaves.collection.AudioCollection;
 
-public class Playlist extends AudioCollection {
+public final class Playlist extends AudioCollection {
     private ArrayList<Song> songs;
     private Boolean visibility;
 
     private Integer followers;
 
-    public Playlist(String name, String owner)
-    {
+    public Playlist(final String name, final String owner) {
         super(name, owner);
 
         this.songs = new ArrayList<>();
@@ -21,71 +19,99 @@ public class Playlist extends AudioCollection {
         this.followers = 0;
     }
 
-    public void addSong(Song song)
-    {
+    /**
+     * @param song
+     */
+    public void addSong(final Song song) {
         this.songs.add(song);
         this.entireDuration += song.getDuration();
     }
 
-    public void removeSong(Song song)
-    {
+    /**
+     * @param song
+     */
+    public void removeSong(final Song song) {
         if (this.songs.contains(song)) {
             this.songs.remove(song);
             this.entireDuration -= song.getDuration();
         }
     }
 
-    public void addFollower()
-    {
+    /**
+     * @return
+     */
+    public void addFollower() {
         this.followers++;
     }
 
-    public void removeFollower()
-    {
-        if (this.followers > 0)
+    /**
+     * @return
+     */
+    public void removeFollower() {
+        if (this.followers > 0) {
             this.followers--;
+        }
     }
 
-    public void changeVisibility()
-    {
+    /**
+     * @return
+     */
+    public void changeVisibility() {
         this.visibility = !this.visibility;
     }
 
-    public ArrayList<String> getSongsNameList()
-    {
+    /**
+     * @return
+     */
+    public ArrayList<String> getSongsNameList() {
         ArrayList<String> nameList = new ArrayList<>();
 
-        for (var song : this.songs)
+        for (var song : this.songs) {
             nameList.add(song.getName());
+        }
 
         return nameList;
     }
 
-    public int getNrOfSongs()
-    {
+    /**
+     * @return
+     */
+    public int getNrOfSongs() {
         return this.songs.size();
     }
 
-    public int getNrOfFollowers()
-    {
+    /**
+     * @return
+     */
+    public int getNrOfFollowers() {
         return this.followers.intValue();
     }
 
-    public int getSongNr(Song song)
-    {
+    /**
+     * @param song
+     * @return
+     */
+    public int getSongNr(final Song song) {
         return this.songs.indexOf(song);
     }
 
-    public Song getSong(int number)
-    {
-        if (number >= this.songs.size())
+    /**
+     * @param number
+     * @return
+     */
+    public Song getSong(final int number) {
+        if (number >= this.songs.size()) {
             return null;
+        }
 
         return this.songs.get(number);
     }
 
-    public Song getSongAfter(Song song)
-    {
+    /**
+     * @param song
+     * @return
+     */
+    public Song getSongAfter(final Song song) {
         int i;
 
         i = (this.songs.indexOf(song) + 1) % this.songs.size();
@@ -93,48 +119,68 @@ public class Playlist extends AudioCollection {
         return this.songs.get(i);
     }
 
-    public Song getSongBefore(Song song)
-    {
+    /**
+     * @param song
+     * @return
+     */
+    public Song getSongBefore(final Song song) {
         int i;
 
         i = (this.songs.indexOf(song) - 1) % this.songs.size();
 
-        if (i == -1)
+        if (i == -1) {
             i = this.songs.size() - 1;
+        }
 
         return this.songs.get(i);
     }
 
-    public boolean isVisible()
-    {
+    /**
+     * @return
+     */
+    public boolean isVisible() {
         return this.visibility;
     }
 
-    public boolean hasSong(Song song)
-    {
+    /**
+     * @param song
+     * @return
+     */
+    public boolean hasSong(final Song song) {
         return this.songs.contains(song);
     }
 
-    public boolean isFirst(Song song)
-    {
+    /**
+     * @param song
+     * @return
+     */
+    public boolean isFirst(final Song song) {
         return (this.songs.indexOf(song) == 0);
     }
 
-    public boolean isLast(Song song)
-    {
+    /**
+     * @param song
+     * @return
+     */
+    public boolean isLast(final Song song) {
         return (this.songs.indexOf(song) == (this.songs.size() - 1));
     }
 
-    public boolean isMatchedByFilter(FilterInput filter)
-    {
+    /**
+     * @param filter
+     * @return
+     */
+    public boolean isMatchedByFilter(final FilterInput filter) {
         if (filter.getName() != null) {
-            if (!this.name.startsWith(filter.getName()))
+            if (!this.name.startsWith(filter.getName())) {
                 return false;
+            }
         }
 
         if (filter.getOwner() != null) {
-            if (!this.owner.equals(filter.getOwner()))
+            if (!this.owner.equals(filter.getOwner())) {
                 return false;
+            }
         }
 
         return true;

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import fileio.input.FilterInput;
 import fileio.input.SongInput;
 
-public class Song extends AudioRec {
+public final class Song extends AudioRec {
     private String album;
     private ArrayList<String> tags;
     private String lyrics;
@@ -15,8 +15,7 @@ public class Song extends AudioRec {
 
     private Integer likes;
 
-    public Song(SongInput songInput)
-    {
+    public Song(final SongInput songInput) {
         this.name = songInput.getName();
         this.duration = songInput.getDuration();
         this.album = songInput.getAlbum();
@@ -28,72 +27,86 @@ public class Song extends AudioRec {
         this.likes = 0;
     }
 
-    public void addLike()
-    {
+    /**
+     * @return
+     */
+    public void addLike() {
         this.likes++;
     }
 
-    public void removeLike()
-    {
-        if (this.likes > 0)
+    /**
+     * @return
+     */
+    public void removeLike() {
+        if (this.likes > 0) {
             this.likes--;
+        }
     }
 
-    public int getNrOfLikes()
-    {
+    /**
+     * @return
+     */
+    public int getNrOfLikes() {
         return this.likes.intValue();
     }
 
-    public boolean isMatchedByFilter(FilterInput filter)
-    {
+    /**
+     * @param filter
+     * @return
+     */
+    public boolean isMatchedByFilter(final FilterInput filter) {
         int filterReleaseYear;
         String fmtReleaseYear;
 
         if (filter.getName() != null) {
-            if (this.name.startsWith(filter.getName()) == false)
+            if (!this.name.startsWith(filter.getName())) {
                 return false;
+            }
         }
 
         if (filter.getAlbum() != null) {
-            if (this.album.equals(filter.getAlbum()) == false)
+            if (!this.album.equals(filter.getAlbum())) {
                 return false;
+            }
         }
 
         if (filter.getTags() != null) {
-            for (var tag : filter.getTags())
-                if (this.tags.contains(tag) == false)
+            for (var tag : filter.getTags()) {
+                if (!this.tags.contains(tag)) {
                     return false;
+                }
+            }
         }
 
-        // if (filter.getLyrics() != null) {
-        //     if (this.lyrics.indexOf(filter.getLyrics()) == -1)
-        //         return false;
-        // }
-
         if (filter.getLyrics() != null) {
-            if (!this.lyrics.toLowerCase().contains(filter.getLyrics().toLowerCase()))
+            if (!this.lyrics.toLowerCase().contains(filter.getLyrics().toLowerCase())) {
                 return false;
+            }
         }
 
         if (filter.getGenre() != null) {
-            if (this.genre.equalsIgnoreCase(filter.getGenre()) == false)
+            if (!this.genre.equalsIgnoreCase(filter.getGenre())) {
                 return false;
+            }
         }
 
         if (filter.getReleaseYear() != null) {
             fmtReleaseYear = filter.getReleaseYear();
             filterReleaseYear = Integer.parseInt(fmtReleaseYear.substring(1));
 
-            if (fmtReleaseYear.charAt(0) == '<' && this.releaseYear >= filterReleaseYear)
+            if (fmtReleaseYear.charAt(0) == '<' && this.releaseYear >= filterReleaseYear) {
                 return false;
-            
-            if (fmtReleaseYear.charAt(0) == '>' && this.releaseYear <= filterReleaseYear)
+            }
+
+            if (fmtReleaseYear.charAt(0) == '>' && this.releaseYear <= filterReleaseYear) {
                 return false;
+            }
         }
 
         if (filter.getArtist() != null) {
-            if (this.artist.equals(filter.getArtist()) == false)
+            if (!this.artist.equals(filter.getArtist())) {
                 return false;
+            }
         }
 
         return true;

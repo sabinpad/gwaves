@@ -4,59 +4,49 @@ import java.util.ArrayList;
 
 import fileio.input.CommandInput;
 
-public class UserCommandOutput extends CommandOutput {
+public final class UserCommandOutput extends CommandOutput {
     private String message;
     private ArrayList<String> results;
     private MusicPlayerStatusOutput stats;
     private ArrayList<PlaylistOutput> result;
 
-    public UserCommandOutput(CommandInput commandInput)
-    {
+    public UserCommandOutput(final CommandInput commandInput) {
         super(commandInput);
     }
 
-    public UserCommandOutput()
-    {
-        
+    public UserCommandOutput() {
+
     }
 
-    public void setMessage(final String message)
-    {
+    public void setMessage(final String message) {
         this.message = message;
     }
 
-    public String getMessage()
-    {
+    public String getMessage() {
         return this.message;
     }
 
-    public void setResults(final ArrayList<String> results)
-    {
+    public void setResults(final ArrayList<String> results) {
         this.results = results;
     }
 
-    public ArrayList<String> getResults()
-    {
+    public ArrayList<String> getResults() {
         return this.results;
     }
 
-    public void setStats(final MusicPlayerStatusOutput stats)
-    {
+    public void setStats(final MusicPlayerStatusOutput stats) {
         this.stats = stats;
     }
 
-    public MusicPlayerStatusOutput getStats()
-    {
+    public MusicPlayerStatusOutput getStats() {
         return this.stats;
     }
 
-    public void setResult(final ArrayList<PlaylistOutput> result)
-    {
+    public void setResult(final ArrayList<PlaylistOutput> result) {
         this.result = result;
     }
 
-    public ArrayList<PlaylistOutput> getResult()
-    {
+    public ArrayList<PlaylistOutput> getResult() {
         return this.result;
     }
 }

@@ -9,45 +9,58 @@ public abstract class CommandOutput {
     protected String user;
     protected Integer timestamp;
 
-    public CommandOutput(CommandInput commandInput)
-    {
+    /**
+     * @param commandInput
+     */
+    public CommandOutput(final CommandInput commandInput) {
         this.command = commandInput.getCommand();
         this.user = commandInput.getUsername();
         this.timestamp = commandInput.getTimestamp();
     }
 
-    public CommandOutput()
-    {
-        
+    public CommandOutput() {
+
     }
 
-    public void setCommand(final String command)
-    {
+    /**
+     * @param command
+     */
+    public void setCommand(final String command) {
         this.command = command;
     }
 
-    public String getCommand()
-    {
+    /**
+     * @return
+     */
+    public String getCommand() {
         return this.command;
     }
 
-    public void setUser(final String user)
-    {
+    /**
+     * @param user
+     */
+    public void setUser(final String user) {
         this.user = user;
     }
 
-    public String getUser()
-    {
+    /**
+     * @return
+     */
+    public String getUser() {
         return this.user;
     }
 
-    public void setTimestamp(final Integer timestamp)
-    {
+    /**
+     * @param timestamp
+     */
+    public void setTimestamp(final Integer timestamp) {
         this.timestamp = timestamp;
     }
 
-    public Integer getTimestamp()
-    {
+    /**
+     * @return
+     */
+    public Integer getTimestamp() {
         return this.timestamp;
     }
 }

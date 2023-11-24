@@ -1,4 +1,4 @@
-package gwaves.util;
+package gwaves.context;
 
 import java.util.ArrayList;
 
@@ -12,9 +12,12 @@ import fileio.output.PlaylistOutput;
 import fileio.output.SysCommandOutput;
 
 import gwaves.sample.Song;
+import gwaves.storage.DataBase;
+import gwaves.tools.Musicplayer;
+import gwaves.tools.Searchbar;
 import gwaves.collection.Playlist;
 
-public class User {
+public final class User {
     private String username;
     private Integer age;
     private String city;
@@ -29,8 +32,7 @@ public class User {
     private int lastTimestamp;
     private String commandMessage;
 
-    public User(UserInput userInput)
-    {
+    public User(final UserInput userInput) {
         this.username = userInput.getUsername();
         this.age = userInput.getAge();
         this.city = userInput.getCity();
@@ -43,8 +45,11 @@ public class User {
         this.commandMessage = null;
     }
 
-    public CommandOutput executeCommand(CommandInput commandInput)
-    {
+    /**
+     * @param commandInput
+     * @return
+     */
+    public CommandOutput executeCommand(final CommandInput commandInput) {
         int timeInterval = 0;
         UserCommandOutput userCommandOutput;
         SysCommandOutput sysCommandOutput;
@@ -62,7 +67,6 @@ public class User {
         userCommandOutput.setCommand(commandInput.getCommand());
         userCommandOutput.setUser(commandInput.getUsername());
         userCommandOutput.setTimestamp(commandInput.getTimestamp());
-        
 
         timeInterval = commandInput.getTimestamp() - this.lastTimestamp;
         this.lastTimestamp = commandInput.getTimestamp();
@@ -70,85 +74,90 @@ public class User {
         this.musicplayer.playFor(timeInterval);
 
         switch (commandInput.getCommand()) {
-        case "search":
-            userCommandOutput.setResults(this.doSearch(commandInput.getType(),
-                                         commandInput.getFilters()));
-            break;
-        case "select":
-            this.doSelect(commandInput.getItemNumber());
-            break;
-        case "load":
-            this.doLoad();
-            break;
-        case "playPause":
-            this.doPlayPause();
-            break;
-        case "repeat":
-            this.doRepeat();
-            break;
-        case "shuffle":
-            if (commandInput.getSeed() == null)
-                this.doShuffle(0);
-            else
-                this.doShuffle(commandInput.getSeed());
-            break;
-        case "forward":
-            this.doForward();
-            break;
-        case "backward":
-            this.doBackward();
-            break;
-        case "like":
-            this.doLike();
-            break;
-        case "next":
-            this.doNext();
-            break;
-        case "prev":
-            this.doPrev();
-            break;
-        case "addRemoveInPlaylist":
-            this.doAddRemoveInPlaylist(commandInput.getPlaylistId());
-            break;
-        case "status":
-            userCommandOutput.setStats(this.doStatus());
-            break;
-        case "createPlaylist":
-            this.doCreatePlaylist(commandInput.getPlaylistName());
-            break;
-        case "switchVisibility":
-            this.doSwitchVisibility(commandInput.getPlaylistId());
-            break;
-        case "follow":
-            this.doFollowPlaylist();
-            break;
-        case "showPlaylists":
-            userCommandOutput.setResult(this.doShowPlaylists());
-            break;
+            case "search":
+                userCommandOutput.setResults(this.doSearch(commandInput.getType(),
+                        commandInput.getFilters()));
+                break;
+            case "select":
+                this.doSelect(commandInput.getItemNumber());
+                break;
+            case "load":
+                this.doLoad();
+                break;
+            case "playPause":
+                this.doPlayPause();
+                break;
+            case "repeat":
+                this.doRepeat();
+                break;
+            case "shuffle":
+                if (commandInput.getSeed() == null) {
+                    this.doShuffle(0);
+                } else {
+                    this.doShuffle(commandInput.getSeed());
+                }
+                break;
+            case "forward":
+                this.doForward();
+                break;
+            case "backward":
+                this.doBackward();
+                break;
+            case "like":
+                this.doLike();
+                break;
+            case "next":
+                this.doNext();
+                break;
+            case "prev":
+                this.doPrev();
+                break;
+            case "addRemoveInPlaylist":
+                this.doAddRemoveInPlaylist(commandInput.getPlaylistId());
+                break;
+            case "status":
+                userCommandOutput.setStats(this.doStatus());
+                break;
+            case "createPlaylist":
+                this.doCreatePlaylist(commandInput.getPlaylistName());
+                break;
+            case "switchVisibility":
+                this.doSwitchVisibility(commandInput.getPlaylistId());
+                break;
+            case "follow":
+                this.doFollowPlaylist();
+                break;
+            case "showPlaylists":
+                userCommandOutput.setResult(this.doShowPlaylists());
+                break;
+            default:
+                break;
         }
 
-        if (this.commandMessage != null)
+        if (this.commandMessage != null) {
             userCommandOutput.setMessage(this.commandMessage);
+        }
 
         return userCommandOutput;
     }
 
-    private ArrayList<String> doSearch(String type, FilterInput filter)
-    {
+    private ArrayList<String> doSearch(final String type, final FilterInput filter) {
         ArrayList<String> results = null;
 
         this.musicplayer.unloadCurrent();
 
         switch (type) {
-        case "song":
-            results = this.searchbar.searchSongs(filter);
-            break;
-        case "playlist":
-            results = this.searchbar.searchPlaylists(filter);
-            break;
-        case "podcast":
-            results = this.searchbar.searchPodcasts(filter);
-            break;
+            case "song":
+                results = this.searchbar.searchSongs(filter);
+                break;
+            case "playlist":
+                results = this.searchbar.searchPlaylists(filter);
+                break;
+            case "podcast":
+                results = this.searchbar.searchPodcasts(filter);
+                break;
+            default:
+                break;
         }
 
         this.commandMessage = "Search returned " + this.searchbar.getResultsNumber() + " results";
@@ -156,8 +165,7 @@ public class User {
         return results;
     }
 
-    private void doSelect(int itemNumber)
-    {
+    private void doSelect(final int itemNumber) {
         if (this.searchbar.isEmpty()) {
             this.commandMessage = "Please conduct a search before making a selection.";
             return;
@@ -173,52 +181,50 @@ public class User {
         this.commandMessage = "Successfully selected " + this.searchbar.getSelectedResultName() + ".";
     }
 
-    private void doLoad()
-    {
+    private void doLoad() {
         if (!this.searchbar.isSelected()) {
             this.commandMessage = "Please select a source before attempting to load.";
             return;
         }
 
-        if (this.searchbar.searchedForSongs())
+        if (this.searchbar.searchedForSongs()) {
             this.musicplayer.loadSong(this.searchbar.getSelectedSong());
-        else if (this.searchbar.searchedForPlaylists())
+        } else if (this.searchbar.searchedForPlaylists()) {
             this.musicplayer.loadPlaylist(this.searchbar.getSelectedPlaylist());
-        else if (this.searchbar.searchedForPodcasts())
+        } else if (this.searchbar.searchedForPodcasts()) {
             this.musicplayer.loadPodcast(this.searchbar.getSelectedPodcast());
+        }
 
         this.commandMessage = "Playback loaded successfully.";
     }
 
-    private void doPlayPause()
-    {
+    private void doPlayPause() {
         if (!this.musicplayer.isLoaded()) {
             this.commandMessage = "Please load a source before attempting to pause or resume playback.";
             return;
         }
 
-        this.musicplayer.playPause();
+        this.musicplayer.togglePlayPause();
 
-        if (this.musicplayer.isPaused())
+        if (this.musicplayer.isPaused()) {
             this.commandMessage = "Playback paused successfully.";
-        else
+        } else {
             this.commandMessage = "Playback resumed successfully.";
+        }
     }
 
-    private void doRepeat()
-    {
+    private void doRepeat() {
         if (!this.musicplayer.isLoaded()) {
             this.commandMessage = "Please load a source before setting the repeat status.";
             return;
         }
 
-        this.musicplayer.changeRepeatMode();
+        this.musicplayer.switchRepeat();
 
         this.commandMessage = "Repeat mode changed to " + this.musicplayer.getRepeatModeName() + ".";
     }
 
-    private void doShuffle(int seed)
-    {
+    private void doShuffle(final int seed) {
         if (!this.musicplayer.isLoaded()) {
             this.commandMessage = "Please load a source before using the shuffle function.";
             return;
@@ -228,19 +234,18 @@ public class User {
             this.commandMessage = "The loaded source is not a playlist.";
             return;
         }
-        
-        this.musicplayer.shufflePlaylist(seed);
 
-        if (this.musicplayer.isShuffled())
+        this.musicplayer.toggleShuffle(seed);
+
+        if (this.musicplayer.isShuffled()) {
             this.commandMessage = "Shuffle function activated successfully.";
-        else
+        } else {
             this.commandMessage = "Shuffle function deactivated successfully.";
+        }
     }
 
-    private void doForward()
-    {
+    private void doForward() {
         if (!this.musicplayer.isLoaded()) {
-            // this.commandMessage = "Please load a source before skipping forward.";
             this.commandMessage = "Please load a source before attempting to forward.";
             return;
         }
@@ -255,8 +260,7 @@ public class User {
         this.commandMessage = "Skipped forward successfully.";
     }
 
-    private void doBackward()
-    {
+    private void doBackward() {
         if (!this.musicplayer.isLoaded()) {
             this.commandMessage = "Please select a source before rewinding.";
             return;
@@ -272,8 +276,7 @@ public class User {
         this.commandMessage = "Rewound successfully.";
     }
 
-    private void doLike()
-    {
+    private void doLike() {
         Song currentSong;
 
         if (!this.musicplayer.isLoaded()) {
@@ -299,8 +302,7 @@ public class User {
         }
     }
 
-    private void doNext()
-    {
+    private void doNext() {
         String trackName;
 
         if (!this.musicplayer.isLoaded()) {
@@ -312,14 +314,14 @@ public class User {
 
         trackName = this.musicplayer.getCurrentRecName();
 
-        if (this.musicplayer.isLoaded())
+        if (this.musicplayer.isLoaded()) {
             this.commandMessage = "Skipped to next track successfully. The current track is " + trackName + ".";
-        else
+        } else {
             this.commandMessage = "Please load a source before skipping to the next track.";
+        }
     }
 
-    private void doPrev()
-    {
+    private void doPrev() {
         String trackName;
 
         if (!this.musicplayer.isLoaded()) {
@@ -334,8 +336,8 @@ public class User {
         this.commandMessage = "Returned to previous track successfully. The current track is " + trackName + ".";
     }
 
-    private void doAddRemoveInPlaylist(int playlistId)
-    {
+    private void doAddRemoveInPlaylist(final int playlistId) {
+        int playlistIndex;
         Song loadedSong;
         Playlist selectedPlaylist;
 
@@ -354,9 +356,9 @@ public class User {
             return;
         }
 
-        playlistId--;
+        playlistIndex = playlistId - 1;
         loadedSong = this.musicplayer.getLoadedSong();
-        selectedPlaylist = this.personalPlaylists.get(playlistId);
+        selectedPlaylist = this.personalPlaylists.get(playlistIndex);
 
         if (selectedPlaylist.hasSong(loadedSong)) {
             selectedPlaylist.removeSong(loadedSong);
@@ -367,38 +369,37 @@ public class User {
         }
     }
 
-    private MusicPlayerStatusOutput doStatus()
-    {
-        // TODO
-
+    private MusicPlayerStatusOutput doStatus() {
         MusicPlayerStatusOutput mpStatusOutput = new MusicPlayerStatusOutput();
 
-        if (this.musicplayer.isLoaded())
+        if (this.musicplayer.isLoaded()) {
             mpStatusOutput.setName(this.musicplayer.getCurrentRecName());
-        else
+        } else {
             mpStatusOutput.setName("");
-        
+        }
+
         mpStatusOutput.setRemainedTime(this.musicplayer.getRemainedTime());
 
         switch (this.musicplayer.getRepeatModeName()) {
-        case "no repeat":
-            mpStatusOutput.setRepeat("No Repeat");
-            break;
-        case "repeat all":
-            mpStatusOutput.setRepeat("Repeat All");
-            break;
-        case "repeat current song":
-            mpStatusOutput.setRepeat("Repeat Current Song");
-            break;
-        case "repeat once":
-            mpStatusOutput.setRepeat("Repeat Once");
-            break;
-        case "repeat infinite":
-            mpStatusOutput.setRepeat("Repeat Infinite");
-            break;
+            case "no repeat":
+                mpStatusOutput.setRepeat("No Repeat");
+                break;
+            case "repeat all":
+                mpStatusOutput.setRepeat("Repeat All");
+                break;
+            case "repeat current song":
+                mpStatusOutput.setRepeat("Repeat Current Song");
+                break;
+            case "repeat once":
+                mpStatusOutput.setRepeat("Repeat Once");
+                break;
+            case "repeat infinite":
+                mpStatusOutput.setRepeat("Repeat Infinite");
+                break;
+            default:
+                break;
         }
 
-        // mpStatusOutput.setRepeat(this.musicplayer.getRepeatModeName());
         mpStatusOutput.setShuffle(this.musicplayer.isShuffled());
         mpStatusOutput.setPaused(this.musicplayer.isPaused());
 
@@ -407,16 +408,16 @@ public class User {
         return mpStatusOutput;
     }
 
-    private void doCreatePlaylist(String playlistName)
-    {
+    private void doCreatePlaylist(final String playlistName) {
         Playlist newPlaylist;
         DataBase database;
 
-        for (var playlist : this.personalPlaylists)
+        for (var playlist : this.personalPlaylists) {
             if (playlist.getName().equals(playlistName)) {
                 this.commandMessage = "A playlist with the same name already exists.";
                 return;
             }
+        }
 
         newPlaylist = new Playlist(playlistName, this.username);
         database = DataBase.getInstance();
@@ -427,8 +428,8 @@ public class User {
         this.commandMessage = "Playlist created successfully.";
     }
 
-    private void doSwitchVisibility(int playlistId)
-    {
+    private void doSwitchVisibility(final int playlistId) {
+        int playlistIndex;
         Playlist selectedPlaylist;
 
         if (playlistId > this.personalPlaylists.size()) {
@@ -436,18 +437,18 @@ public class User {
             return;
         }
 
-        playlistId--;
-        selectedPlaylist = this.personalPlaylists.get(playlistId);
+        playlistIndex = playlistId - 1;
+        selectedPlaylist = this.personalPlaylists.get(playlistIndex);
         selectedPlaylist.changeVisibility();
 
-        if (selectedPlaylist.isVisible())
+        if (selectedPlaylist.isVisible()) {
             this.commandMessage = "Visibility status updated successfully to public.";
-        else
+        } else {
             this.commandMessage = "Visibility status updated successfully to private.";
+        }
     }
 
-    private void doFollowPlaylist()
-    {
+    private void doFollowPlaylist() {
         Playlist selectedPlaylist;
 
         if (!this.searchbar.isSelected()) {
@@ -467,7 +468,6 @@ public class User {
             return;
         }
 
-        
         if (this.followedPlaylists.contains(selectedPlaylist)) {
             this.followedPlaylists.remove(selectedPlaylist);
             selectedPlaylist.removeFollower();
@@ -480,8 +480,7 @@ public class User {
         this.commandMessage = "Playlist followed successfully.";
     }
 
-    private ArrayList<PlaylistOutput> doShowPlaylists()
-    {
+    private ArrayList<PlaylistOutput> doShowPlaylists() {
         PlaylistOutput plOutput;
         ArrayList<PlaylistOutput> result = new ArrayList<>();
 
@@ -490,11 +489,12 @@ public class User {
 
             plOutput.setName(playlist.getName());
             plOutput.setSongs(playlist.getSongsNameList());
-            
-            if (playlist.isVisible())
+
+            if (playlist.isVisible()) {
                 plOutput.setVisibility("public");
-            else
+            } else {
                 plOutput.setVisibility("private");
+            }
 
             plOutput.setFollowers(playlist.getNrOfFollowers());
 
@@ -506,33 +506,41 @@ public class User {
         return result;
     }
 
-    private ArrayList<String> getPreferredSongsName()
-    {
+    private ArrayList<String> getPreferredSongsName() {
         ArrayList<String> result = new ArrayList<>();
 
-        for (var song : this.likedSongs)
+        for (var song : this.likedSongs) {
             result.add(song.getName());
+        }
 
         return result;
     }
 
-    public String getUserName()
-    {
+    /**
+     * @return
+     */
+    public String getUserName() {
         return this.username;
     }
 
-    public Integer getAge()
-    {
+    /**
+     * @return
+     */
+    public Integer getAge() {
         return this.age;
     }
 
-    public String getCity()
-    {
+    /**
+     * @return
+     */
+    public String getCity() {
         return this.city;
     }
 
-    public String getLastCommandMessage()
-    {
+    /**
+     * @return
+     */
+    public String getLastCommandMessage() {
         return this.commandMessage;
     }
 }
