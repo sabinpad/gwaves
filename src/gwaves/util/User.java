@@ -37,7 +37,7 @@ public class User {
         this.personalPlaylists = new ArrayList<>();
         this.followedPlaylists = new ArrayList<>();
         this.likedSongs = new ArrayList<>();
-        this.searchbar = new Searchbar();
+        this.searchbar = new Searchbar(this);
         this.musicplayer = new Musicplayer();
         this.lastTimestamp = 0;
         this.commandMessage = null;
@@ -144,7 +144,7 @@ public class User {
             results = this.searchbar.searchSongs(filter);
             break;
         case "playlist":
-            results = this.searchbar.searchPlaylistsAndOwnedBy(filter, this.username);
+            results = this.searchbar.searchPlaylists(filter);
             break;
         case "podcast":
             results = this.searchbar.searchPodcasts(filter);
@@ -158,9 +158,7 @@ public class User {
 
     private void doSelect(int itemNumber)
     {
-        if (!this.searchbar.searchedForSongs() 
-            && !this.searchbar.searchedForPlaylists() 
-            && !this.searchbar.searchedForPodcasts()) {
+        if (this.searchbar.isEmpty()) {
             this.commandMessage = "Please conduct a search before making a selection.";
             return;
         }
@@ -172,7 +170,7 @@ public class User {
 
         this.searchbar.selectResult(itemNumber - 1);
 
-        this.commandMessage = "Successfully selected " + this.searchbar.getSelectedName() + ".";
+        this.commandMessage = "Successfully selected " + this.searchbar.getSelectedResultName() + ".";
     }
 
     private void doLoad()
@@ -516,6 +514,21 @@ public class User {
             result.add(song.getName());
 
         return result;
+    }
+
+    public String getUserName()
+    {
+        return this.username;
+    }
+
+    public Integer getAge()
+    {
+        return this.age;
+    }
+
+    public String getCity()
+    {
+        return this.city;
     }
 
     public String getLastCommandMessage()

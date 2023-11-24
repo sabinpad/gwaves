@@ -8,19 +8,18 @@ import gwaves.collection.Playlist;
 import gwaves.collection.Podcast;
 
 public class Searchbar {
-    private DataBase database;
+    private User ownerUser;
 
     private ArrayList<Song> resultsSong;
     private ArrayList<Playlist> resultsPlaylist;
     private ArrayList<Podcast> resultsPodcast;
 
-    private int resultsType;
     private int resultsIndex;
     private int resultsNumber;
 
-    public Searchbar()
+    public Searchbar(User ownerUser)
     {
-        this.database = DataBase.getInstance();
+        this.ownerUser = ownerUser;
         this.resultsIndex = -1;
         this.resultsNumber = 0;
     }
@@ -29,7 +28,7 @@ public class Searchbar {
     {
         ArrayList<String> resultsName = new ArrayList<>();
 
-        this.resultsSong = this.database.querySongs(filter);
+        this.resultsSong = DataBase.getInstance().querySongs(filter);
         this.resultsPlaylist = null;
         this.resultsPodcast = null;
 
@@ -44,11 +43,11 @@ public class Searchbar {
         return resultsName;
     }
 
-    public ArrayList<String> searchPlaylistsAndOwnedBy(FilterInput filter, String owner)
+    public ArrayList<String> searchPlaylists(FilterInput filter)
     {
         ArrayList<String> resultsName = new ArrayList<>();
 
-        this.resultsPlaylist = this.database.queryVisiblePlaylistsAndOwnedBy(filter, owner);
+        this.resultsPlaylist = DataBase.getInstance().queryVisiblePlaylistsAndOwnedBy(filter, this.ownerUser.getUserName());
         this.resultsSong = null;
         this.resultsPodcast = null;
 
@@ -67,7 +66,7 @@ public class Searchbar {
     {
         ArrayList<String> resultsName = new ArrayList<>();
 
-        this.resultsPodcast = this.database.queryPodcasts(filter);
+        this.resultsPodcast = DataBase.getInstance().queryPodcasts(filter);
         this.resultsSong = null;
         this.resultsPlaylist = null;
 
@@ -93,7 +92,7 @@ public class Searchbar {
         return this.resultsNumber;
     }
 
-    public String getSelectedName()
+    public String getSelectedResultName()
     {
         if (this.resultsSong != null)
             return this.resultsSong.get(this.resultsIndex).getName();
@@ -145,6 +144,11 @@ public class Searchbar {
         }
            
         return podcast;
+    }
+
+    public boolean isEmpty()
+    {
+        return this.resultsSong == null && this.resultsPlaylist == null && this.resultsPodcast == null;
     }
 
     public boolean isSelected()
