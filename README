@@ -1,4 +1,139 @@
-## GlobalWaves
+##### Copyright 2023 Padurariu Sabin
 
-An app that is just awesome
+┏━━━┓┏━━━┓┏━━━┓━━━━┏┓━━┏┓┏━━━┓┏┓━┏┓━━━━┏━━━┓┏━━━┓┏━━━┓┏━━━┓┏━━┓┏━┓━┏┓┏━━━┓━━━━┏━┓┏━┓┏━━━┓┏━━━┓
+┃┏━┓┃┃┏━┓┃┃┏━━┛━━━━┃┗┓┏┛┃┃┏━┓┃┃┃━┃┃━━━━┃┏━┓┃┃┏━━┛┃┏━┓┃┗┓┏┓┃┗┫┣┛┃┃┗┓┃┃┃┏━┓┃━━━━┃┃┗┛┃┃┃┏━━┛┃┏━┓┃
+┃┃━┃┃┃┗━┛┃┃┗━━┓━━━━┗┓┗┛┏┛┃┃━┃┃┃┃━┃┃━━━━┃┗━┛┃┃┗━━┓┃┃━┃┃━┃┃┃┃━┃┃━┃┏┓┗┛┃┃┃━┗┛━━━━┃┏┓┏┓┃┃┗━━┓┗┛┏┛┃
+┃┗━┛┃┃┏┓┏┛┃┏━━┛━━━━━┗┓┏┛━┃┃━┃┃┃┃━┃┃━━━━┃┏┓┏┛┃┏━━┛┃┗━┛┃━┃┃┃┃━┃┃━┃┃┗┓┃┃┃┃┏━┓━━━━┃┃┃┃┃┃┃┏━━┛━━┃┏┛
+┃┏━┓┃┃┃┃┗┓┃┗━━┓━━━━━━┃┃━━┃┗━┛┃┃┗━┛┃━━━━┃┃┃┗┓┃┗━━┓┃┏━┓┃┏┛┗┛┃┏┫┣┓┃┃━┃┃┃┃┗┻━┃━━━━┃┃┃┃┃┃┃┗━━┓━━┏┓━
+┗┛━┗┛┗┛┗━┛┗━━━┛━━━━━━┗┛━━┗━━━┛┗━━━┛━━━━┗┛┗━┛┗━━━┛┗┛━┗┛┗━━━┛┗━━┛┗┛━┗━┛┗━━━┛━━━━┗┛┗┛┗┛┗━━━┛━━┗┛━
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+# **GLOBAL WAVES**
+
+A software that simulates a music streaming app by parsing json input files and
+writing the results into json output files.
+
+<br>
+
+## **Anatomy of json input and output**
+---
+
+Every input/output json object must have a string field for the command name 
+and an integer field for the time when the command was sent.
+
+The client can request to do something through a command or can request some
+statistics from the database, thus the user field must be null.
+
+In addition, the json of the command input can contain one of the following fields:
+* username - string
+* type - string
+* filters - object
+* itemNumber - integer
+* seed - integer
+* playlistName - string
+* playlistId - integer
+
+Example of json input object:
+
+```JSON
+{
+    "command": "search",
+    "username": "emily30",
+    "timestamp": 4015,
+    "type": "playlist",
+    "filters": {
+        "name": "LoFi music"
+    }
+}
+```
+
+In addition, the json of the command output can contain one of the following 
+fields, depending if the user field is null or not:
+1. user specified
+* message - string
+* results - list of strings
+* stats - object
+* result - array of objects
+2. user not specified
+* results - list of strings
+
+Example of json output object:
+
+```JSON
+{
+  "command" : "search",
+  "user" : "emily30",
+  "timestamp" : 4015,
+  "message" : "Search returned 1 results",
+  "results" : [ "LoFi music" ]
+}
+```
+
+## **Implementation Details and Classes Overview**
+---
+
+The programme works with 4 main classes
+1. User
+2. Musicplayer
+3. Searchbar
+4. DataBase
+
+## User
+---
+
+The User class represents more of a context in which to group a searchbar and
+a musicplayer. Thus every User will have their own musicplayer and searchbar.
+In this way the search results will differ from user to user and every user
+will be able to play their own song, playlist or podcast.
+
+At the moment the user only has 2 methods available
+* a method which takes a CommandInput argument and returns a CommandOutput 
+object and represents the only way to make the user execute the desired command
+* a method that returns the message from the last command executed by the user
+
+## Musicplayer
+---
+
+The Musicplayer class is responsible for playing the preffered audio file.
+It is basically the workhorse of the programme. 80% of the programme logic is
+implemented in this class. Its main job is to load songs, playlists and podcasts
+and play them.
+
+## Searchbar
+---
+
+The Searchbar class represents more of a inteface (not to be confused with a
+java interface) between the user and the DataBase. By having one, the user can
+search for songs, personal playlists and public playlists created by other and
+podcasts in the database.
+
+## DataBase
+---
+
+The DataBase class follows the Singleton design pattern and it is used to store
+all the user on the platform, all the songs and all the created playlists and
+podcasts.
+
+Its main purpose is to server the searchbar the requested data. The database can
+be queried for the following types:
+* Users
+* Songs
+* public playlists and playlists owned by a user
+* podcasts
+
+<br>
+<br>
+<br>
+
+## **!!SPECIAL SCRIS IN ROMANA PENTRU ECHIPA DE POO**
+* Am facut clase abstracte si o clasa singleton ca sa arat faptul ca stiu si eu
+ce sa intampla la poo nu pentru ca implementarea mea ar fi una foarte eficienta
+sau bine structurata, putea sa fie facuta mai bine
+* Zic asta pentru ca normal o clasa singleton are o singura instanta unica per
+proces, dar pentru ca checker-ul testeaza prin apelarea unei functii, care se
+apeleaza de 17 ori intr-un proces, fiecare test a trebuit sa fac o metoda la
+clasa singleton DataBase care schimba instanta ca sa nu se pastreaze
+playlisturile create de la un test la altul
+* S-ar putea sa nu fi apucat sa scriu descrierea de la javadoc la fiecare metoda
+scz o fac la etapa 2 :disappointed_relieved:
