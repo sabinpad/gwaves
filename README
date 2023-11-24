@@ -25,6 +25,68 @@ and an integer field for the time when the command was sent.
 The client can request to do something through a command or can request some
 statistics from the database, thus the user field must be null.
 
+## List of posible comments
+```JSON
+"command": "search"
+```
+```JSON
+"command": "select"
+```
+```JSON
+"command": "load"
+```
+```JSON
+"command": "playPause"
+```
+```JSON
+"command": "repeat"
+```
+```JSON
+"command": "forward"
+```
+```JSON
+"command": "backward"
+```
+```JSON
+"command": "next"
+```
+```JSON
+"command": "prev"
+```
+```JSON
+"command": "like"
+```
+```JSON
+"command": "follow"
+```
+```JSON
+"command": "addRemoveInPlaylist"
+```
+```JSON
+"command": "status"
+```
+```JSON
+"command": "createPlaylist"
+```
+```JSON
+"command": "switchVisibility"
+```
+```JSON
+"command": "followPlaylist"
+```
+```JSON
+"command": "showPlaylists"
+```
+```JSON
+"command": "showPreferredSongs"
+```
+```JSON
+"command": "getTop5Songs"
+```
+```JSON
+"command": "getTop5Playlists"
+```
+
 In addition, the json of the command input can contain one of the following fields:
 * username - string
 * type - string
