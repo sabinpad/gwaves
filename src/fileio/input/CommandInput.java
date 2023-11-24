@@ -25,8 +25,6 @@ public final class CommandInput {
     // addRemoveInPlaylist, switchVisibility
     private Integer playlistId;
 
-    // Methods
-
     public CommandInput() {
     }
 

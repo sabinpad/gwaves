@@ -28,14 +28,14 @@ public final class Song extends AudioRec {
     }
 
     /**
-     * @return
+     * Adds a like to the song
      */
     public void addLike() {
         this.likes++;
     }
 
     /**
-     * @return
+     * Removes a like from the song
      */
     public void removeLike() {
         if (this.likes > 0) {
@@ -44,15 +44,15 @@ public final class Song extends AudioRec {
     }
 
     /**
-     * @return
+     * @return number of likes the song has
      */
     public int getNrOfLikes() {
         return this.likes.intValue();
     }
 
     /**
-     * @param filter
-     * @return
+     * @param filter used to match
+     * @return true if the song is matched by the filter
      */
     public boolean isMatchedByFilter(final FilterInput filter) {
         int filterReleaseYear;

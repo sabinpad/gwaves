@@ -47,7 +47,7 @@ public final class User {
 
     /**
      * @param commandInput
-     * @return
+     * @return CommandOutput object containing the results of the command
      */
     public CommandOutput executeCommand(final CommandInput commandInput) {
         int timeInterval = 0;
@@ -517,28 +517,28 @@ public final class User {
     }
 
     /**
-     * @return
+     * @return name of the user
      */
     public String getUserName() {
         return this.username;
     }
 
     /**
-     * @return
+     * @return age number
      */
     public Integer getAge() {
         return this.age;
     }
 
     /**
-     * @return
+     * @return name of the user's city
      */
     public String getCity() {
         return this.city;
     }
 
     /**
-     * @return
+     * @return result of the last executed command
      */
     public String getLastCommandMessage() {
         return this.commandMessage;

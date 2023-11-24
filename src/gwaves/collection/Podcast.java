@@ -51,21 +51,21 @@ public final class Podcast extends AudioCollection {
     }
 
     /**
-     * @return
+     * @return index of last episode played
      */
     public int getLastEpisodePlayedIndex() {
         return this.lastEpisodePlayedIndex;
     }
 
     /**
-     * @return
+     * @return remaining time of the last episode played
      */
     public int getLastEpisodePlayedRemainedTime() {
         return this.lastEpisodePlayedRemainedTime;
     }
 
     /**
-     * @return
+     * @return nr of episodes the podcast has
      */
     public int getNrOfEpisodes() {
         return this.episodes.size();
@@ -73,7 +73,7 @@ public final class Podcast extends AudioCollection {
 
     /**
      * @param episode
-     * @return
+     * @return index of episode in podcast
      */
     public int getEpisodeNr(final Episode episode) {
         return this.episodes.indexOf(episode);
@@ -81,7 +81,7 @@ public final class Podcast extends AudioCollection {
 
     /**
      * @param number
-     * @return
+     * @return episode that coresponds with the number
      */
     public Episode getEpisode(final int number) {
         if (number >= this.episodes.size()) {
@@ -93,7 +93,7 @@ public final class Podcast extends AudioCollection {
 
     /**
      * @param episode
-     * @return
+     * @return episode after the specified episode
      */
     public Episode getEpisodeAfter(final Episode episode) {
         int i;
@@ -105,7 +105,7 @@ public final class Podcast extends AudioCollection {
 
     /**
      * @param episode
-     * @return
+     * @return episode before the specified episode
      */
     public Episode getEpisodeBefore(final Episode episode) {
         int i;
@@ -121,7 +121,7 @@ public final class Podcast extends AudioCollection {
 
     /**
      * @param episode
-     * @return
+     * @return true if the episode if the first in the podcast
      */
     public boolean isFirst(final Episode episode) {
         return (this.episodes.indexOf(episode) == 0);
@@ -129,15 +129,15 @@ public final class Podcast extends AudioCollection {
 
     /**
      * @param episode
-     * @return
+     * @return if the episode is the last in the podcast
      */
     public boolean isLast(final Episode episode) {
         return (this.episodes.indexOf(episode) == (this.episodes.size() - 1));
     }
 
     /**
-     * @param filter
-     * @return
+     * @param filter used to match
+     * @return true if the song is matched by the filter
      */
     public boolean isMatchedByFilter(final FilterInput filter) {
         if (filter.getName() != null) {

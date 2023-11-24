@@ -20,7 +20,7 @@ public final class Playlist extends AudioCollection {
     }
 
     /**
-     * @param song
+     * @param song adds it to the playlist
      */
     public void addSong(final Song song) {
         this.songs.add(song);
@@ -28,7 +28,7 @@ public final class Playlist extends AudioCollection {
     }
 
     /**
-     * @param song
+     * @param song removes it from the playlist
      */
     public void removeSong(final Song song) {
         if (this.songs.contains(song)) {
@@ -38,14 +38,14 @@ public final class Playlist extends AudioCollection {
     }
 
     /**
-     * @return
+     * Adds a follow to the song
      */
     public void addFollower() {
         this.followers++;
     }
 
     /**
-     * @return
+     * Removes a like from the song
      */
     public void removeFollower() {
         if (this.followers > 0) {
@@ -54,14 +54,14 @@ public final class Playlist extends AudioCollection {
     }
 
     /**
-     * @return
+     * changes the visibility of the playlist
      */
     public void changeVisibility() {
         this.visibility = !this.visibility;
     }
 
     /**
-     * @return
+     * @return an ArrayList containing the songs name
      */
     public ArrayList<String> getSongsNameList() {
         ArrayList<String> nameList = new ArrayList<>();
@@ -74,14 +74,14 @@ public final class Playlist extends AudioCollection {
     }
 
     /**
-     * @return
+     * @return the number of songs the playlist contains
      */
     public int getNrOfSongs() {
         return this.songs.size();
     }
 
     /**
-     * @return
+     * @return the number of followers the playlist has
      */
     public int getNrOfFollowers() {
         return this.followers.intValue();
@@ -89,7 +89,7 @@ public final class Playlist extends AudioCollection {
 
     /**
      * @param song
-     * @return
+     * @return index of song in playlist
      */
     public int getSongNr(final Song song) {
         return this.songs.indexOf(song);
@@ -97,7 +97,7 @@ public final class Playlist extends AudioCollection {
 
     /**
      * @param number
-     * @return
+     * @return song that coresponds with the number
      */
     public Song getSong(final int number) {
         if (number >= this.songs.size()) {
@@ -109,7 +109,7 @@ public final class Playlist extends AudioCollection {
 
     /**
      * @param song
-     * @return
+     * @return song after the specified song
      */
     public Song getSongAfter(final Song song) {
         int i;
@@ -121,7 +121,7 @@ public final class Playlist extends AudioCollection {
 
     /**
      * @param song
-     * @return
+     * @return song before the specified song
      */
     public Song getSongBefore(final Song song) {
         int i;
@@ -136,7 +136,7 @@ public final class Playlist extends AudioCollection {
     }
 
     /**
-     * @return
+     * @return true if the playlist ss visible
      */
     public boolean isVisible() {
         return this.visibility;
@@ -144,7 +144,7 @@ public final class Playlist extends AudioCollection {
 
     /**
      * @param song
-     * @return
+     * @return true if the playlist has song
      */
     public boolean hasSong(final Song song) {
         return this.songs.contains(song);
@@ -152,7 +152,7 @@ public final class Playlist extends AudioCollection {
 
     /**
      * @param song
-     * @return
+     * @return true if the song if the first in the playlist
      */
     public boolean isFirst(final Song song) {
         return (this.songs.indexOf(song) == 0);
@@ -160,15 +160,15 @@ public final class Playlist extends AudioCollection {
 
     /**
      * @param song
-     * @return
+     * @return if the song is the last in the playlist
      */
     public boolean isLast(final Song song) {
         return (this.songs.indexOf(song) == (this.songs.size() - 1));
     }
 
     /**
-     * @param filter
-     * @return
+     * @param filter used to match
+     * @return true if the song is matched by the filter
      */
     public boolean isMatchedByFilter(final FilterInput filter) {
         if (filter.getName() != null) {

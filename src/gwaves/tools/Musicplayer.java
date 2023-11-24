@@ -40,6 +40,9 @@ public final class Musicplayer {
     }
 
     /**
+     * Unloads the current loaded song/playlist/podcast
+     * In case of a podcast being unloaded, its last episode and minute are
+     * stored in order to continue from there upon a later load
      * @return
      */
     public void unloadCurrent() {
@@ -69,7 +72,8 @@ public final class Musicplayer {
     }
 
     /**
-     * @return
+     * Loads the song into the musicplayer
+     * @param song
      */
     public void loadSong(final Song song) {
         this.unloadCurrent();
@@ -79,7 +83,8 @@ public final class Musicplayer {
     }
 
     /**
-     * @return
+     * Loads the playlist into the musicplayer
+     * @param playlist
      */
     public void loadPlaylist(final Playlist playlist) {
         this.unloadCurrent();
@@ -91,7 +96,8 @@ public final class Musicplayer {
     }
 
     /**
-     * @return
+     * Loads the podcast into the musicplayer
+     * @param podcast
      */
     public void loadPodcast(final Podcast podcast) {
         PodcastSavedInfo podcastSavedInfo;
@@ -118,23 +124,27 @@ public final class Musicplayer {
      * recording will change in time.
      * @return
      */
-    public void playFor(int timeInterval) {
+    public void playFor(final int timeInterval) {
+        int time = timeInterval;
+
         if (this.paused || !this.isLoaded()) {
             return;
         }
 
-        while (this.isLoaded() && timeInterval >= this.remainingTime) {
-            timeInterval -= this.remainingTime;
+        while (this.isLoaded() && time >= this.remainingTime) {
+            time -= this.remainingTime;
             this.next();
         }
 
         if (this.remainingTime > 0) {
-            this.remainingTime -= timeInterval;
+            this.remainingTime -= time;
         }
     }
 
     /**
-     * @return
+     * Moves through the episode with 90 seconds if a podcast is loaded
+     * If the remaining time is less than 90 seconds it skips to the next
+     * episode
      */
     public void forward() {
         if (this.paused || !this.isLoaded()) {
@@ -165,7 +175,9 @@ public final class Musicplayer {
     }
 
     /**
-     * @return
+     * Moves back through the episode with 90 seconds if a podcast is loaded
+     * If the remaining time is equal to the episode time it skips to the
+     * previous episode
      */
     public void backward() {
         if (this.paused || !this.isLoaded()) {
@@ -180,7 +192,7 @@ public final class Musicplayer {
     }
 
     /**
-     * @return
+     * Skips to the next track
      */
     public void next() {
         int songIndex;
@@ -264,7 +276,7 @@ public final class Musicplayer {
     }
 
     /**
-     * @return
+     * Skips to the previous track
      */
     public void prev() {
         int songIndex;
@@ -304,21 +316,22 @@ public final class Musicplayer {
     }
 
     /**
-     * @return
+     * Toggles between pause and play
      */
     public void togglePlayPause() {
         this.paused = !this.paused;
     }
 
     /**
-     * @return
+     * Switches between the repeat modes
      */
     public void switchRepeat() {
         this.repeat = (this.repeat + 1) % 3;
     }
 
     /**
-     * @return
+     * Toggles the shuffle option
+     * Available only for playlists
      */
     public void toggleShuffle(final long seed) {
         int prevIndex;
@@ -352,7 +365,7 @@ public final class Musicplayer {
     }
 
     /**
-     * @return
+     * @return name of current audio recording
      */
     public String getCurrentRecName() {
         if (this.currentSong != null) {
@@ -365,42 +378,42 @@ public final class Musicplayer {
     }
 
     /**
-     * @return
+     * @return current loaded song
      */
     public Song getLoadedSong() {
         return this.currentSong;
     }
 
     /**
-     * @return
+     * @return current loaded playlist
      */
     public Playlist getLoadedPlaylist() {
         return this.currentPlaylist;
     }
 
     /**
-     * @return
+     * @return current loaded episode
      */
     public Episode getLoadedEpisode() {
         return this.currentEpisode;
     }
 
     /**
-     * @return
+     * @return current loaded podcast
      */
     public Podcast getLoadedPodcast() {
         return this.currentPodcast;
     }
 
     /**
-     * @return
+     * @return the remaining time
      */
     public int getRemainedTime() {
         return this.remainingTime;
     }
 
     /**
-     * @return
+     * @return the name of the current repeat mode
      */
     public String getRepeatModeName() {
         String result = "no repeat";
@@ -428,56 +441,56 @@ public final class Musicplayer {
     }
 
     /**
-     * @return
+     * @return true if a song is loaded
      */
     public boolean isSongLoaded() {
         return this.currentSong != null;
     }
 
     /**
-     * @return
+     * @return true if a Playlist is loaded
      */
     public boolean isPlaylistLoaded() {
         return this.currentPlaylist != null;
     }
 
     /**
-     * @return
+     * @return true if a podcast is loaded
      */
     public boolean isPodcastLoaded() {
         return this.currentPodcast != null;
     }
 
     /**
-     * @return
+     * @return if anything is loaded
      */
     public boolean isLoaded() {
         return this.isSongLoaded() || this.isPlaylistLoaded() || this.isPodcastLoaded();
     }
 
     /**
-     * @return
+     * @return if the player is pause
      */
     public boolean isPaused() {
         return this.paused;
     }
 
     /**
-     * @return
+     * @return if the player is on repeat
      */
     public boolean isOnRepeat() {
         return this.repeat != 0;
     }
 
     /**
-     * @return
+     * @return if the shuffle option is active
      */
     public boolean isShuffled() {
         return this.shuffle;
     }
 
     /**
-     * @return
+     * @return an object which describes the current state of the musicplayer
      */
     public MusicPlayerStatusOutput getStatus() {
         MusicPlayerStatusOutput playerStatus = new MusicPlayerStatusOutput();

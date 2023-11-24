@@ -39,14 +39,14 @@ public final class DataBase {
     }
 
     /**
-     * @return
+     * @return unique database instance
      */
     public static DataBase getInstance() {
         return instance;
     }
 
     /**
-     * @param libInput
+     * @param libInput class to load from
      */
     public void loadDataBase(final LibraryInput libInput) {
         for (var userInput : libInput.getUsers()) {
@@ -63,30 +63,30 @@ public final class DataBase {
     }
 
     /**
-     * @param playlist
+     * @param playlist to add
      */
     public void addPlaylist(final Playlist playlist) {
         this.playlists.add(playlist);
     }
 
     /**
-     * @param playlist
+     * @param playlist to remove
      */
     public void removePlaylist(final Playlist playlist) {
         this.playlists.remove(playlist);
     }
 
     /**
-     * @param username
-     * @return
+     * @param username name of user
+     * @return user queried by name
      */
     public User queryUser(final String username) {
         return this.users.get(username);
     }
 
     /**
-     * @param filter
-     * @return
+     * @param filter used to match
+     * @return ArrayList of matched songs
      */
     public ArrayList<Song> querySongs(final FilterInput filter) {
         ArrayList<Song> result = new ArrayList<>();
@@ -101,9 +101,11 @@ public final class DataBase {
     }
 
     /**
-     * @param filter
-     * @param owner
-     * @return
+     * Returns an ArrayList of playlists that are either public(visible) or
+     * are owned by the user with name {@code owner}
+     * @param filter used to match
+     * @param owner name of playlist owner
+     * @return ArrayList of matched playlists
      */
     public ArrayList<Playlist> queryVisiblePlaylistsAndOwnedBy(final FilterInput filter, final String owner) {
         ArrayList<Playlist> result = new ArrayList<>();
@@ -121,8 +123,8 @@ public final class DataBase {
     }
 
     /**
-     * @param filter
-     * @return
+     * @param filter used to match
+     * @return ArrayList of matched podcasts
      */
     public ArrayList<Podcast> queryPodcasts(final FilterInput filter) {
         ArrayList<Podcast> result = new ArrayList<>();
@@ -137,7 +139,7 @@ public final class DataBase {
     }
 
     /**
-     * @return
+     * @return ArrayList containing the names of the top 5 most liked songs
      */
     public ArrayList<String> getTop5SongsName() {
         int resultsNumber;
@@ -168,7 +170,8 @@ public final class DataBase {
     }
 
     /**
-     * @return
+     * @return ArrayList containing the names of the top 5 most followed
+     * playlists
      */
     public ArrayList<String> getTop5PlaylistsName() {
         int resultsNumber;
