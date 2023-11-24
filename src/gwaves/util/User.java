@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import fileio.input.UserInput;
 import fileio.input.CommandInput;
+import fileio.input.FilterInput;
 import fileio.output.CommandOutput;
 import fileio.output.UserCommandOutput;
 import fileio.output.MusicPlayerStatusOutput;
@@ -70,7 +71,8 @@ public class User {
 
         switch (commandInput.getCommand()) {
         case "search":
-            userCommandOutput.setResults(this.doSearch(commandInput.getType(), commandInput.getFilters()));
+            userCommandOutput.setResults(this.doSearch(commandInput.getType(),
+                                         commandInput.getFilters()));
             break;
         case "select":
             this.doSelect(commandInput.getItemNumber());
@@ -131,7 +133,7 @@ public class User {
         return userCommandOutput;
     }
 
-    private ArrayList<String> doSearch(String type, Filter filter)
+    private ArrayList<String> doSearch(String type, FilterInput filter)
     {
         ArrayList<String> results = null;
 
@@ -156,7 +158,9 @@ public class User {
 
     private void doSelect(int itemNumber)
     {
-        if (!this.searchbar.searchedForSongs() && !this.searchbar.searchedForPlaylists() && !this.searchbar.searchedForPodcasts()) {
+        if (!this.searchbar.searchedForSongs() 
+            && !this.searchbar.searchedForPlaylists() 
+            && !this.searchbar.searchedForPodcasts()) {
             this.commandMessage = "Please conduct a search before making a selection.";
             return;
         }

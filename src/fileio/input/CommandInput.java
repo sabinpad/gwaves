@@ -2,8 +2,6 @@ package fileio.input;
 
 import java.util.ArrayList;
 
-import gwaves.util.Filter;
-
 public class CommandInput {
     // Standard argument fields
 
@@ -15,7 +13,7 @@ public class CommandInput {
 
     // search
     private String type;
-    private Filter filters;
+    private FilterInput filters;
 
     // select
     private Integer itemNumber;
@@ -76,12 +74,12 @@ public class CommandInput {
         return this.type;
     }
 
-    public void setFilters(final Filter filters)
+    public void setFilters(final FilterInput filters)
     {
         this.filters = filters;
     }
 
-    public Filter getFilters()
+    public FilterInput getFilters()
     {
         return this.filters;
     }

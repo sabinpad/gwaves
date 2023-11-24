@@ -2,9 +2,8 @@ package gwaves.sample;
 
 import java.util.ArrayList;
 
+import fileio.input.FilterInput;
 import fileio.input.SongInput;
-
-import gwaves.util.Filter;
 
 public class Song extends AudioRec {
     private String album;
@@ -45,7 +44,7 @@ public class Song extends AudioRec {
         return this.likes.intValue();
     }
 
-    public boolean isMatchedByFilter(Filter filter)
+    public boolean isMatchedByFilter(FilterInput filter)
     {
         int filterReleaseYear;
         String fmtReleaseYear;

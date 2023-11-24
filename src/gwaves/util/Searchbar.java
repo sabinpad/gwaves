@@ -2,6 +2,7 @@ package gwaves.util;
 
 import java.util.ArrayList;
 
+import fileio.input.FilterInput;
 import gwaves.sample.Song;
 import gwaves.collection.Playlist;
 import gwaves.collection.Podcast;
@@ -24,7 +25,7 @@ public class Searchbar {
         this.resultsNumber = 0;
     }
  
-    public ArrayList<String> searchSongs(Filter filter)
+    public ArrayList<String> searchSongs(FilterInput filter)
     {
         ArrayList<String> resultsName = new ArrayList<>();
 
@@ -43,7 +44,7 @@ public class Searchbar {
         return resultsName;
     }
 
-    public ArrayList<String> searchPlaylistsAndOwnedBy(Filter filter, String owner)
+    public ArrayList<String> searchPlaylistsAndOwnedBy(FilterInput filter, String owner)
     {
         ArrayList<String> resultsName = new ArrayList<>();
 
@@ -62,7 +63,7 @@ public class Searchbar {
         return resultsName;
     }
 
-    public ArrayList<String> searchPodcasts(Filter filter)
+    public ArrayList<String> searchPodcasts(FilterInput filter)
     {
         ArrayList<String> resultsName = new ArrayList<>();
 

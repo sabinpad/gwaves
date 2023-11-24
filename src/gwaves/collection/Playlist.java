@@ -2,9 +2,9 @@ package gwaves.collection;
 
 import java.util.ArrayList;
 
+import fileio.input.FilterInput;
 import gwaves.sample.Song;
 import gwaves.collection.AudioCollection;
-import gwaves.util.Filter;
 
 public class Playlist extends AudioCollection {
     private ArrayList<Song> songs;
@@ -125,7 +125,7 @@ public class Playlist extends AudioCollection {
         return (this.songs.indexOf(song) == (this.songs.size() - 1));
     }
 
-    public boolean isMatchedByFilter(Filter filter)
+    public boolean isMatchedByFilter(FilterInput filter)
     {
         if (filter.getName() != null) {
             if (!this.name.startsWith(filter.getName()))

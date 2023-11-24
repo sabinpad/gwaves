@@ -2,10 +2,10 @@ package gwaves.collection;
 
 import java.util.ArrayList;
 
+import fileio.input.FilterInput;
 import fileio.input.PodcastInput;
 
 import gwaves.sample.Episode;
-import gwaves.util.Filter;
 
 public class Podcast extends AudioCollection {
     private ArrayList<Episode> episodes;
@@ -102,7 +102,7 @@ public class Podcast extends AudioCollection {
         return (this.episodes.indexOf(episode) == (this.episodes.size() - 1));
     }
 
-    public boolean isMatchedByFilter(Filter filter)
+    public boolean isMatchedByFilter(FilterInput filter)
     {
         if (filter.getName() != null) {
             if (this.name.startsWith(filter.getName()) == false)

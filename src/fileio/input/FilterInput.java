@@ -1,8 +1,8 @@
-package gwaves.util;
+package fileio.input;
 
 import java.util.ArrayList;
 
-public class Filter {
+public class FilterInput {
     private String owner;
     private String name;
     private String album;
@@ -12,7 +12,7 @@ public class Filter {
     private String releaseYear;
     private String artist;
 
-    public Filter()
+    public FilterInput()
     {
         
     }

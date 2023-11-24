@@ -7,6 +7,7 @@ import java.util.HashMap;
 import fileio.input.UserInput;
 import fileio.input.SongInput;
 import fileio.input.PodcastInput;
+import fileio.input.FilterInput;
 import fileio.input.LibraryInput;
 
 import gwaves.util.User;
@@ -70,7 +71,7 @@ public class DataBase {
         return this.users.get(username);
     }
 
-    public ArrayList<Song> querySongs(Filter filter)
+    public ArrayList<Song> querySongs(FilterInput filter)
     {
         ArrayList<Song> result = new ArrayList<>();
 
@@ -81,19 +82,20 @@ public class DataBase {
         return result;
     }
 
-    public ArrayList<Playlist> queryPlaylistsAndOwnedBy(Filter filter, String owner)
+    public ArrayList<Playlist> queryPlaylistsAndOwnedBy(FilterInput filter, String owner)
     {
         ArrayList<Playlist> result = new ArrayList<>();
 
         for (var playlist : this.publicPlaylists)
             if (playlist.isMatchedByFilter(filter))
-                if (playlist.isVisible() || (!playlist.isVisible() && owner.equals(playlist.getOwner())))
+                if (playlist.isVisible() || 
+                    (!playlist.isVisible() && owner.equals(playlist.getOwner())))
                     result.add(playlist);
 
         return result;
     }
 
-    public ArrayList<Podcast> queryPodcasts(Filter filter)
+    public ArrayList<Podcast> queryPodcasts(FilterInput filter)
     {
         ArrayList<Podcast> result = new ArrayList<>();
 
