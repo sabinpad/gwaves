@@ -10,10 +10,10 @@ import fileio.input.PodcastInput;
 import fileio.input.FilterInput;
 import fileio.input.LibraryInput;
 
-import gwaves.util.User;
 import gwaves.sample.Song;
 import gwaves.collection.Podcast;
 import gwaves.collection.Playlist;
+import gwaves.util.User;
 
 public class DataBase {
     private static DataBase instance;
@@ -21,7 +21,7 @@ public class DataBase {
     private HashMap<String, User> users;
     private ArrayList<Song> library;
     private ArrayList<Podcast> podcasts;
-    private ArrayList<Playlist> publicPlaylists;
+    private ArrayList<Playlist> playlists;
 
     static {
         instance = new DataBase();
@@ -31,7 +31,7 @@ public class DataBase {
         this.users = new HashMap<>();
         this.library = new ArrayList<>();
         this.podcasts = new ArrayList<>();
-        this.publicPlaylists = new ArrayList<>();
+        this.playlists = new ArrayList<>();
     }
 
     public static void changeInstance()
@@ -58,12 +58,12 @@ public class DataBase {
 
     public void addPlaylist(Playlist playlist)
     {
-        this.publicPlaylists.add(playlist);
+        this.playlists.add(playlist);
     }
 
     public void removePlaylist(Playlist playlist)
     {
-        this.publicPlaylists.remove(playlist);
+        this.playlists.remove(playlist);
     }
 
     public User queryUser(String username)
@@ -82,11 +82,11 @@ public class DataBase {
         return result;
     }
 
-    public ArrayList<Playlist> queryPlaylistsAndOwnedBy(FilterInput filter, String owner)
+    public ArrayList<Playlist> queryVisiblePlaylistsAndOwnedBy(FilterInput filter, String owner)
     {
         ArrayList<Playlist> result = new ArrayList<>();
 
-        for (var playlist : this.publicPlaylists)
+        for (var playlist : this.playlists)
             if (playlist.isMatchedByFilter(filter))
                 if (playlist.isVisible() || 
                     (!playlist.isVisible() && owner.equals(playlist.getOwner())))
@@ -137,7 +137,7 @@ public class DataBase {
     public ArrayList<String> getTop5PlaylistsName()
     {
         int resultsNumber;
-        ArrayList<Playlist> topPlaylistsList = new ArrayList<>(this.publicPlaylists);
+        ArrayList<Playlist> topPlaylistsList = new ArrayList<>(this.playlists);
         ArrayList<String> result = new ArrayList<>();
 
         topPlaylistsList.sort(new Comparator<Playlist>() {

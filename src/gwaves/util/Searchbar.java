@@ -48,7 +48,7 @@ public class Searchbar {
     {
         ArrayList<String> resultsName = new ArrayList<>();
 
-        this.resultsPlaylist = this.database.queryPlaylistsAndOwnedBy(filter, owner);
+        this.resultsPlaylist = this.database.queryVisiblePlaylistsAndOwnedBy(filter, owner);
         this.resultsSong = null;
         this.resultsPodcast = null;
 

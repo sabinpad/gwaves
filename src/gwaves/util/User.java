@@ -19,9 +19,9 @@ public class User {
     private Integer age;
     private String city;
 
+    private ArrayList<Song> likedSongs;
     private ArrayList<Playlist> personalPlaylists;
     private ArrayList<Playlist> followedPlaylists;
-    private ArrayList<Song> likedSongs;
 
     private Searchbar searchbar;
     private Musicplayer musicplayer;
@@ -516,5 +516,10 @@ public class User {
             result.add(song.getName());
 
         return result;
+    }
+
+    public String getLastCommandMessage()
+    {
+        return this.commandMessage;
     }
 }
