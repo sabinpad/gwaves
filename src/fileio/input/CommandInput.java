@@ -1,13 +1,12 @@
 package fileio.input;
 
-public final class CommandInput {
+import fileio.CommandIO;
+
+public final class CommandInput extends CommandIO {
     // Standard argument fields
-
-    private String command;
     private String username;
-    private Integer timestamp;
 
-    // Additional argument fields based of command
+    // Additional argument fields based on command
 
     // search
     private String type;
@@ -28,74 +27,100 @@ public final class CommandInput {
     public CommandInput() {
     }
 
-    public void setCommand(final String command) {
-        this.command = command;
-    }
-
-    public String getCommand() {
-        return this.command;
-    }
-
+    /**
+     * @param username
+     */
     public void setUsername(final String username) {
         this.username = username;
     }
 
+    /**
+     * @return
+     */
     public String getUsername() {
         return this.username;
     }
 
-    public void setTimestamp(final Integer timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public Integer getTimestamp() {
-        return this.timestamp;
-    }
-
+    /**
+     * @param type
+     */
     public void setType(final String type) {
         this.type = type;
     }
 
+    /**
+     * @return
+     */
     public String getType() {
         return this.type;
     }
 
+    /**
+     * @param filters
+     */
     public void setFilters(final FilterInput filters) {
         this.filters = filters;
     }
 
+    /**
+     * @return
+     */
     public FilterInput getFilters() {
         return this.filters;
     }
 
+    /**
+     * @param itemNumber
+     */
     public void setItemNumber(final Integer itemNumber) {
         this.itemNumber = itemNumber;
     }
 
+    /**
+     * @return
+     */
     public Integer getItemNumber() {
         return this.itemNumber;
     }
 
+    /**
+     * @param seed
+     */
     public void setSeed(final Integer seed) {
         this.seed = seed;
     }
 
+    /**
+     * @return
+     */
     public Integer getSeed() {
         return this.seed;
     }
 
+    /**
+     * @param playlistName
+     */
     public void setPlaylistName(final String playlistName) {
         this.playlistName = playlistName;
     }
 
+    /**
+     * @return
+     */
     public String getPlaylistName() {
         return this.playlistName;
     }
 
+    /**
+     * @param playlistId
+     */
     public void setPlaylistId(final Integer playlistId) {
         this.playlistId = playlistId;
     }
 
+    /**
+     * @return
+     */
     public Integer getPlaylistId() {
         return this.playlistId;
     }

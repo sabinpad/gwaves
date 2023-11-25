@@ -2,17 +2,11 @@ package fileio.output;
 
 import java.util.ArrayList;
 
-import fileio.input.CommandInput;
-
 public final class UserCommandOutput extends CommandOutput {
     private String message;
     private ArrayList<String> results;
     private MusicPlayerStatusOutput stats;
     private ArrayList<PlaylistOutput> result;
-
-    public UserCommandOutput(final CommandInput commandInput) {
-        super(commandInput);
-    }
 
     public UserCommandOutput() {
 
