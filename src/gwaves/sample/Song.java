@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import fileio.input.FilterInput;
 import fileio.input.SongInput;
 
-public final class Song extends AudioRec {
+import gwaves.util.Filterable;
+
+public final class Song extends AudioRec implements Filterable {
     private String album;
     private ArrayList<String> tags;
     private String lyrics;

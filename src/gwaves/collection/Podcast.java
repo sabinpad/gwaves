@@ -6,8 +6,9 @@ import fileio.input.FilterInput;
 import fileio.input.PodcastInput;
 
 import gwaves.sample.Episode;
+import gwaves.util.Filterable;
 
-public final class Podcast extends AudioCollection {
+public final class Podcast extends AudioCollection implements Filterable  {
     private ArrayList<Episode> episodes;
     private int lastEpisodePlayedIndex;
     private int lastEpisodePlayedRemainedTime;

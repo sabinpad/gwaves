@@ -3,9 +3,11 @@ package gwaves.collection;
 import java.util.ArrayList;
 
 import fileio.input.FilterInput;
-import gwaves.sample.Song;
 
-public final class Playlist extends AudioCollection {
+import gwaves.sample.Song;
+import gwaves.util.Filterable;
+
+public final class Playlist extends AudioCollection implements Filterable  {
     private ArrayList<Song> songs;
     private Boolean visibility;
 
