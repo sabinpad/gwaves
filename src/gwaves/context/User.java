@@ -3,13 +3,9 @@ package gwaves.context;
 import java.util.ArrayList;
 
 import fileio.input.UserInput;
-import fileio.input.CommandInput;
 import fileio.input.FilterInput;
-import fileio.output.CommandOutput;
-import fileio.output.UserCommandOutput;
 import fileio.output.MusicPlayerStatusOutput;
 import fileio.output.PlaylistOutput;
-import fileio.output.SysCommandOutput;
 
 import gwaves.sample.Song;
 import gwaves.storage.DataBase;
@@ -17,7 +13,7 @@ import gwaves.tools.Musicplayer;
 import gwaves.tools.Searchbar;
 import gwaves.collection.Playlist;
 
-public final class User {
+public class User {
     private String username;
     private Integer age;
     private String city;
@@ -29,119 +25,36 @@ public final class User {
     private Searchbar searchbar;
     private Musicplayer musicplayer;
 
-    private int lastTimestamp;
     private String commandMessage;
 
-    public User(final UserInput userInput) {
-        this.username = userInput.getUsername();
-        this.age = userInput.getAge();
-        this.city = userInput.getCity();
+    private User() {
         this.personalPlaylists = new ArrayList<>();
         this.followedPlaylists = new ArrayList<>();
         this.likedSongs = new ArrayList<>();
         this.searchbar = new Searchbar(this);
         this.musicplayer = new Musicplayer();
-        this.lastTimestamp = 0;
         this.commandMessage = null;
     }
 
-    /**
-     * @param commandInput
-     * @return CommandOutput object containing the results of the command
-     */
-    public CommandOutput executeCommand(final CommandInput commandInput) {
-        int timeInterval = 0;
-        UserCommandOutput userCommandOutput;
-        SysCommandOutput sysCommandOutput;
-
-        if (commandInput.getCommand().equals("showPreferredSongs")) {
-            sysCommandOutput = new SysCommandOutput();
-            sysCommandOutput.setCommand(commandInput.getCommand());
-            sysCommandOutput.setUser(commandInput.getUsername());
-            sysCommandOutput.setTimestamp(commandInput.getTimestamp());
-            sysCommandOutput.setResult(this.getPreferredSongsName());
-            return sysCommandOutput;
-        }
-
-        userCommandOutput = new UserCommandOutput();
-        userCommandOutput.setCommand(commandInput.getCommand());
-        userCommandOutput.setUser(commandInput.getUsername());
-        userCommandOutput.setTimestamp(commandInput.getTimestamp());
-
-        timeInterval = commandInput.getTimestamp() - this.lastTimestamp;
-        this.lastTimestamp = commandInput.getTimestamp();
-
-        this.musicplayer.playFor(timeInterval);
-
-        switch (commandInput.getCommand()) {
-            case "search":
-                userCommandOutput.setResults(this.doSearch(commandInput.getType(),
-                        commandInput.getFilters()));
-                break;
-            case "select":
-                this.doSelect(commandInput.getItemNumber());
-                break;
-            case "load":
-                this.doLoad();
-                break;
-            case "playPause":
-                this.doPlayPause();
-                break;
-            case "repeat":
-                this.doRepeat();
-                break;
-            case "shuffle":
-                if (commandInput.getSeed() == null) {
-                    this.doShuffle(0);
-                } else {
-                    this.doShuffle(commandInput.getSeed());
-                }
-                break;
-            case "forward":
-                this.doForward();
-                break;
-            case "backward":
-                this.doBackward();
-                break;
-            case "like":
-                this.doLike();
-                break;
-            case "next":
-                this.doNext();
-                break;
-            case "prev":
-                this.doPrev();
-                break;
-            case "addRemoveInPlaylist":
-                this.doAddRemoveInPlaylist(commandInput.getPlaylistId());
-                break;
-            case "status":
-                userCommandOutput.setStats(this.doStatus());
-                break;
-            case "createPlaylist":
-                this.doCreatePlaylist(commandInput.getPlaylistName());
-                break;
-            case "switchVisibility":
-                this.doSwitchVisibility(commandInput.getPlaylistId());
-                break;
-            case "follow":
-                this.doFollowPlaylist();
-                break;
-            case "showPlaylists":
-                userCommandOutput.setResult(this.doShowPlaylists());
-                break;
-            default:
-                break;
-        }
-
-        if (this.commandMessage != null) {
-            userCommandOutput.setMessage(this.commandMessage);
-        }
-
-        return userCommandOutput;
+    public User(final UserInput userInput) {
+        this();
+        this.username = userInput.getUsername();
+        this.age = userInput.getAge();
+        this.city = userInput.getCity();
     }
 
-    private ArrayList<String> doSearch(final String type, final FilterInput filter) {
+    public User(String username, int age, String city) {
+        this();
+        this.username = username;
+        this.age = age;
+        this.city = city;
+    }
+
+    public void runMusicPlayer(int timeInterval) {
+        this.musicplayer.playFor(timeInterval);
+    }
+
+    public ArrayList<String> doSearch(final String type, final FilterInput filter) {
         ArrayList<String> results = null;
 
         this.musicplayer.unloadCurrent();
@@ -165,7 +78,7 @@ public final class User {
         return results;
     }
 
-    private void doSelect(final int itemNumber) {
+    public void doSelect(final int itemNumber) {
         if (this.searchbar.isEmpty()) {
             this.commandMessage = "Please conduct a search before making a selection.";
             return;
@@ -181,7 +94,7 @@ public final class User {
         this.commandMessage = "Successfully selected " + this.searchbar.getSelectedResultName() + ".";
     }
 
-    private void doLoad() {
+    public void doLoad() {
         if (!this.searchbar.isSelected()) {
             this.commandMessage = "Please select a source before attempting to load.";
             return;
@@ -198,7 +111,7 @@ public final class User {
         this.commandMessage = "Playback loaded successfully.";
     }
 
-    private void doPlayPause() {
+    public void doPlayPause() {
         if (!this.musicplayer.isLoaded()) {
             this.commandMessage = "Please load a source before attempting to pause or resume playback.";
             return;
@@ -213,7 +126,7 @@ public final class User {
         }
     }
 
-    private void doRepeat() {
+    public void doRepeat() {
         if (!this.musicplayer.isLoaded()) {
             this.commandMessage = "Please load a source before setting the repeat status.";
             return;
@@ -224,7 +137,7 @@ public final class User {
         this.commandMessage = "Repeat mode changed to " + this.musicplayer.getRepeatModeName() + ".";
     }
 
-    private void doShuffle(final int seed) {
+    public void doShuffle(final int seed) {
         if (!this.musicplayer.isLoaded()) {
             this.commandMessage = "Please load a source before using the shuffle function.";
             return;
@@ -244,7 +157,7 @@ public final class User {
         }
     }
 
-    private void doForward() {
+    public void doForward() {
         if (!this.musicplayer.isLoaded()) {
             this.commandMessage = "Please load a source before attempting to forward.";
             return;
@@ -260,7 +173,7 @@ public final class User {
         this.commandMessage = "Skipped forward successfully.";
     }
 
-    private void doBackward() {
+    public void doBackward() {
         if (!this.musicplayer.isLoaded()) {
             this.commandMessage = "Please select a source before rewinding.";
             return;
@@ -276,7 +189,7 @@ public final class User {
         this.commandMessage = "Rewound successfully.";
     }
 
-    private void doLike() {
+    public void doLike() {
         Song currentSong;
 
         if (!this.musicplayer.isLoaded()) {
@@ -302,7 +215,7 @@ public final class User {
         }
     }
 
-    private void doNext() {
+    public void doNext() {
         String trackName;
 
         if (!this.musicplayer.isLoaded()) {
@@ -321,7 +234,7 @@ public final class User {
         }
     }
 
-    private void doPrev() {
+    public void doPrev() {
         String trackName;
 
         if (!this.musicplayer.isLoaded()) {
@@ -336,7 +249,7 @@ public final class User {
         this.commandMessage = "Returned to previous track successfully. The current track is " + trackName + ".";
     }
 
-    private void doAddRemoveInPlaylist(final int playlistId) {
+    public void doAddRemoveInPlaylist(final int playlistId) {
         int playlistIndex;
         Song loadedSong;
         Playlist selectedPlaylist;
@@ -369,7 +282,7 @@ public final class User {
         }
     }
 
-    private MusicPlayerStatusOutput doStatus() {
+    public MusicPlayerStatusOutput doStatus() {
         MusicPlayerStatusOutput mpStatusOutput = new MusicPlayerStatusOutput();
 
         if (this.musicplayer.isLoaded()) {
@@ -408,7 +321,7 @@ public final class User {
         return mpStatusOutput;
     }
 
-    private void doCreatePlaylist(final String playlistName) {
+    public void doCreatePlaylist(final String playlistName) {
         Playlist newPlaylist;
         DataBase database;
 
@@ -428,7 +341,7 @@ public final class User {
         this.commandMessage = "Playlist created successfully.";
     }
 
-    private void doSwitchVisibility(final int playlistId) {
+    public void doSwitchVisibility(final int playlistId) {
         int playlistIndex;
         Playlist selectedPlaylist;
 
@@ -448,7 +361,7 @@ public final class User {
         }
     }
 
-    private void doFollowPlaylist() {
+    public void doFollowPlaylist() {
         Playlist selectedPlaylist;
 
         if (!this.searchbar.isSelected()) {
@@ -480,7 +393,7 @@ public final class User {
         this.commandMessage = "Playlist followed successfully.";
     }
 
-    private ArrayList<PlaylistOutput> doShowPlaylists() {
+    public ArrayList<PlaylistOutput> doShowPlaylists() {
         PlaylistOutput plOutput;
         ArrayList<PlaylistOutput> result = new ArrayList<>();
 
@@ -506,7 +419,7 @@ public final class User {
         return result;
     }
 
-    private ArrayList<String> getPreferredSongsName() {
+    public ArrayList<String> getPreferredSongsName() {
         ArrayList<String> result = new ArrayList<>();
 
         for (var song : this.likedSongs) {
