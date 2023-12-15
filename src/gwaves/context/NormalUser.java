@@ -67,8 +67,17 @@ public class NormalUser extends User {
             case "playlist":
                 results = this.searchbar.searchPlaylists(filter);
                 break;
+            case "album":
+                results = this.searchbar.searchAlbums(filter);
+                break;
             case "podcast":
                 results = this.searchbar.searchPodcasts(filter);
+                break;
+            case "artist":
+                results = this.searchbar.searchArtists(filter);
+                break;
+            case "host":
+                results = this.searchbar.searchHosts(filter);
                 break;
             default:
                 break;
@@ -107,6 +116,8 @@ public class NormalUser extends User {
             this.musicplayer.loadPlaylist(this.searchbar.getSelectedPlaylist());
         } else if (this.searchbar.searchedForPodcasts()) {
             this.musicplayer.loadPodcast(this.searchbar.getSelectedPodcast());
+        } else if (this.searchbar.searchedForAlbums()) {
+            this.musicplayer.loadAlbum(this.searchbar.getSelectedAlbum());
         }
 
         this.commandMessage = "Playback loaded successfully.";
@@ -144,8 +155,8 @@ public class NormalUser extends User {
             return;
         }
 
-        if (!this.musicplayer.isPlaylistLoaded()) {
-            this.commandMessage = "The loaded source is not a playlist.";
+        if (!this.musicplayer.isPlaylistLoaded() && !this.musicplayer.isAlbumLoaded()) {
+            this.commandMessage = "The loaded source is not a playlist or an album.";
             return;
         }
 

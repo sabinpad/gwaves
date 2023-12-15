@@ -10,6 +10,7 @@ import fileio.output.MusicPlayerStatusOutput;
 import gwaves.sample.Song;
 import gwaves.sample.Episode;
 import gwaves.collection.Playlist;
+import gwaves.collection.Album;
 import gwaves.collection.Podcast;
 
 public final class Musicplayer {
@@ -24,6 +25,7 @@ public final class Musicplayer {
     private int currentEpisodeIndex;
     private Episode currentEpisode;
     private Podcast currentPodcast;
+    private Album currentAlbum;
 
     private boolean paused;
     private int repeat;
@@ -63,6 +65,7 @@ public final class Musicplayer {
 
         this.currentSong = null;
         this.currentPlaylist = null;
+        this.currentAlbum = null;
         this.currentEpisode = null;
         this.currentPodcast = null;
         this.remainingTime = 0;
@@ -117,6 +120,20 @@ public final class Musicplayer {
         this.remainingTime = podcastSavedInfo.getLastEpisodePlayedRemTime();
         this.paused = false;
     }
+
+    /**
+     * Loads the album into the musicplayer
+     * @param album
+     */
+    public void loadAlbum(final Album album) {
+        this.unloadCurrent();
+        this.currentAlbum = album;
+        this.currentSongIndex = 0;
+        this.currentSong = album.getSong(this.currentSongIndex);
+        this.remainingTime = this.currentSong.getDuration();
+        this.paused = false;
+    }
+
 
     /**
      * Plays itself for {@code timeInterval} seconds. Basically changes the
@@ -240,6 +257,33 @@ public final class Musicplayer {
 
             this.currentSong = this.currentPlaylist.getSong(songIndex);
             this.remainingTime = this.currentSong.getDuration();
+        } else if (this.currentAlbum != null) {
+            this.currentSongIndex++;
+
+            switch (this.repeat) {
+                case 0:
+                    if (this.currentSongIndex == this.currentAlbum.getNrOfSongs()) {
+                        this.unloadCurrent();
+                        return;
+                    }
+                    break;
+                case 1:
+                    if (this.currentSongIndex == this.currentAlbum.getNrOfSongs()) {
+                        this.currentSongIndex = 0;
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+            if (this.shuffle) {
+                songIndex = this.shuffledIndices.get(this.currentSongIndex);
+            } else {
+                songIndex = this.currentSongIndex;
+            }
+
+            this.currentSong = this.currentAlbum.getSong(songIndex);
+            this.remainingTime = this.currentSong.getDuration();
         } else if (this.currentSong != null) {
             switch (this.repeat) {
                 case 0:
@@ -300,6 +344,21 @@ public final class Musicplayer {
             }
 
             this.remainingTime = this.currentSong.getDuration();
+        } else if (this.currentAlbum != null) {
+            if (this.remainingTime == this.currentSong.getDuration()
+                    && this.currentSongIndex > 0) {
+                this.currentSongIndex--;
+
+                if (this.shuffle) {
+                    songIndex = this.shuffledIndices.get(this.currentSongIndex);
+                } else {
+                    songIndex = this.currentSongIndex;
+                }
+
+                this.currentSong = this.currentAlbum.getSong(songIndex);
+            }
+
+            this.remainingTime = this.currentSong.getDuration();
         } else if (this.currentSong != null) {
             this.remainingTime = this.currentSong.getDuration();
         } else if (this.currentPodcast != null) {
@@ -353,8 +412,14 @@ public final class Musicplayer {
 
             this.shuffledIndices.clear();
 
-            for (int i = 0; i < this.currentPlaylist.getNrOfSongs(); ++i) {
-                this.shuffledIndices.add(i);
+            if (this.currentPlaylist != null) {
+                for (int i = 0; i < this.currentPlaylist.getNrOfSongs(); ++i) {
+                    this.shuffledIndices.add(i);
+                }
+            } else if (this.currentAlbum != null) {
+                for (int i = 0; i < this.currentAlbum.getNrOfSongs(); ++i) {
+                    this.shuffledIndices.add(i);
+                }
             }
 
             Musicplayer.RAND.setSeed(seed);
@@ -377,6 +442,20 @@ public final class Musicplayer {
         return null;
     }
 
+    public String getListeningName() {
+        if (this.currentPlaylist != null) {
+            return this.currentPlaylist.getName();
+        } else if (this.currentAlbum != null) {
+            return this.currentAlbum.getName();
+        } else if (this.currentSong != null) {
+            return this.currentSong.getName();
+        } else if (this.currentPodcast != null) {
+            return this.currentPodcast.getName();
+        }
+
+        return null;
+    }
+
     /**
      * @return current loaded song
      */
@@ -390,6 +469,14 @@ public final class Musicplayer {
     public Playlist getLoadedPlaylist() {
         return this.currentPlaylist;
     }
+
+    /**
+     * @return current loaded playlist
+     */
+    public Album getLoadedAlbum() {
+        return this.currentAlbum;
+    }
+
 
     /**
      * @return current loaded episode
@@ -453,6 +540,14 @@ public final class Musicplayer {
     public boolean isPlaylistLoaded() {
         return this.currentPlaylist != null;
     }
+
+    /**
+     * @return true if a Playlist is loaded
+     */
+    public boolean isAlbumLoaded() {
+        return this.currentAlbum != null;
+    }
+
 
     /**
      * @return true if a podcast is loaded

@@ -44,6 +44,25 @@ public class Album extends AudioCollection implements Filterable {
         return sum;
     }
 
+    /**
+     * @return the number of songs the album contains
+     */
+    public int getNrOfSongs() {
+        return this.songs.size();
+    }
+
+    /**
+     * @param number
+     * @return song that coresponds with the number
+     */
+    public Song getSong(final int number) {
+        if (number >= this.songs.size()) {
+            return null;
+        }
+
+        return this.songs.get(number);
+    }
+
     public ArrayList<Song> getSongs() {
         return this.songs;
     }
