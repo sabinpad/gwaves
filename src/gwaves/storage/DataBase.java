@@ -32,6 +32,9 @@ public final class DataBase {
 
     private DataBase() {
         this.users = new HashMap<>();
+        this.artists = new HashMap<>();
+        this.hosts = new HashMap<>();
+
         this.library = new ArrayList<>();
         this.podcasts = new ArrayList<>();
         this.playlists = new ArrayList<>();

@@ -97,7 +97,7 @@ public final class Main {
         ArrayList<CommandInput> commandInputs;
         ArrayList<CommandOutput> commandOutputs;
 
-        commandInputs = objectMapper.readValue(new File(filePath1), new TypeReference<ArrayList<CommandInput>>() { });
+        commandInputs = objectMapper.readValue(new File(CheckerConstants.TESTS_PATH + filePath1), new TypeReference<ArrayList<CommandInput>>() { });
         commandOutputs = new ArrayList<>();
 
         for (var commandInput : commandInputs) {

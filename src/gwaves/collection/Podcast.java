@@ -22,6 +22,8 @@ public final class Podcast extends AudioCollection implements Filterable {
     public Podcast(final String name, final String owner, final ArrayList<EpisodeInput> episodesInput) {
         super(name, owner);
 
+        this.episodes = new ArrayList<>();
+
         for (var episodeInput : episodesInput)
             this.episodes.add(new Episode(episodeInput));
     }
