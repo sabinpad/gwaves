@@ -7,18 +7,24 @@ import fileio.input.FilterInput;
 import gwaves.sample.Song;
 import gwaves.util.Filterable;
 
-public final class Playlist extends AudioCollection implements Filterable  {
-    private ArrayList<Song> songs;
+public final class Playlist extends AudioCollection implements Filterable {
+    private Integer followers;
     private Boolean visibility;
 
-    private Integer followers;
+    private ArrayList<Song> songs;
 
+    /**
+     * Creates empty playlist 
+     *
+     * @param name of Playlist
+     * @param owner name of Playlist owner
+     */
     public Playlist(final String name, final String owner) {
         super(name, owner);
 
-        this.songs = new ArrayList<>();
-        this.visibility = true;
         this.followers = 0;
+        this.visibility = true;
+        this.songs = new ArrayList<>();
     }
 
     /**
@@ -90,14 +96,6 @@ public final class Playlist extends AudioCollection implements Filterable  {
     }
 
     /**
-     * @param song
-     * @return index of song in playlist
-     */
-    public int getSongNr(final Song song) {
-        return this.songs.indexOf(song);
-    }
-
-    /**
      * @param number
      * @return song that coresponds with the number
      */
@@ -110,35 +108,7 @@ public final class Playlist extends AudioCollection implements Filterable  {
     }
 
     /**
-     * @param song
-     * @return song after the specified song
-     */
-    public Song getSongAfter(final Song song) {
-        int i;
-
-        i = (this.songs.indexOf(song) + 1) % this.songs.size();
-
-        return this.songs.get(i);
-    }
-
-    /**
-     * @param song
-     * @return song before the specified song
-     */
-    public Song getSongBefore(final Song song) {
-        int i;
-
-        i = (this.songs.indexOf(song) - 1) % this.songs.size();
-
-        if (i == -1) {
-            i = this.songs.size() - 1;
-        }
-
-        return this.songs.get(i);
-    }
-
-    /**
-     * @return true if the playlist ss visible
+     * @return true if the playlist is visible
      */
     public boolean isVisible() {
         return this.visibility;
@@ -153,24 +123,8 @@ public final class Playlist extends AudioCollection implements Filterable  {
     }
 
     /**
-     * @param song
-     * @return true if the song if the first in the playlist
-     */
-    public boolean isFirst(final Song song) {
-        return (this.songs.indexOf(song) == 0);
-    }
-
-    /**
-     * @param song
-     * @return if the song is the last in the playlist
-     */
-    public boolean isLast(final Song song) {
-        return (this.songs.indexOf(song) == (this.songs.size() - 1));
-    }
-
-    /**
      * @param filter used to match
-     * @return true if the song is matched by the filter
+     * @return true if the playlist is matched by the filter
      */
     public boolean isMatchedByFilter(final FilterInput filter) {
         if (filter.getName() != null) {

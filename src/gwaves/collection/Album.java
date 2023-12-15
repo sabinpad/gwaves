@@ -2,27 +2,84 @@ package gwaves.collection;
 
 import java.util.ArrayList;
 
-import javax.xml.crypto.Data;
+import fileio.input.SongInput;
+import fileio.input.FilterInput;
 
 import gwaves.sample.Song;
+import gwaves.util.Filterable;
 import gwaves.storage.DataBase;
 
-public class Album extends AudioCollection {
+public class Album extends AudioCollection implements Filterable {
     private int releaseYear;
     private String description;
 
     private ArrayList<Song> songs;
 
-    public Album(final String name, final String owner, final int releaseYear, final String description, ArrayList<Song> songs) {
+    /**
+     * Create new Album object 
+     *
+     * @param name of Album
+     * @param owner name of Album owner
+     * @param releaseYear the year the album was launched
+     * @param description of the album
+     * @param songsInput list of songs
+     */
+    public Album(final String name, final String owner, final Integer releaseYear, final String description, final ArrayList<SongInput> songsInput) {
         super(name, owner);
 
-        DataBase database = DataBase.getInstance();
-
+        this.releaseYear = releaseYear;
+        this.description = description;
         this.songs = new ArrayList<>();
 
-        for (var song : songs) {
-            this.songs.add(song);
-            // database.addSong(song);
+        // Song newsong;
+        // DataBase database = DataBase.getInstance();
+
+        for (var songInput : songsInput) {
+            // newsong = new Song(songInput);
+            // this.songs.add(newsong);
+            // database.addSong(newsong);
+            this.songs.add(new Song(songInput));
         }
+
+        // TODO de adaugat melodiile si albumul in baza de date
+    }
+
+    public int getNrOfLikes() {
+        int sum = 0;
+
+        for (var song : this.songs)
+            sum += song.getNrOfLikes();
+
+        return sum;
+    }
+
+    public ArrayList<String> getSongsNameList() {
+        ArrayList<String> nameList = new ArrayList<>();
+
+        for (var song : this.songs) {
+            nameList.add(song.getName());
+        }
+
+        return nameList;
+    }
+
+    /**
+     * @param filter used to match
+     * @return true if the album is matched by the filter
+     */
+    public boolean isMatchedByFilter(final FilterInput filter) {
+        if (filter.getName() != null) {
+            if (!this.name.startsWith(filter.getName())) {
+                return false;
+            }
+        }
+
+        if (filter.getOwner() != null) {
+            if (!this.owner.equals(filter.getOwner())) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

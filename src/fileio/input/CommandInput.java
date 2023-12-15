@@ -1,28 +1,30 @@
 package fileio.input;
 
+import java.util.ArrayList;
+
 import fileio.CommandIO;
 
 public final class CommandInput extends CommandIO {
-    // Standard argument fields
+    // Argument fields based on command
+    
     private String username;
-
-    // Additional argument fields based on command
-
-    // search
     private String type;
     private FilterInput filters;
-
-    // select
     private Integer itemNumber;
-
-    // shuffle
     private Integer seed;
-
-    // createPlaylist
     private String playlistName;
-
-    // addRemoveInPlaylist, switchVisibility
     private Integer playlistId;
+    private String nextPage;
+    private Integer age;
+    private String city;
+    private String name;
+    private Integer releaseYear;
+    private String description;
+    private ArrayList<SongInput> songs;
+    private ArrayList<EpisodeInput> episodes;
+    private String date;
+    private Integer price;
+    
 
     public CommandInput() {
     }
@@ -123,5 +125,85 @@ public final class CommandInput extends CommandIO {
      */
     public Integer getPlaylistId() {
         return this.playlistId;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public Integer getAge() {
+        return this.age;
+    }
+
+    public void setNextPage(String nextPage) {
+        this.nextPage = nextPage;
+    }
+
+    public String getNextPage() {
+        return this.nextPage;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getCity() {
+        return this.city;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public void setReleaseYear(Integer releaseYear) {
+        this.releaseYear = releaseYear;
+    }
+
+    public Integer getReleaseYear() {
+        return this.releaseYear;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
+    public void setSongs(ArrayList<SongInput> songs) {
+        this.songs = songs;
+    }
+
+    public ArrayList<SongInput> getSongs() {
+        return this.songs;
+    }
+
+    public void setEpisodes(ArrayList<EpisodeInput> episodes) {
+        this.episodes = episodes;
+    }
+
+    public ArrayList<EpisodeInput> getEpisodes() {
+        return this.episodes;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getDate() {
+        return this.date;
+    }
+
+    public void setPrice(Integer price) {
+        this.price = price;
+    }
+
+    public Integer getPrice() {
+        return this.price;
     }
 }

@@ -1,21 +1,31 @@
 package main;
 
-import app.Admin;
-import app.CommandRunner;
-import checker.Checker;
-import checker.CheckerConstants;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import fileio.input.CommandInput;
-import fileio.input.LibraryInput;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
+
+import java.util.ArrayList;
+
+import checker.Checker;
+import checker.CheckerConstants;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+// import com.fasterxml.jackson.databind.ObjectWriter;
+// import com.fasterxml.jackson.databind.node.ArrayNode;
+
+import fileio.input.LibraryInput;
+import fileio.input.CommandInput;
+import fileio.output.CommandOutput;
+import fileio.output.SysCommandOutput;
+
+import gwaves.context.User;
+import gwaves.storage.DataBase;
+import gwaves.tools.CommandExecuter;
+import gwaves.tools.UserManager;
 
 /**
  * The entry point to this homework. It runs the checker that tests your implentation.
@@ -73,50 +83,30 @@ public final class Main {
         LibraryInput library = objectMapper.readValue(new File(CheckerConstants.TESTS_PATH
                                                                + "library/library.json"),
                                                                LibraryInput.class);
-        CommandInput[] commands = objectMapper.readValue(new File(CheckerConstants.TESTS_PATH
-                                                                  + filePath1),
-                                                                  CommandInput[].class);
-        ArrayNode outputs = objectMapper.createArrayNode();
 
-        Admin.setUsers(library.getUsers());
-        Admin.setSongs(library.getSongs());
-        Admin.setPodcasts(library.getPodcasts());
+        DataBase database;
+        UserManager userManager;
 
-        for (CommandInput command : commands) {
-            Admin.updateTimestamp(command.getTimestamp());
+        DataBase.changeInstance();
+        database = DataBase.getInstance();
+        database.loadDataBase(library);
+        UserManager.changeInstance();
+        userManager = UserManager.getInstance();
+        userManager.loadUsers(database.queryAllUsers());
 
-            String commandName = command.getCommand();
+        ArrayList<CommandInput> commandInputs;
+        ArrayList<CommandOutput> commandOutputs;
 
-            switch (commandName) {
-                case "search" -> outputs.add(CommandRunner.search(command));
-                case "select" -> outputs.add(CommandRunner.select(command));
-                case "load" -> outputs.add(CommandRunner.load(command));
-                case "playPause" -> outputs.add(CommandRunner.playPause(command));
-                case "repeat" -> outputs.add(CommandRunner.repeat(command));
-                case "shuffle" -> outputs.add(CommandRunner.shuffle(command));
-                case "forward" -> outputs.add(CommandRunner.forward(command));
-                case "backward" -> outputs.add(CommandRunner.backward(command));
-                case "like" -> outputs.add(CommandRunner.like(command));
-                case "next" -> outputs.add(CommandRunner.next(command));
-                case "prev" -> outputs.add(CommandRunner.prev(command));
-                case "createPlaylist" -> outputs.add(CommandRunner.createPlaylist(command));
-                case "addRemoveInPlaylist" ->
-                        outputs.add(CommandRunner.addRemoveInPlaylist(command));
-                case "switchVisibility" -> outputs.add(CommandRunner.switchVisibility(command));
-                case "showPlaylists" -> outputs.add(CommandRunner.showPlaylists(command));
-                case "follow" -> outputs.add(CommandRunner.follow(command));
-                case "status" -> outputs.add(CommandRunner.status(command));
-                case "showPreferredSongs" -> outputs.add(CommandRunner.showLikedSongs(command));
-                case "getPreferredGenre" -> outputs.add(CommandRunner.getPreferredGenre(command));
-                case "getTop5Songs" -> outputs.add(CommandRunner.getTop5Songs(command));
-                case "getTop5Playlists" -> outputs.add(CommandRunner.getTop5Playlists(command));
-                default -> System.out.println("Invalid command " + commandName);
-            }
+        commandInputs = objectMapper.readValue(new File(filePath1), new TypeReference<ArrayList<CommandInput>>() { });
+        commandOutputs = new ArrayList<>();
+
+        for (var commandInput : commandInputs) {
+            userManager.updateAll(commandInput.getTimestamp());
+
+            commandOutputs.add(CommandExecuter.run(commandInput));
         }
 
-        ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
-        objectWriter.writeValue(new File(filePath2), outputs);
-
-        Admin.reset();
+        objectMapper.setSerializationInclusion(Include.NON_NULL);
+        objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File(filePath2), commandOutputs);
     }
 }

@@ -25,8 +25,13 @@ public class User {
     private Searchbar searchbar;
     private Musicplayer musicplayer;
 
-    private String commandMessage;
+    private boolean active;
 
+    protected String commandMessage;
+
+    /**
+     * Default Constructor
+     */
     private User() {
         this.personalPlaylists = new ArrayList<>();
         this.followedPlaylists = new ArrayList<>();
@@ -34,15 +39,16 @@ public class User {
         this.searchbar = new Searchbar(this);
         this.musicplayer = new Musicplayer();
         this.commandMessage = null;
+        this.active = true;
     }
 
-    public User(final UserInput userInput) {
-        this();
-        this.username = userInput.getUsername();
-        this.age = userInput.getAge();
-        this.city = userInput.getCity();
-    }
-
+    /**
+     * Create new User object
+     *
+     * @param username of the user
+     * @param age of the user
+     * @param city the user is currently living in
+     */
     public User(String username, int age, String city) {
         this();
         this.username = username;
@@ -50,8 +56,26 @@ public class User {
         this.city = city;
     }
 
+    /**
+     * Create User object based on UserInput object
+     *
+     * @param userInput
+     */
+    public User(final UserInput userInput) {
+        this();
+        this.username = userInput.getUsername();
+        this.age = userInput.getAge();
+        this.city = userInput.getCity();
+    }
+
     public void runMusicPlayer(int timeInterval) {
         this.musicplayer.playFor(timeInterval);
+    }
+
+    public void doSwitchStatus() {
+        this.active = !this.active;
+
+        this.commandMessage = this.getUserName() + " has changed status successfully.";
     }
 
     public ArrayList<String> doSearch(final String type, final FilterInput filter) {

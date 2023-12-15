@@ -2,17 +2,35 @@ package gwaves.collection;
 
 import java.util.ArrayList;
 
-import fileio.input.FilterInput;
+import fileio.input.EpisodeInput;
 import fileio.input.PodcastInput;
+import fileio.input.FilterInput;
 
 import gwaves.sample.Episode;
 import gwaves.util.Filterable;
 
-public final class Podcast extends AudioCollection implements Filterable  {
+public final class Podcast extends AudioCollection implements Filterable {
     private ArrayList<Episode> episodes;
-    private int lastEpisodePlayedIndex;
-    private int lastEpisodePlayedRemainedTime;
 
+    /**
+     * Create new Podcast object
+     *
+     * @param name of Podcast
+     * @param owner name of Podcast owner
+     * @param episodesInput list of episodes
+     */
+    public Podcast(final String name, final String owner, final ArrayList<EpisodeInput> episodesInput) {
+        super(name, owner);
+
+        for (var episodeInput : episodesInput)
+            this.episodes.add(new Episode(episodeInput));
+    }
+
+    /**
+     * Create Podcast object based on PodcastInput object
+     *
+     * @param podcastInput object to create the instance from
+     */
     public Podcast(final PodcastInput podcastInput) {
         super(podcastInput.getName(), podcastInput.getOwner());
 
@@ -22,47 +40,6 @@ public final class Podcast extends AudioCollection implements Filterable  {
             this.episodes.add(new Episode(episodeInput));
             this.entireDuration += episodeInput.getDuration();
         }
-
-        this.lastEpisodePlayedRemainedTime = episodes.get(0).getDuration();
-    }
-
-    /**
-     * @param index
-     */
-    public void setLastEpisodePlayedIndex(final int index) {
-        if (index < this.episodes.size()) {
-            this.lastEpisodePlayedIndex = index;
-        }
-    }
-
-    /**
-     * @param remainedTime
-     */
-    public void setLastEpisodePlayedRemainedTime(final int remainedTime) {
-        if (remainedTime <= this.episodes.get(this.lastEpisodePlayedIndex).getDuration()) {
-            this.lastEpisodePlayedRemainedTime = remainedTime;
-        }
-    }
-
-    /**
-     * @return
-     */
-    public String getName() {
-        return this.name;
-    }
-
-    /**
-     * @return index of last episode played
-     */
-    public int getLastEpisodePlayedIndex() {
-        return this.lastEpisodePlayedIndex;
-    }
-
-    /**
-     * @return remaining time of the last episode played
-     */
-    public int getLastEpisodePlayedRemainedTime() {
-        return this.lastEpisodePlayedRemainedTime;
     }
 
     /**
@@ -70,14 +47,6 @@ public final class Podcast extends AudioCollection implements Filterable  {
      */
     public int getNrOfEpisodes() {
         return this.episodes.size();
-    }
-
-    /**
-     * @param episode
-     * @return index of episode in podcast
-     */
-    public int getEpisodeNr(final Episode episode) {
-        return this.episodes.indexOf(episode);
     }
 
     /**
@@ -92,48 +61,14 @@ public final class Podcast extends AudioCollection implements Filterable  {
         return this.episodes.get(number);
     }
 
-    /**
-     * @param episode
-     * @return episode after the specified episode
-     */
-    public Episode getEpisodeAfter(final Episode episode) {
-        int i;
+    public ArrayList<String> getEpisodesNameList() {
+        ArrayList<String> nameList = new ArrayList<>();
 
-        i = (this.episodes.indexOf(episode) + 1) % this.episodes.size();
-
-        return this.episodes.get(i);
-    }
-
-    /**
-     * @param episode
-     * @return episode before the specified episode
-     */
-    public Episode getEpisodeBefore(final Episode episode) {
-        int i;
-
-        i = (this.episodes.indexOf(episode) - 1) % this.episodes.size();
-
-        if (i == -1) {
-            i = this.episodes.size() - 1;
+        for (var episode : this.episodes) {
+            nameList.add(episode.getName());
         }
 
-        return this.episodes.get(i);
-    }
-
-    /**
-     * @param episode
-     * @return true if the episode if the first in the podcast
-     */
-    public boolean isFirst(final Episode episode) {
-        return (this.episodes.indexOf(episode) == 0);
-    }
-
-    /**
-     * @param episode
-     * @return if the episode is the last in the podcast
-     */
-    public boolean isLast(final Episode episode) {
-        return (this.episodes.indexOf(episode) == (this.episodes.size() - 1));
+        return nameList;
     }
 
     /**

@@ -7,18 +7,24 @@ import java.util.HashMap;
 import fileio.input.FilterInput;
 import fileio.input.LibraryInput;
 
+import gwaves.context.*;
+
 import gwaves.sample.Song;
-import gwaves.collection.Podcast;
-import gwaves.context.User;
 import gwaves.collection.Playlist;
+import gwaves.collection.Album;
+import gwaves.collection.Podcast;
 
 public final class DataBase {
     private static DataBase instance;
 
     private HashMap<String, User> users;
+    private HashMap<String, Artist> artists;
+    private HashMap<String, Host> hosts;
+
     private ArrayList<Song> library;
-    private ArrayList<Podcast> podcasts;
     private ArrayList<Playlist> playlists;
+    private ArrayList<Album> albums;
+    private ArrayList<Podcast> podcasts;
 
     static {
         instance = new DataBase();
@@ -65,6 +71,62 @@ public final class DataBase {
     /**
      * @param playlist to add
      */
+    public void addUser(final User user) {
+        this.users.put(user.getUserName(), user);
+    }
+
+    /**
+     * @param playlist to remove
+     */
+    public void removeUser(final User user) {
+        users.remove(user.getUserName());
+    }
+
+    /**
+     * @param playlist to add
+     */
+    public void addArtist(final Artist artist) {
+        this.artists.put(artist.getUserName(), artist);
+    }
+
+    /**
+     * @param playlist to remove
+     */
+    public void removeArtist(final Artist artist) {
+        artists.remove(artist.getUserName());
+    }
+
+    /**
+     * @param playlist to add
+     */
+    public void addHost(final Host host) {
+        this.hosts.put(host.getUserName(), host);
+    }
+
+    /**
+     * @param playlist to remove
+     */
+    public void removeHost(final Host host) {
+        hosts.remove(host.getUserName());
+    }
+
+    /**
+     * @param playlist to add
+     */
+    public void addSong(final Song song) {
+        this.library.add(song);
+    }
+
+    /**
+     * @param playlist to remove
+     */
+    public void removeSong(final Song song) {
+        this.library.remove(song);
+    }
+
+    /**
+     * @param playlist to add
+     */
     public void addPlaylist(final Playlist playlist) {
         this.playlists.add(playlist);
     }
@@ -77,11 +139,73 @@ public final class DataBase {
     }
 
     /**
+     * @param playlist to add
+     */
+    public void addAlbum(final Album album) {
+        this.albums.add(album);
+    }
+
+    /**
+     * @param playlist to remove
+     */
+    public void removeAlbum(final Album album) {
+        this.albums.remove(album);
+    }
+
+    /**
+     * @param playlist to add
+     */
+    public void addPodcast(final Podcast podcast) {
+        this.podcasts.add(podcast);
+    }
+
+    /**
+     * @param playlist to remove
+     */
+    public void removePodcast(final Podcast podcast) {
+        this.podcasts.remove(podcast);
+    }
+
+    /**
      * @param username name of user
      * @return user queried by name
      */
     public User queryUser(final String username) {
-        return this.users.get(username);
+        if (this.users.containsKey(username))
+            return this.users.get(username);
+
+        if (this.artists.containsKey(username))
+            return this.artists.get(username);
+
+        if (this.hosts.containsKey(username))
+            return this.hosts.get(username);
+
+        return null;
+    }
+
+    /**
+     * @param username name of artist
+     * @return artist queried by name
+     */
+    public Artist queryArtist(final String username) {
+        return this.artists.get(username);
+    }
+
+    /**
+     * @param username name of host
+     * @return host queried by name
+     */
+    public Host queryHost(final String username) {
+        return this.hosts.get(username);
+    }
+
+    public ArrayList<User> queryAllUsers() {
+        ArrayList<User> list = new ArrayList<>();
+
+        for (var entry : this.users.entrySet())
+            list.add(entry.getValue());
+
+        return list;
     }
 
     /**

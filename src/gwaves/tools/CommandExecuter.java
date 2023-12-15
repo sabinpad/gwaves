@@ -16,26 +16,37 @@ public class CommandExecuter {
 
         switch (commandInput.getCommand()) {
             case "addUser":
+                CommandExecuter.execAddUser(commandInput, commandOutput);
                 break;
             case "deleteUser":
+                CommandExecuter.execDeleteUser(commandInput, commandOutput);
                 break;
             case "addAlbum":
+                CommandExecuter.execAddAlbum(commandInput, commandOutput);
                 break;
             case "removeAlbum":
+                CommandExecuter.execRemoveAlbum(commandInput, commandOutput);
                 break;
             case "addEvent":
+                CommandExecuter.execAddEvent(commandInput, commandOutput);
                 break;
             case "removeEvent":
+                CommandExecuter.execRemoveEvent(commandInput, commandOutput);
                 break;
             case "addMerch":
+                CommandExecuter.execAddMerch(commandInput, commandOutput);
                 break;
             case "addPodcast":
+                CommandExecuter.execAddPodcast(commandInput, commandOutput);
                 break;
             case "removePodcast":
+                CommandExecuter.execRemovePodcast(commandInput, commandOutput);
                 break;
             case "addAnnouncement":
+                CommandExecuter.execAddAnnouncement(commandInput, commandOutput);
                 break;
             case "removeAnnouncement":
+                CommandExecuter.execRemoveAnnouncement(commandInput, commandOutput);
                 break;
             case "search":
                 CommandExecuter.execSearch(commandInput, commandOutput);
@@ -92,12 +103,13 @@ public class CommandExecuter {
                 CommandExecuter.execShowPreferredSongs(commandInput, commandOutput);
                 break;
             case "showAlbums":
+                CommandExecuter.execShowAlbums(commandInput, commandOutput);
                 break;
             case "showPodcasts":
-                break;
+                CommandExecuter.execShowPodcasts(commandInput, commandOutput);
+                    break;
             case "switchConnectionStatus":
-                break;
-            case "getPreferredGenre":
+                CommandExecuter.execSwitchConnectionStatus(commandInput, commandOutput);
                 break;
             case "getTop5Songs":
                 CommandExecuter.execGetTop5Songs(commandInput, commandOutput);
@@ -260,21 +272,269 @@ public class CommandExecuter {
 
     //
 
+    private static void execSwitchConnectionStatus(CommandInput commandInput, CommandOutput commandOutput) {
+        User user = null;
+
+        if (DataBase.getInstance().queryUser(commandInput.getUsername()) == null) {
+            commandOutput.setMessage("The username " + commandInput.getUsername() + " doesn't exist.");
+            return;
+        }
+
+        user = DataBase.getInstance().queryUser(commandInput.getUsername());
+
+        if (user == null) {
+            commandOutput.setMessage(commandInput.getUsername() + " is not a normal user.");
+            return;
+        }
+
+        user.doSwitchStatus();
+  
+        commandOutput.setMessage(user.getLastCommandMessage());
+    }
+
     private static void execAddUser(CommandInput commandInput, CommandOutput commandOutput) {
-        User newUser;
+        DataBase database = DataBase.getInstance();
+
+        if (database.queryUser(commandInput.getUsername()) != null) {
+            commandOutput.setMessage("The username " + commandInput.getUsername() + " is already taken.");
+            return;
+        }
 
         switch (commandInput.getType()) {
             case "user":
-                newUser = new User(commandInput.getUsername(), commandInput.getAge(), commandInput.getCity());
+                database.addUser(new User(commandInput.getUsername(), commandInput.getAge(), commandInput.getCity()));
                 break;
             case "artist":
-                newUser = new Artist(commandInput.getUsername(), commandInput.getAge(), commandInput.getCity());
+                database.addArtist(new Artist(commandInput.getUsername(), commandInput.getAge(), commandInput.getCity()));
                 break;
             case "host":
-                newUser = new Host(commandInput.getUsername(), commandInput.getAge(), commandInput.getCity());
+                database.addHost(new Host(commandInput.getUsername(), commandInput.getAge(), commandInput.getCity()));
                 break;
+            default:
+                return;
+        }
+
+        commandOutput.setMessage("The username " + commandInput.getUsername() + " has been added successfully.");
+    }
+
+    private static void execDeleteUser(CommandInput commandInput, CommandOutput commandOutput) {
+        User user = null;
+        DataBase database = DataBase.getInstance();
+        
+        user = database.queryUser(commandInput.getUsername());
+
+        if (user == null) {
+            commandOutput.setMessage("The username " + commandInput.getUsername() + " doesn't exist.");
+            return;
+        }
+
+        if (!UserManager.getInstance().isSafeToRemove(user)) {
+            commandOutput.setMessage(commandInput.getUsername() + " can't be deleted.");
+            return;
         }
         
-        DataBase.getInstance();
+        database.removeUser(user);
+
+        commandOutput.setMessage(commandInput.getUsername() + " was successfully deleted.");
+    }
+
+    private static void execAddAlbum(CommandInput commandInput, CommandOutput commandOutput) {
+        Artist artist = null;
+
+        if (DataBase.getInstance().queryUser(commandInput.getUsername()) == null) {
+            commandOutput.setMessage("The username " + commandInput.getUsername() + " doesn't exist.");
+            return;
+        }
+
+        artist = DataBase.getInstance().queryArtist(commandInput.getUsername());
+
+        if (artist == null) {
+            commandOutput.setMessage(commandInput.getUsername() + " is not an artist.");
+            return;
+        }
+
+        artist.doAddAlbum(commandInput.getName(),
+                          commandInput.getUsername(),
+                          commandInput.getReleaseYear(),
+                          commandInput.getDescription(),
+                          commandInput.getSongs());
+  
+        commandOutput.setMessage(artist.getLastCommandMessage());
+    }
+
+    private static void execRemoveAlbum(CommandInput commandInput, CommandOutput commandOutput) {
+        Artist artist = null;
+
+        if (DataBase.getInstance().queryUser(commandInput.getUsername()) == null) {
+            commandOutput.setMessage("The username " + commandInput.getUsername() + " doesn't exist.");
+            return;
+        }
+
+        artist = DataBase.getInstance().queryArtist(commandInput.getUsername());
+
+        if (artist == null) {
+            commandOutput.setMessage(commandInput.getUsername() + " is not an artist.");
+            return;
+        }
+
+        artist.doRmvAlbum(commandInput.getName());
+  
+        commandOutput.setMessage(artist.getLastCommandMessage());
+    }
+
+    private static void execAddEvent(CommandInput commandInput, CommandOutput commandOutput) {
+        Artist artist = null;
+
+        if (DataBase.getInstance().queryUser(commandInput.getUsername()) == null) {
+            commandOutput.setMessage("The username " + commandInput.getUsername() + " doesn't exist.");
+            return;
+        }
+
+        artist = DataBase.getInstance().queryArtist(commandInput.getUsername());
+
+        if (artist == null) {
+            commandOutput.setMessage(commandInput.getUsername() + " is not an artist.");
+            return;
+        }
+
+        artist.doAddEvent(commandInput.getName(),
+                          commandInput.getDescription(),
+                          commandInput.getDate());
+  
+        commandOutput.setMessage(artist.getLastCommandMessage());
+    }
+
+    private static void execRemoveEvent(CommandInput commandInput, CommandOutput commandOutput) {
+        Artist artist = null;
+
+        if (DataBase.getInstance().queryUser(commandInput.getUsername()) == null) {
+            commandOutput.setMessage("The username " + commandInput.getUsername() + " doesn't exist.");
+            return;
+        }
+
+        artist = DataBase.getInstance().queryArtist(commandInput.getUsername());
+
+        if (artist == null) {
+            commandOutput.setMessage(commandInput.getUsername() + " is not an artist.");
+            return;
+        }
+
+        artist.doRmvEvent(commandInput.getName());
+  
+        commandOutput.setMessage(artist.getLastCommandMessage());
+    }
+
+    private static void execAddMerch(CommandInput commandInput, CommandOutput commandOutput) {
+        Artist artist = null;
+
+        if (DataBase.getInstance().queryUser(commandInput.getUsername()) == null) {
+            commandOutput.setMessage("The username " + commandInput.getUsername() + " doesn't exist.");
+            return;
+        }
+
+        artist = DataBase.getInstance().queryArtist(commandInput.getUsername());
+
+        if (artist == null) {
+            commandOutput.setMessage(commandInput.getUsername() + " is not an artist.");
+            return;
+        }
+
+        artist.doAddMerch(commandInput.getName(),
+                          commandInput.getDescription(),
+                          commandInput.getPrice());
+  
+        commandOutput.setMessage(artist.getLastCommandMessage());
+    }
+
+    private static void execShowAlbums(CommandInput commandInput, CommandOutput commandOutput) {
+        Artist artist = DataBase.getInstance().queryArtist(commandInput.getUsername());
+        commandOutput.setResult(artist.doShowAlbums());
+    }
+
+    private static void execAddPodcast(CommandInput commandInput, CommandOutput commandOutput) {
+        Host host = null;
+
+        if (DataBase.getInstance().queryUser(commandInput.getUsername()) == null) {
+            commandOutput.setMessage("The username " + commandInput.getUsername() + " doesn't exist.");
+            return;
+        }
+
+        host = DataBase.getInstance().queryHost(commandInput.getUsername());
+
+        if (host == null) {
+            commandOutput.setMessage(commandInput.getUsername() + " is not a host.");
+            return;
+        }
+
+        host.doAddPodcast(commandInput.getName(),
+                          commandInput.getUsername(),
+                          commandInput.getEpisodes());
+  
+        commandOutput.setMessage(host.getLastCommandMessage());
+    }
+
+    private static void execRemovePodcast(CommandInput commandInput, CommandOutput commandOutput) {
+        Host host = null;
+
+        if (DataBase.getInstance().queryUser(commandInput.getUsername()) == null) {
+            commandOutput.setMessage("The username " + commandInput.getUsername() + " doesn't exist.");
+            return;
+        }
+
+        host = DataBase.getInstance().queryHost(commandInput.getUsername());
+
+        if (host == null) {
+            commandOutput.setMessage(commandInput.getUsername() + " is not a host.");
+            return;
+        }
+
+        host.doRmvPodcast(commandInput.getName());
+  
+        commandOutput.setMessage(host.getLastCommandMessage());
+    }
+
+    private static void execAddAnnouncement(CommandInput commandInput, CommandOutput commandOutput) {
+        Host host = null;
+
+        if (DataBase.getInstance().queryUser(commandInput.getUsername()) == null) {
+            commandOutput.setMessage("The username " + commandInput.getUsername() + " doesn't exist.");
+            return;
+        }
+
+        host = DataBase.getInstance().queryHost(commandInput.getUsername());
+
+        if (host == null) {
+            commandOutput.setMessage(commandInput.getUsername() + " is not a host.");
+            return;
+        }
+
+        host.doAddAnnouncement(commandInput.getName(), commandInput.getDescription());
+  
+        commandOutput.setMessage(host.getLastCommandMessage());
+    }
+
+    private static void execRemoveAnnouncement(CommandInput commandInput, CommandOutput commandOutput) {
+        Host host = null;
+
+        if (DataBase.getInstance().queryUser(commandInput.getUsername()) == null) {
+            commandOutput.setMessage("The username " + commandInput.getUsername() + " doesn't exist.");
+            return;
+        }
+
+        host = DataBase.getInstance().queryHost(commandInput.getUsername());
+
+        if (host == null) {
+            commandOutput.setMessage(commandInput.getUsername() + " is not a host.");
+            return;
+        }
+
+        host.doRmvAnnouncement(commandInput.getName());
+  
+        commandOutput.setMessage(host.getLastCommandMessage());
+    }
+
+    private static void execShowPodcasts(CommandInput commandInput, CommandOutput commandOutput) {
+        Host host = DataBase.getInstance().queryHost(commandInput.getUsername());
+        commandOutput.setResult(host.doShowPodcasts());
     }
 }
