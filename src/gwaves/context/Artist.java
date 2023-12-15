@@ -7,6 +7,7 @@ import fileio.input.SongInput;
 import fileio.output.AlbumOutput;
 
 import gwaves.collection.Album;
+import gwaves.storage.DataBase;
 
 public class Artist extends User {
     private LinkedHashMap<String, ArtistEvent> events;
@@ -38,7 +39,15 @@ public class Artist extends User {
         // TODO sa verific daca sunt 2 cu acelasi nume
         // this.commandMessage = this.getUserName() + " has the same song at least twice in this album.";
 
-        this.albums.put(name, new Album(name, owner, releaseYear, description, songsInput));
+        Album newAlbum = new Album(name, owner, releaseYear, description, songsInput);
+        DataBase database = DataBase.getInstance();
+
+        this.albums.put(name, newAlbum);
+
+        for (var song : newAlbum.getSongs())
+            database.addSong(song);
+
+        database.addAlbum(newAlbum);
 
         this.commandMessage = this.getUserName() + " has added new album successfully.";
     }

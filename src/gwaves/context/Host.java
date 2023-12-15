@@ -7,6 +7,7 @@ import fileio.input.EpisodeInput;
 import fileio.output.PodcastOutput;
 
 import gwaves.collection.Podcast;
+import gwaves.storage.DataBase;
 
 public class Host extends User {
     private LinkedHashMap<String, HostAnnouncement> announcements;
@@ -36,7 +37,11 @@ public class Host extends User {
         // TODO sa verific daca podcastul are 2 episoade la fel
         // this.commandMessage = this.getUserName() + " has the same episode in this podcast.";
 
-        this.podcasts.put(name, new Podcast(name, owner, episodesInput));
+        Podcast newPodcast = new Podcast(name, owner, episodesInput);
+        DataBase database = DataBase.getInstance();
+
+        this.podcasts.put(name, newPodcast);
+        database.addPodcast(newPodcast);
 
         this.commandMessage = this.getUserName() + " has added new podcast successfully.";
     }
