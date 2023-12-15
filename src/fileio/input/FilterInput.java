@@ -11,6 +11,7 @@ public final class FilterInput {
     private String genre;
     private String releaseYear;
     private String artist;
+    private String description;
 
     public FilterInput() {
     }
@@ -77,5 +78,13 @@ public final class FilterInput {
 
     public String getArtist() {
         return this.artist;
+    }
+
+    public void setDescription(final String description) {
+        this.description = description;
+    }
+
+    public String getDescription() {
+        return this.description;
     }
 }
