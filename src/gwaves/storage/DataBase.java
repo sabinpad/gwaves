@@ -17,7 +17,7 @@ import gwaves.collection.Podcast;
 public final class DataBase {
     private static DataBase instance;
 
-    private HashMap<String, User> users;
+    private HashMap<String, NormalUser> normalusers;
     private HashMap<String, Artist> artists;
     private HashMap<String, Host> hosts;
 
@@ -31,13 +31,14 @@ public final class DataBase {
     }
 
     private DataBase() {
-        this.users = new HashMap<>();
+        this.normalusers = new HashMap<>();
         this.artists = new HashMap<>();
         this.hosts = new HashMap<>();
 
         this.library = new ArrayList<>();
-        this.podcasts = new ArrayList<>();
         this.playlists = new ArrayList<>();
+        this.albums = new ArrayList<>();
+        this.podcasts = new ArrayList<>();
     }
 
     /**
@@ -59,7 +60,7 @@ public final class DataBase {
      */
     public void loadDataBase(final LibraryInput libInput) {
         for (var userInput : libInput.getUsers()) {
-            this.users.put(userInput.getUsername(), new User(userInput));
+            this.normalusers.put(userInput.getUsername(), new NormalUser(userInput));
         }
 
         for (var songInput : libInput.getSongs()) {
@@ -74,15 +75,15 @@ public final class DataBase {
     /**
      * @param playlist to add
      */
-    public void addUser(final User user) {
-        this.users.put(user.getUserName(), user);
+    public void addNormalUser(final NormalUser user) {
+        this.normalusers.put(user.getUserName(), user);
     }
 
     /**
      * @param playlist to remove
      */
-    public void removeUser(final User user) {
-        users.remove(user.getUserName());
+    public void removeNormalUser(final NormalUser user) {
+        normalusers.remove(user.getUserName());
     }
 
     /**
@@ -174,8 +175,8 @@ public final class DataBase {
      * @return user queried by name
      */
     public User queryUser(final String username) {
-        if (this.users.containsKey(username))
-            return this.users.get(username);
+        if (this.normalusers.containsKey(username))
+            return this.normalusers.get(username);
 
         if (this.artists.containsKey(username))
             return this.artists.get(username);
@@ -187,11 +188,36 @@ public final class DataBase {
     }
 
     /**
+     * 
+     * @param username
+     * @return
+     */
+    public NormalUser queryNormalUser(final String username) {
+        return this.normalusers.get(username);
+    }
+
+    /**
      * @param username name of artist
      * @return artist queried by name
      */
     public Artist queryArtist(final String username) {
         return this.artists.get(username);
+    }
+
+    /**
+     * @param username name of artist
+     * @return artist queried by name
+     */
+    public ArrayList<Artist> queryArtistsWithFilter(final FilterInput filter) {
+        ArrayList<Artist> result = new ArrayList<>();
+
+        for (var entry : this.artists.entrySet()) {
+            if (entry.getValue().isMatchedByFilter(filter)) {
+                result.add(entry.getValue());
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -202,10 +228,26 @@ public final class DataBase {
         return this.hosts.get(username);
     }
 
-    public ArrayList<User> queryAllUsers() {
-        ArrayList<User> list = new ArrayList<>();
+    /**
+     * @param username name of host
+     * @return host queried by name
+     */
+    public ArrayList<Host> queryHostsWithFilter(final FilterInput filter) {
+        ArrayList<Host> result = new ArrayList<>();
 
-        for (var entry : this.users.entrySet())
+        for (var entry : this.hosts.entrySet()) {
+            if (entry.getValue().isMatchedByFilter(filter)) {
+                result.add(entry.getValue());
+            }
+        }
+
+        return result;
+    }
+
+    public ArrayList<NormalUser> queryAllNormalUsers() {
+        ArrayList<NormalUser> list = new ArrayList<>();
+
+        for (var entry : this.normalusers.entrySet())
             list.add(entry.getValue());
 
         return list;
@@ -243,6 +285,22 @@ public final class DataBase {
                     || (!playlist.isVisible() && owner.equals(playlist.getOwner()))) {
                     result.add(playlist);
                 }
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * @param filter used to match
+     * @return ArrayList of matched podcasts
+     */
+    public ArrayList<Album> queryAlbums(final FilterInput filter) {
+        ArrayList<Album> result = new ArrayList<>();
+
+        for (var album : this.albums) {
+            if (album.isMatchedByFilter(filter)) {
+                result.add(album);
             }
         }
 
@@ -324,6 +382,87 @@ public final class DataBase {
         for (var playlist : topPlaylistsList) {
             result.add(playlist.getName());
         }
+
+        return result;
+    }
+
+    public ArrayList<String> getTop5AlbumsName() {
+        int resultsNumber;
+        ArrayList<Album> topAlbumsList = new ArrayList<>(this.albums);
+        ArrayList<String> result = new ArrayList<>();
+
+        topAlbumsList.sort(new Comparator<Album>() {
+            @Override
+            public int compare(final Album album1, final Album album2) {
+                if (album1.getNrOfLikes() < album2.getNrOfLikes()) {
+                    return 1;
+                } else if (album1.getNrOfLikes() > album2.getNrOfLikes()) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            }
+        });
+
+        resultsNumber = ((topAlbumsList.size() > 5) ? 5 : topAlbumsList.size());
+        topAlbumsList.retainAll(topAlbumsList.subList(0, resultsNumber));
+
+        for (var album : topAlbumsList) {
+            result.add(album.getName());
+        }
+
+        return result;
+    }
+
+    public ArrayList<String> getTop5ArtistsName() {
+        int resultsNumber;
+        ArrayList<Artist> topArtistsList = new ArrayList<>(this.artists.values());
+        ArrayList<String> result = new ArrayList<>();
+
+        topArtistsList.sort(new Comparator<Artist>() {
+            @Override
+            public int compare(final Artist album1, final Artist album2) {
+                if (album1.getNrOfLikes() < album2.getNrOfLikes()) {
+                    return 1;
+                } else if (album1.getNrOfLikes() > album2.getNrOfLikes()) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            }
+        });
+
+        resultsNumber = ((topArtistsList.size() > 5) ? 5 : topArtistsList.size());
+        topArtistsList.retainAll(topArtistsList.subList(0, resultsNumber));
+
+        for (var artist : topArtistsList) {
+            result.add(artist.getUserName());
+        }
+
+        return result;
+    }
+
+    public ArrayList<String> getAllUsersName() {
+        ArrayList<String> result = new ArrayList<>();
+
+        for (var entry : this.normalusers.entrySet())
+            result.add(entry.getValue().getUserName());
+
+        for (var entry : this.artists.entrySet())
+            result.add(entry.getValue().getUserName());
+
+        for (var entry : this.hosts.entrySet())
+            result.add(entry.getValue().getUserName());
+
+        return result;
+    }
+
+    public ArrayList<String> getOnlineUsersName() {
+        ArrayList<String> result = new ArrayList<>();
+
+        for (var entry : this.normalusers.entrySet())
+            if (entry.getValue().isActive())
+                result.add(entry.getValue().getUserName());
 
         return result;
     }

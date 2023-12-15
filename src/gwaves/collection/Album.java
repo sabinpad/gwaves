@@ -7,7 +7,6 @@ import fileio.input.FilterInput;
 
 import gwaves.sample.Song;
 import gwaves.util.Filterable;
-import gwaves.storage.DataBase;
 
 public class Album extends AudioCollection implements Filterable {
     private int releaseYear;
@@ -31,17 +30,9 @@ public class Album extends AudioCollection implements Filterable {
         this.description = description;
         this.songs = new ArrayList<>();
 
-        // Song newsong;
-        // DataBase database = DataBase.getInstance();
-
         for (var songInput : songsInput) {
-            // newsong = new Song(songInput);
-            // this.songs.add(newsong);
-            // database.addSong(newsong);
             this.songs.add(new Song(songInput));
         }
-
-        // TODO de adaugat melodiile si albumul in baza de date
     }
 
     public int getNrOfLikes() {
@@ -51,6 +42,10 @@ public class Album extends AudioCollection implements Filterable {
             sum += song.getNrOfLikes();
 
         return sum;
+    }
+
+    public ArrayList<Song> getSongs() {
+        return this.songs;
     }
 
     public ArrayList<String> getSongsNameList() {
@@ -76,6 +71,12 @@ public class Album extends AudioCollection implements Filterable {
 
         if (filter.getOwner() != null) {
             if (!this.owner.equals(filter.getOwner())) {
+                return false;
+            }
+        }
+
+        if (filter.getDescription() != null) {
+            if (!this.description.contains(filter.getDescription())) {
                 return false;
             }
         }

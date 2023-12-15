@@ -3,13 +3,15 @@ package gwaves.context;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
+import fileio.input.FilterInput;
 import fileio.input.EpisodeInput;
 import fileio.output.PodcastOutput;
 
 import gwaves.collection.Podcast;
 import gwaves.storage.DataBase;
+import gwaves.util.Filterable;
 
-public class Host extends User {
+public class Host extends User implements Filterable {
     private LinkedHashMap<String, HostAnnouncement> announcements;
 
     private LinkedHashMap<String, Podcast> podcasts;
@@ -98,6 +100,16 @@ public class Host extends User {
         this.commandMessage = null;
 
         return result;
+    }
+
+    public boolean isMatchedByFilter(FilterInput filter) {
+        if (filter.getName() != null) {
+            if (!this.getUserName().startsWith(filter.getName())) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
 

@@ -3,13 +3,13 @@ package gwaves.tools;
 import java.util.List;
 import java.util.LinkedList;
 
-import gwaves.context.User;
+import gwaves.context.NormalUser;
 
 public class UserManager {
     private static UserManager instance;
 
     private int lastTimestamp;
-    private LinkedList<User> users;
+    private LinkedList<NormalUser> users;
 
     static {
         instance = new UserManager();
@@ -32,7 +32,7 @@ public class UserManager {
      * Load users into the manager
      * @param users list of users to be loaded
      */
-    public void loadUsers(List<User> users) {
+    public void loadUsers(List<NormalUser> users) {
         this.users.addAll(users);
     }
 
@@ -48,7 +48,7 @@ public class UserManager {
      *
      * @param user to be added
      */
-    public void addUser(User user) {
+    public void addUser(NormalUser user) {
         this.users.add(user);
     }
 
@@ -57,7 +57,7 @@ public class UserManager {
      *
      * @param user to be removed
      */
-    public void rmvUser(User user) {
+    public void rmvUser(NormalUser user) {
         this.users.remove(user);
     }
 
@@ -68,7 +68,8 @@ public class UserManager {
         int timeInterval = currentTimeStamp - this.lastTimestamp;
 
         for (var user : this.users)
-            user.runMusicPlayer(timeInterval);
+            if (user.isActive())
+                user.runMusicPlayer(timeInterval);
 
         this.lastTimestamp = currentTimeStamp;
     }
@@ -78,7 +79,7 @@ public class UserManager {
      * @param user to be checked
      * @return true if no user is interacting with the specified user
      */
-    public boolean isSafeToRemove(User user) {
+    public boolean isSafeToRemove(NormalUser user) {
         // for (var otherUser : this.users) {
         //     // TODO verific pe rand daca fiecare user are cumva incarcat
         //     // vreun playlist al altui user, album al altui artist sau

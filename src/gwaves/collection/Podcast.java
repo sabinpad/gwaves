@@ -24,8 +24,10 @@ public final class Podcast extends AudioCollection implements Filterable {
 
         this.episodes = new ArrayList<>();
 
-        for (var episodeInput : episodesInput)
+        for (var episodeInput : episodesInput) {
             this.episodes.add(new Episode(episodeInput));
+            this.entireDuration += episodeInput.getDuration();
+        }
     }
 
     /**

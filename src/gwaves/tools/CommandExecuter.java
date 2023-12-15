@@ -118,12 +118,16 @@ public class CommandExecuter {
                 CommandExecuter.execGetTop5Playlists(commandInput, commandOutput);
                 break;
             case "getTop5Albums":
+                CommandExecuter.execGetTop5AlbumsName(commandInput, commandOutput);
                 break;
             case "getTop5Artists":
+                CommandExecuter.execGetTop5ArtistsName(commandInput, commandOutput);
                 break;
             case "getAllUsers":
+                CommandExecuter.execGetAllUsersName(commandInput, commandOutput);
                 break;
             case "getOnlineUsers":
+                CommandExecuter.execGetOnlineUsersName(commandInput, commandOutput);
                 break;
             default:
                 break;
@@ -133,133 +137,208 @@ public class CommandExecuter {
     }
 
     private static void execSearch(CommandInput commandInput, CommandOutput commandOutput) {
-        User user = DataBase.getInstance().queryUser(commandInput.getUsername());
+        NormalUser normaluser = DataBase.getInstance().queryNormalUser(commandInput.getUsername());
         
-        commandOutput.setResults(user.doSearch(commandInput.getType(), commandInput.getFilters()));
-        commandOutput.setMessage(user.getLastCommandMessage());
+        if (!normaluser.isActive()) {
+            commandOutput.setMessage(commandInput.getUsername() + " is offline.");
+            return;
+        }
+
+        commandOutput.setResults(normaluser.doSearch(commandInput.getType(), commandInput.getFilters()));
+        commandOutput.setMessage(normaluser.getLastCommandMessage());
     }
 
     private static void execSelect(CommandInput commandInput, CommandOutput commandOutput) {
-        User user = DataBase.getInstance().queryUser(commandInput.getUsername());
+        NormalUser normaluser = DataBase.getInstance().queryNormalUser(commandInput.getUsername());
 
-        user.doSelect(commandInput.getItemNumber());
-        commandOutput.setMessage(user.getLastCommandMessage());
+        if (!normaluser.isActive()) {
+            commandOutput.setMessage(commandInput.getUsername() + " is offline.");
+            return;
+        }
+
+        normaluser.doSelect(commandInput.getItemNumber());
+        commandOutput.setMessage(normaluser.getLastCommandMessage());
     }
 
     private static void execLoad(CommandInput commandInput, CommandOutput commandOutput) {
-        User user = DataBase.getInstance().queryUser(commandInput.getUsername());
+        NormalUser normaluser = DataBase.getInstance().queryNormalUser(commandInput.getUsername());
 
-        user.doLoad();
-        commandOutput.setMessage(user.getLastCommandMessage());
+        if (!normaluser.isActive()) {
+            commandOutput.setMessage(commandInput.getUsername() + " is offline.");
+            return;
+        }
+
+        normaluser.doLoad();
+        commandOutput.setMessage(normaluser.getLastCommandMessage());
     }
 
     private static void execPlayPause(CommandInput commandInput, CommandOutput commandOutput) {
-        User user = DataBase.getInstance().queryUser(commandInput.getUsername());
+        NormalUser normaluser = DataBase.getInstance().queryNormalUser(commandInput.getUsername());
 
-        user.doPlayPause();
-        commandOutput.setMessage(user.getLastCommandMessage());
+        if (!normaluser.isActive()) {
+            commandOutput.setMessage(commandInput.getUsername() + " is offline.");
+            return;
+        }
+
+        normaluser.doPlayPause();
+        commandOutput.setMessage(normaluser.getLastCommandMessage());
     }
 
     private static void execRepeat(CommandInput commandInput, CommandOutput commandOutput) {
-        User user = DataBase.getInstance().queryUser(commandInput.getUsername());
+        NormalUser normaluser = DataBase.getInstance().queryNormalUser(commandInput.getUsername());
 
-        user.doRepeat();
-        commandOutput.setMessage(user.getLastCommandMessage());
+        if (!normaluser.isActive()) {
+            commandOutput.setMessage(commandInput.getUsername() + " is offline.");
+            return;
+        }
+
+        normaluser.doRepeat();
+        commandOutput.setMessage(normaluser.getLastCommandMessage());
     }
 
     private static void execShuffle(CommandInput commandInput, CommandOutput commandOutput) {
-        User user = DataBase.getInstance().queryUser(commandInput.getUsername());
+        NormalUser normaluser = DataBase.getInstance().queryNormalUser(commandInput.getUsername());
 
-        if (commandInput.getSeed() == null) {
-            user.doShuffle(0);
-        } else {
-            user.doShuffle(commandInput.getSeed());
+        if (!normaluser.isActive()) {
+            commandOutput.setMessage(commandInput.getUsername() + " is offline.");
+            return;
         }
 
-        commandOutput.setMessage(user.getLastCommandMessage());
+        if (commandInput.getSeed() == null) {
+            normaluser.doShuffle(0);
+        } else {
+            normaluser.doShuffle(commandInput.getSeed());
+        }
+
+        commandOutput.setMessage(normaluser.getLastCommandMessage());
     }
 
     private static void execForward(CommandInput commandInput, CommandOutput commandOutput) {
-        User user = DataBase.getInstance().queryUser(commandInput.getUsername());
+        NormalUser normaluser = DataBase.getInstance().queryNormalUser(commandInput.getUsername());
 
-        user.doForward();
-        commandOutput.setMessage(user.getLastCommandMessage());
+        if (!normaluser.isActive()) {
+            commandOutput.setMessage(commandInput.getUsername() + " is offline.");
+            return;
+        }
+
+        normaluser.doForward();
+        commandOutput.setMessage(normaluser.getLastCommandMessage());
     }
 
     private static void execBackward(CommandInput commandInput, CommandOutput commandOutput) {
-        User user = DataBase.getInstance().queryUser(commandInput.getUsername());
+        NormalUser normaluser = DataBase.getInstance().queryNormalUser(commandInput.getUsername());
 
-        user.doBackward();
-        commandOutput.setMessage(user.getLastCommandMessage());
+        if (!normaluser.isActive()) {
+            commandOutput.setMessage(commandInput.getUsername() + " is offline.");
+            return;
+        }
+
+        normaluser.doBackward();
+        commandOutput.setMessage(normaluser.getLastCommandMessage());
     }
 
     private static void execLike(CommandInput commandInput, CommandOutput commandOutput) {
-        User user = DataBase.getInstance().queryUser(commandInput.getUsername());
+        NormalUser normaluser = DataBase.getInstance().queryNormalUser(commandInput.getUsername());
 
-        user.doLike();
-        commandOutput.setMessage(user.getLastCommandMessage());
+        if (!normaluser.isActive()) {
+            commandOutput.setMessage(commandInput.getUsername() + " is offline.");
+            return;
+        }
+
+        normaluser.doLike();
+        commandOutput.setMessage(normaluser.getLastCommandMessage());
     }
 
     private static void execNext(CommandInput commandInput, CommandOutput commandOutput) {
-        User user = DataBase.getInstance().queryUser(commandInput.getUsername());
+        NormalUser normaluser = DataBase.getInstance().queryNormalUser(commandInput.getUsername());
 
-        user.doNext();
-        commandOutput.setMessage(user.getLastCommandMessage());
+        if (!normaluser.isActive()) {
+            commandOutput.setMessage(commandInput.getUsername() + " is offline.");
+            return;
+        }
+
+        normaluser.doNext();
+        commandOutput.setMessage(normaluser.getLastCommandMessage());
     }
 
     private static void execPrev(CommandInput commandInput, CommandOutput commandOutput) {
-        User user = DataBase.getInstance().queryUser(commandInput.getUsername());
+        NormalUser normaluser = DataBase.getInstance().queryNormalUser(commandInput.getUsername());
 
-        user.doPrev();
-        commandOutput.setMessage(user.getLastCommandMessage());
+        if (!normaluser.isActive()) {
+            commandOutput.setMessage(commandInput.getUsername() + " is offline.");
+            return;
+        }
+
+        normaluser.doPrev();
+        commandOutput.setMessage(normaluser.getLastCommandMessage());
     }
 
     private static void execAddRemoveInPlaylist(CommandInput commandInput, CommandOutput commandOutput) {
-        User user = DataBase.getInstance().queryUser(commandInput.getUsername());
+        NormalUser normaluser = DataBase.getInstance().queryNormalUser(commandInput.getUsername());
 
-        user.doAddRemoveInPlaylist(commandInput.getPlaylistId());
-        commandOutput.setMessage(user.getLastCommandMessage());
+        if (!normaluser.isActive()) {
+            commandOutput.setMessage(commandInput.getUsername() + " is offline.");
+            return;
+        }
+
+        normaluser.doAddRemoveInPlaylist(commandInput.getPlaylistId());
+        commandOutput.setMessage(normaluser.getLastCommandMessage());
     }
     
     private static void execStatus(CommandInput commandInput, CommandOutput commandOutput) {
-        User user = DataBase.getInstance().queryUser(commandInput.getUsername());
+        NormalUser normaluser = DataBase.getInstance().queryNormalUser(commandInput.getUsername());
 
-        commandOutput.setStats(user.doStatus());
-        commandOutput.setMessage(user.getLastCommandMessage());
+        commandOutput.setStats(normaluser.doMPlayerStatus());
+        commandOutput.setMessage(normaluser.getLastCommandMessage());
     }
 
     private static void execCreatePlaylist(CommandInput commandInput, CommandOutput commandOutput) {
-        User user = DataBase.getInstance().queryUser(commandInput.getUsername());
+        NormalUser normaluser = DataBase.getInstance().queryNormalUser(commandInput.getUsername());
 
-        user.doCreatePlaylist(commandInput.getPlaylistName());
-        commandOutput.setMessage(user.getLastCommandMessage());
+        if (!normaluser.isActive()) {
+            commandOutput.setMessage(commandInput.getUsername() + " is offline.");
+            return;
+        }
+
+        normaluser.doCreatePlaylist(commandInput.getPlaylistName());
+        commandOutput.setMessage(normaluser.getLastCommandMessage());
     }
 
     private static void execSwitchVisibility(CommandInput commandInput, CommandOutput commandOutput) {
-        User user = DataBase.getInstance().queryUser(commandInput.getUsername());
+        NormalUser normaluser = DataBase.getInstance().queryNormalUser(commandInput.getUsername());
 
-        user.doSwitchVisibility(commandInput.getPlaylistId());
-        commandOutput.setMessage(user.getLastCommandMessage());
+        if (!normaluser.isActive()) {
+            commandOutput.setMessage(commandInput.getUsername() + " is offline.");
+            return;
+        }
+
+        normaluser.doSwitchVisibility(commandInput.getPlaylistId());
+        commandOutput.setMessage(normaluser.getLastCommandMessage());
     }
 
     private static void execFollow(CommandInput commandInput, CommandOutput commandOutput) {
-        User user = DataBase.getInstance().queryUser(commandInput.getUsername());
+        NormalUser normaluser = DataBase.getInstance().queryNormalUser(commandInput.getUsername());
 
-        user.doFollowPlaylist();
-        commandOutput.setMessage(user.getLastCommandMessage());
+        if (!normaluser.isActive()) {
+            commandOutput.setMessage(commandInput.getUsername() + " is offline.");
+            return;
+        }
+
+        normaluser.doFollowPlaylist();
+        commandOutput.setMessage(normaluser.getLastCommandMessage());
     }
 
     private static void execShowPlaylists(CommandInput commandInput, CommandOutput commandOutput) {
-        User user = DataBase.getInstance().queryUser(commandInput.getUsername());
+        NormalUser normaluser = DataBase.getInstance().queryNormalUser(commandInput.getUsername());
         
-        commandOutput.setResult(user.doShowPlaylists());
-        commandOutput.setMessage(user.getLastCommandMessage());
+        commandOutput.setResult(normaluser.doShowPlaylists());
+        commandOutput.setMessage(normaluser.getLastCommandMessage());
     }
 
     private static void execShowPreferredSongs(CommandInput commandInput, CommandOutput commandOutput) {
-        User user = DataBase.getInstance().queryUser(commandInput.getUsername());
+        NormalUser normaluser = DataBase.getInstance().queryNormalUser(commandInput.getUsername());
 
-        commandOutput.setResult(user.getPreferredSongsName());
+        commandOutput.setResult(normaluser.getPreferredSongsName());
     }
 
     private static void execGetTop5Songs(CommandInput commandInput, CommandOutput commandOutput) {
@@ -273,14 +352,14 @@ public class CommandExecuter {
     //
 
     private static void execSwitchConnectionStatus(CommandInput commandInput, CommandOutput commandOutput) {
-        User user = null;
+        NormalUser user = null;
 
         if (DataBase.getInstance().queryUser(commandInput.getUsername()) == null) {
             commandOutput.setMessage("The username " + commandInput.getUsername() + " doesn't exist.");
             return;
         }
 
-        user = DataBase.getInstance().queryUser(commandInput.getUsername());
+        user = DataBase.getInstance().queryNormalUser(commandInput.getUsername());
 
         if (user == null) {
             commandOutput.setMessage(commandInput.getUsername() + " is not a normal user.");
@@ -302,7 +381,7 @@ public class CommandExecuter {
 
         switch (commandInput.getType()) {
             case "user":
-                database.addUser(new User(commandInput.getUsername(), commandInput.getAge(), commandInput.getCity()));
+                database.addNormalUser(new NormalUser(commandInput.getUsername(), commandInput.getAge(), commandInput.getCity()));
                 break;
             case "artist":
                 database.addArtist(new Artist(commandInput.getUsername(), commandInput.getAge(), commandInput.getCity()));
@@ -328,12 +407,13 @@ public class CommandExecuter {
             return;
         }
 
-        if (!UserManager.getInstance().isSafeToRemove(user)) {
-            commandOutput.setMessage(commandInput.getUsername() + " can't be deleted.");
-            return;
-        }
+        // if (!UserManager.getInstance().isSafeToRemove(user)) {
+        //     commandOutput.setMessage(commandInput.getUsername() + " can't be deleted.");
+        //     return;
+        // }
         
-        database.removeUser(user);
+        // TODO
+        // database.removeUser(user);
 
         commandOutput.setMessage(commandInput.getUsername() + " was successfully deleted.");
     }
@@ -536,5 +616,21 @@ public class CommandExecuter {
     private static void execShowPodcasts(CommandInput commandInput, CommandOutput commandOutput) {
         Host host = DataBase.getInstance().queryHost(commandInput.getUsername());
         commandOutput.setResult(host.doShowPodcasts());
+    }
+
+    private static void execGetTop5AlbumsName(CommandInput commandInput, CommandOutput commandOutput) {
+        commandOutput.setResult(DataBase.getInstance().getTop5AlbumsName());
+    }
+
+    private static void execGetTop5ArtistsName(CommandInput commandInput, CommandOutput commandOutput) {
+        commandOutput.setResult(DataBase.getInstance().getTop5ArtistsName());
+    }
+
+    private static void execGetAllUsersName(CommandInput commandInput, CommandOutput commandOutput) {
+        commandOutput.setResult(DataBase.getInstance().getAllUsersName());
+    }
+
+    private static void execGetOnlineUsersName(CommandInput commandInput, CommandOutput commandOutput) {
+        commandOutput.setResult(DataBase.getInstance().getOnlineUsersName());
     }
 }

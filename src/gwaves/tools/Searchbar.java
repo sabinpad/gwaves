@@ -7,10 +7,10 @@ import gwaves.sample.Song;
 import gwaves.storage.DataBase;
 import gwaves.collection.Playlist;
 import gwaves.collection.Podcast;
-import gwaves.context.User;
+import gwaves.context.NormalUser;
 
 public final class Searchbar {
-    private User ownerUser;
+    private NormalUser ownerUser;
 
     private ArrayList<Song> resultsSong;
     private ArrayList<Playlist> resultsPlaylist;
@@ -19,7 +19,7 @@ public final class Searchbar {
     private int resultsIndex;
     private int resultsNumber;
 
-    public Searchbar(final User ownerUser) {
+    public Searchbar(final NormalUser ownerUser) {
         this.ownerUser = ownerUser;
         this.resultsIndex = -1;
         this.resultsNumber = 0;

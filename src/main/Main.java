@@ -22,7 +22,7 @@ import fileio.input.CommandInput;
 import fileio.output.CommandOutput;
 import fileio.output.SysCommandOutput;
 
-import gwaves.context.User;
+import gwaves.context.NormalUser;
 import gwaves.storage.DataBase;
 import gwaves.tools.CommandExecuter;
 import gwaves.tools.UserManager;
@@ -92,7 +92,7 @@ public final class Main {
         database.loadDataBase(library);
         UserManager.changeInstance();
         userManager = UserManager.getInstance();
-        userManager.loadUsers(database.queryAllUsers());
+        userManager.loadUsers(database.queryAllNormalUsers());
 
         ArrayList<CommandInput> commandInputs;
         ArrayList<CommandOutput> commandOutputs;

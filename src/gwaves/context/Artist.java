@@ -3,13 +3,15 @@ package gwaves.context;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
+import fileio.input.FilterInput;
 import fileio.input.SongInput;
 import fileio.output.AlbumOutput;
 
 import gwaves.collection.Album;
 import gwaves.storage.DataBase;
+import gwaves.util.Filterable;
 
-public class Artist extends User {
+public class Artist extends User implements Filterable {
     private LinkedHashMap<String, ArtistEvent> events;
     private LinkedHashMap<String, ArtistMerch> merches;
 
@@ -132,6 +134,16 @@ public class Artist extends User {
             sum += entry.getValue().getNrOfLikes();
 
         return sum;
+    }
+
+    public boolean isMatchedByFilter(FilterInput filter) {
+        if (filter.getName() != null) {
+            if (!this.getUserName().startsWith(filter.getName())) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
 
