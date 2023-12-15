@@ -3,18 +3,27 @@ package gwaves.tools;
 import java.util.ArrayList;
 
 import fileio.input.FilterInput;
-import gwaves.sample.Song;
 import gwaves.storage.DataBase;
+
+import gwaves.sample.Song;
 import gwaves.collection.Playlist;
+import gwaves.collection.Album;
 import gwaves.collection.Podcast;
+
 import gwaves.context.NormalUser;
+import gwaves.context.Artist;
+import gwaves.context.Host;
 
 public final class Searchbar {
     private NormalUser ownerUser;
 
     private ArrayList<Song> resultsSong;
     private ArrayList<Playlist> resultsPlaylist;
+    private ArrayList<Album> resultsAlbum;
     private ArrayList<Podcast> resultsPodcast;
+
+    private ArrayList<Artist> resultsArtist;
+    private ArrayList<Host> resultsHost;
 
     private int resultsIndex;
     private int resultsNumber;
@@ -25,6 +34,13 @@ public final class Searchbar {
         this.resultsNumber = 0;
     }
 
+    private void clearResults() {
+        this.resultsSong = null;
+        this.resultsPlaylist = null;
+        this.resultsAlbum = null;
+        this.resultsPodcast = null;
+    }
+
     /**
      * @param filter used to search for the songs
      * @return an ArrayList containg the name of the songs that have been found
@@ -32,9 +48,10 @@ public final class Searchbar {
     public ArrayList<String> searchSongs(final FilterInput filter) {
         ArrayList<String> resultsName = new ArrayList<>();
 
+        this.clearResults();
         this.resultsSong = DataBase.getInstance().querySongs(filter);
-        this.resultsPlaylist = null;
-        this.resultsPodcast = null;
+        // this.resultsPlaylist = null;
+        // this.resultsPodcast = null;
 
         this.resultsNumber = ((this.resultsSong.size() > 5) ? 5 : this.resultsSong.size());
         this.resultsSong.retainAll(this.resultsSong.subList(0, this.resultsNumber));
@@ -56,16 +73,42 @@ public final class Searchbar {
     public ArrayList<String> searchPlaylists(final FilterInput filter) {
         ArrayList<String> resultsName = new ArrayList<>();
 
+        this.clearResults();
         this.resultsPlaylist = DataBase.getInstance().queryVisiblePlaylistsAndOwnedBy(filter,
                 this.ownerUser.getUserName());
-        this.resultsSong = null;
-        this.resultsPodcast = null;
+        // this.resultsSong = null;
+        // this.resultsPodcast = null;
 
         this.resultsNumber = ((this.resultsPlaylist.size() > 5) ? 5 : this.resultsPlaylist.size());
         this.resultsPlaylist.retainAll(this.resultsPlaylist.subList(0, this.resultsNumber));
 
         for (var playlist : this.resultsPlaylist) {
             resultsName.add(playlist.getName());
+        }
+
+        this.resultsIndex = -1;
+
+        return resultsName;
+    }
+
+    /**
+     * @param filter used to search for the playlists
+     * @return an ArrayList containg the name of the playlists that have been
+     * found
+     */
+    public ArrayList<String> searchAlbums(final FilterInput filter) {
+        ArrayList<String> resultsName = new ArrayList<>();
+
+        this.clearResults();
+        this.resultsAlbum = DataBase.getInstance().queryAlbums(filter);
+        // this.resultsSong = null;
+        // this.resultsPodcast = null;
+
+        this.resultsNumber = ((this.resultsAlbum.size() > 5) ? 5 : this.resultsAlbum.size());
+        this.resultsAlbum.retainAll(this.resultsAlbum.subList(0, this.resultsNumber));
+
+        for (var album : this.resultsAlbum) {
+            resultsName.add(album.getName());
         }
 
         this.resultsIndex = -1;
@@ -81,15 +124,52 @@ public final class Searchbar {
     public ArrayList<String> searchPodcasts(final FilterInput filter) {
         ArrayList<String> resultsName = new ArrayList<>();
 
+        this.clearResults();
         this.resultsPodcast = DataBase.getInstance().queryPodcasts(filter);
-        this.resultsSong = null;
-        this.resultsPlaylist = null;
+        // this.resultsSong = null;
+        // this.resultsPlaylist = null;
 
         this.resultsNumber = ((this.resultsPodcast.size() > 5) ? 5 : this.resultsPodcast.size());
         this.resultsPodcast.retainAll(this.resultsPodcast.subList(0, this.resultsNumber));
 
         for (var podcast : this.resultsPodcast) {
             resultsName.add(podcast.getName());
+        }
+
+        this.resultsIndex = -1;
+
+        return resultsName;
+    }
+
+    public ArrayList<String> searchArtists(final FilterInput filter) {
+        ArrayList<String> resultsName = new ArrayList<>();
+
+        this.clearResults();
+        this.resultsArtist = DataBase.getInstance().queryArtistsWithFilter(filter);
+
+        this.resultsNumber = ((this.resultsArtist.size() > 5) ? 5 : this.resultsArtist.size());
+        this.resultsArtist.retainAll(this.resultsArtist.subList(0, this.resultsNumber));
+
+        for (var artist : this.resultsArtist) {
+            resultsName.add(artist.getUserName());
+        }
+
+        this.resultsIndex = -1;
+
+        return resultsName;
+    }
+
+    public ArrayList<String> searchHosts(final FilterInput filter) {
+        ArrayList<String> resultsName = new ArrayList<>();
+
+        this.clearResults();
+        this.resultsHost = DataBase.getInstance().queryHostsWithFilter(filter);
+
+        this.resultsNumber = ((this.resultsHost.size() > 5) ? 5 : this.resultsHost.size());
+        this.resultsHost.retainAll(this.resultsHost.subList(0, this.resultsNumber));
+
+        for (var host : this.resultsHost) {
+            resultsName.add(host.getUserName());
         }
 
         this.resultsIndex = -1;
@@ -121,8 +201,14 @@ public final class Searchbar {
             return this.resultsSong.get(this.resultsIndex).getName();
         } else if (this.resultsPlaylist != null) {
             return this.resultsPlaylist.get(this.resultsIndex).getName();
+        } else if (this.resultsAlbum != null) {
+            return this.resultsAlbum.get(this.resultsIndex).getName();
         } else if (this.resultsPodcast != null) {
             return this.resultsPodcast.get(this.resultsIndex).getName();
+        } else if (this.resultsArtist != null) {
+            return this.resultsArtist.get(this.resultsIndex).getUserName();
+        } else if (this.resultsHost != null) {
+            return this.resultsHost.get(this.resultsIndex).getUserName();
         }
 
         return null;
@@ -164,6 +250,23 @@ public final class Searchbar {
 
     /**
      * After the call the search results are cleared
+     * @return selected album
+     */
+    public Album getSelectedAlbum() {
+        Album album = null;
+
+        if (this.resultsAlbum != null) {
+            album = this.resultsAlbum.get(this.resultsIndex);
+            this.resultsAlbum = null;
+            this.resultsIndex = -1;
+            this.resultsNumber = 0;
+        }
+
+        return album;
+    }
+
+    /**
+     * After the call the search results are cleared
      * @return selected podcast
      */
     public Podcast getSelectedPodcast() {
@@ -180,10 +283,49 @@ public final class Searchbar {
     }
 
     /**
+     * After the call the search results are cleared
+     * @return selected artist
+     */
+    public Artist getSelectedArtist() {
+        Artist artist = null;
+
+        if (this.resultsArtist != null) {
+            artist = this.resultsArtist.get(this.resultsIndex);
+            this.resultsArtist = null;
+            this.resultsIndex = -1;
+            this.resultsNumber = 0;
+        }
+
+        return artist;
+    }
+
+    /**
+     * After the call the search results are cleared
+     * @return selected host
+     */
+    public Host getSelectedHost() {
+        Host host = null;
+
+        if (this.resultsHost != null) {
+            host = this.resultsHost.get(this.resultsIndex);
+            this.resultsHost = null;
+            this.resultsIndex = -1;
+            this.resultsNumber = 0;
+        }
+
+        return host;
+    }
+
+    /**
      * @return true if no search was conducted
      */
     public boolean isEmpty() {
-        return this.resultsSong == null && this.resultsPlaylist == null && this.resultsPodcast == null;
+        return this.resultsSong == null
+               && this.resultsPlaylist == null
+               && this.resultsAlbum == null
+               && this.resultsPodcast == null
+               && this.resultsArtist == null
+               && this.resultsHost == null;
     }
 
     /**
@@ -208,9 +350,30 @@ public final class Searchbar {
     }
 
     /**
+     * @return true if a search for albums was conducted
+     */
+    public boolean searchedForAlbums() {
+        return this.resultsAlbum != null;
+    }
+
+    /**
      * @return true if a search for podcasts was conducted
      */
     public boolean searchedForPodcasts() {
         return this.resultsPodcast != null;
+    }
+
+    /**
+     * @return true if a search for artists was conducted
+     */
+    public boolean searchedForArtists() {
+        return this.resultsArtist != null;
+    }
+
+    /**
+     * @return true if a search for hosts was conducted
+     */
+    public boolean searchedForHosts() {
+        return this.resultsHost != null;
     }
 }
