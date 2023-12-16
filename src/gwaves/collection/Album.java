@@ -97,7 +97,7 @@ public final class Album extends AudioCollection implements Filterable {
      * @param name
      * @return
      */
-    public boolean hasSongWithName(String name) {
+    public boolean hasSongWithName(final String name) {
         for (var song : this.songs) {
             if (song.getName().equals(name)) {
                 return true;

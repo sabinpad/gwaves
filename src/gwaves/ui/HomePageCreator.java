@@ -77,18 +77,18 @@ public class HomePageCreator implements PageCreator {
         int resultsNumber;
         ArrayList<Playlist> sorted = new ArrayList<>(this.playlists);
 
-        // sorted.sort(new Comparator<Playlist>() {
-        //     @Override
-        //     public int compare(final Playlist playlist1, final Playlist playlist2) {
-        //         if (playlist1.getNrOfLikes() < playlist2.getNrOfLikes()) {
-        //             return 1;
-        //         } else if (playlist1.getNrOfLikes() > playlist2.getNrOfLikes()) {
-        //             return -1;
-        //         } else {
-        //             return 0;
-        //         }
-        //     }
-        // });
+        sorted.sort(new Comparator<Playlist>() {
+            @Override
+            public int compare(final Playlist playlist1, final Playlist playlist2) {
+                if (playlist1.getNrOfLikes() < playlist2.getNrOfLikes()) {
+                    return 1;
+                } else if (playlist1.getNrOfLikes() > playlist2.getNrOfLikes()) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            }
+        });
 
         resultsNumber = ((sorted.size() > 5) ? 5 : sorted.size());
         sorted.retainAll(sorted.subList(0, resultsNumber));

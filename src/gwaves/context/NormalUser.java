@@ -658,11 +658,12 @@ public final class NormalUser extends User {
     }
 
     /**
-     * 
+     *
      */
     public String getListeningSongName() {
-        if (this.musicplayer.isSongLoaded())
+        if (this.musicplayer.isSongLoaded()) {
             return this.musicplayer.getLoadedSong().getName();
+        }
 
         return null;
     }
@@ -671,15 +672,18 @@ public final class NormalUser extends User {
      *
      */
     public String getListeningCollName() {
-        if (this.musicplayer.isPlaylistLoaded())
+        if (this.musicplayer.isPlaylistLoaded()) {
             return this.musicplayer.getLoadedPlaylist().getName();
+        }
 
-        if (this.musicplayer.isAlbumLoaded())
+        if (this.musicplayer.isAlbumLoaded()) {
             return this.musicplayer.getLoadedAlbum().getName();
+        }
 
-        if (this.musicplayer.isPodcastLoaded())
+        if (this.musicplayer.isPodcastLoaded()) {
             return this.musicplayer.getLoadedPodcast().getName();
-        
+        }
+
         return null;
     }
 
@@ -687,12 +691,14 @@ public final class NormalUser extends User {
      *
      */
     public ArrayList<Song> getListeningSongs() {
-        if (this.musicplayer.isPlaylistLoaded())
+        if (this.musicplayer.isPlaylistLoaded()) {
             return this.musicplayer.getLoadedPlaylist().getSongs();
+        }
 
-        if (this.musicplayer.isAlbumLoaded())
+        if (this.musicplayer.isAlbumLoaded()) {
             return this.musicplayer.getLoadedAlbum().getSongs();
-        
+        }
+
         return null;
     }
 

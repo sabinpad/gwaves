@@ -29,7 +29,7 @@ public final class DataBase {
     private ArrayList<Album> albums;
     private ArrayList<Podcast> podcasts;
 
-    private static final int MaxCount = 5;
+    private static final int COUNT = 5;
 
     static {
         instance = new DataBase();
@@ -358,7 +358,7 @@ public final class DataBase {
             }
         });
 
-        resultsNumber = ((topSongsList.size() > MaxCount) ? MaxCount : topSongsList.size());
+        resultsNumber = ((topSongsList.size() > COUNT) ? COUNT : topSongsList.size());
         topSongsList.retainAll(topSongsList.subList(0, resultsNumber));
 
         for (var song : topSongsList) {
@@ -390,7 +390,7 @@ public final class DataBase {
             }
         });
 
-        resultsNumber = ((topPlaylistsList.size() > MaxCount) ? MaxCount : topPlaylistsList.size());
+        resultsNumber = ((topPlaylistsList.size() > COUNT) ? COUNT : topPlaylistsList.size());
         topPlaylistsList.retainAll(topPlaylistsList.subList(0, resultsNumber));
 
         for (var playlist : topPlaylistsList) {
@@ -422,7 +422,7 @@ public final class DataBase {
             }
         });
 
-        resultsNumber = ((topAlbumsList.size() > MaxCount) ? MaxCount : topAlbumsList.size());
+        resultsNumber = ((topAlbumsList.size() > COUNT) ? COUNT : topAlbumsList.size());
         topAlbumsList.retainAll(topAlbumsList.subList(0, resultsNumber));
 
         for (var album : topAlbumsList) {
@@ -454,7 +454,7 @@ public final class DataBase {
             }
         });
 
-        resultsNumber = ((topArtistsList.size() > MaxCount) ? MaxCount : topArtistsList.size());
+        resultsNumber = ((topArtistsList.size() > COUNT) ? COUNT : topArtistsList.size());
         topArtistsList.retainAll(topArtistsList.subList(0, resultsNumber));
 
         for (var artist : topArtistsList) {

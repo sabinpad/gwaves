@@ -191,7 +191,7 @@ public final class UserManager {
      *
      * @param song
      */
-    private void toUnlink(Song song) {
+    private void toUnlink(final Song song) {
         for (var normaluser : this.normalusers) {
             normaluser.checkRemoveSong(song);
         }
@@ -201,7 +201,7 @@ public final class UserManager {
      *
      * @param song
      */
-    public void toUnlink(Album album) {
+    public void toUnlink(final Album album) {
         // for (var normaluser : this.normalusers) {
         //     for (var song : album.getSongs())
         //         normaluser.checkRemoveSong(song);
@@ -215,17 +215,17 @@ public final class UserManager {
      *
      * @param song
      */
-    public void toUnlink(Playlist playlist) {
+    public void toUnlink(final Playlist playlist) {
         for (var normaluser : this.normalusers) {
             normaluser.checkRemovePlaylist(playlist);
-        } 
+        }
     }
 
     /**
      *
      * @param song
      */
-    public void toUnlink(NormalUser normaluser) {
+    public void toUnlink(final NormalUser normaluser) {
         for (var playlist : normaluser.getOwnPlaylists()) {
             this.toUnlink(playlist);
         }
@@ -235,7 +235,7 @@ public final class UserManager {
      *
      * @param song
      */
-    public void toUnlink(Artist artist) {
+    public void toUnlink(final Artist artist) {
         for (var album : artist.getAlbums()) {
             this.toUnlink(album);
         }
