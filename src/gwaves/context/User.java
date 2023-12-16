@@ -10,10 +10,10 @@ public abstract class User {
     protected String commandMessage;
 
     public User() {
-        
+
     }
 
-    public User(String username, int age, String city) {
+    public User(final String username, final int age, final String city) {
         this.username = username;
         this.age = age;
         this.city = city;

@@ -184,6 +184,21 @@ be queried for the following types:
 * public playlists and playlists owned by a user
 * podcasts
 
+## UserManager
+---
+
+This class keeps track of everything that happens to the user. It runs their
+player, makes sure that the songs and playlists are handled properly. It is
+implemented using the observer desing pattern.
+
+## PageCreator
+---
+
+While at a first glance it may seem that this class is a Command pattern it is
+actually not. It is a strategy because depending on the same thing is being
+created, a page which is then stringified. It is not a command because it
+doesn't have any callback function.
+
 <br>
 <br>
 <br>
@@ -198,4 +213,4 @@ apeleaza de 17 ori intr-un proces, fiecare test a trebuit sa fac o metoda la
 clasa singleton DataBase care schimba instanta ca sa nu se pastreaze
 playlisturile create de la un test la altul
 * S-ar putea sa nu fi apucat sa scriu descrierea de la javadoc la fiecare metoda
-scz o fac la etapa 2 :disappointed_relieved:
+scz o fac la etapa 3 :disappointed_relieved:

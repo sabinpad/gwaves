@@ -16,6 +16,8 @@ import gwaves.collection.Podcast;
 public final class Musicplayer {
     private static final Random RAND = new Random(0);
 
+    private final int skipSec = 90;
+
     private int remainingTime;
 
     private int currentSongIndex;
@@ -45,6 +47,7 @@ public final class Musicplayer {
      * Unloads the current loaded song/playlist/podcast
      * In case of a podcast being unloaded, its last episode and minute are
      * stored in order to continue from there upon a later load
+     *
      * @return
      */
     public void unloadCurrent() {
@@ -76,6 +79,7 @@ public final class Musicplayer {
 
     /**
      * Loads the song into the musicplayer
+     *
      * @param song
      */
     public void loadSong(final Song song) {
@@ -87,6 +91,7 @@ public final class Musicplayer {
 
     /**
      * Loads the playlist into the musicplayer
+     *
      * @param playlist
      */
     public void loadPlaylist(final Playlist playlist) {
@@ -100,6 +105,7 @@ public final class Musicplayer {
 
     /**
      * Loads the podcast into the musicplayer
+     *
      * @param podcast
      */
     public void loadPodcast(final Podcast podcast) {
@@ -123,6 +129,7 @@ public final class Musicplayer {
 
     /**
      * Loads the album into the musicplayer
+     *
      * @param album
      */
     public void loadAlbum(final Album album) {
@@ -134,11 +141,11 @@ public final class Musicplayer {
         this.paused = false;
     }
 
-
     /**
      * Plays itself for {@code timeInterval} seconds. Basically changes the
      * state of the Musicplayer object in time, thus the current loaded audio
      * recording will change in time.
+     *
      * @return
      */
     public void playFor(final int timeInterval) {
@@ -168,7 +175,7 @@ public final class Musicplayer {
             return;
         }
 
-        if (this.remainingTime <= 90) {
+        if (this.remainingTime <= skipSec) {
             switch (this.repeat) {
                 case 0:
                     this.currentEpisodeIndex++;
@@ -187,7 +194,7 @@ public final class Musicplayer {
                     break;
             }
         } else {
-            this.remainingTime -= 90;
+            this.remainingTime -= skipSec;
         }
     }
 
@@ -201,10 +208,10 @@ public final class Musicplayer {
             return;
         }
 
-        if (this.currentEpisode.getDuration() - this.remainingTime < 90) {
+        if (this.currentEpisode.getDuration() - this.remainingTime < skipSec) {
             this.remainingTime = this.currentEpisode.getDuration();
         } else {
-            this.remainingTime += 90;
+            this.remainingTime += skipSec;
         }
     }
 
@@ -442,15 +449,29 @@ public final class Musicplayer {
         return null;
     }
 
-    public String getListeningName() {
+    /**
+     *
+     * @return
+     */
+    public String getListeningColl() {
         if (this.currentPlaylist != null) {
             return this.currentPlaylist.getName();
         } else if (this.currentAlbum != null) {
             return this.currentAlbum.getName();
-        } else if (this.currentSong != null) {
-            return this.currentSong.getName();
         } else if (this.currentPodcast != null) {
             return this.currentPodcast.getName();
+        }
+
+        return null;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getListeningSong() {
+        if (this.currentSong != null) {
+            return this.currentSong.getName();
         }
 
         return null;
@@ -476,7 +497,6 @@ public final class Musicplayer {
     public Album getLoadedAlbum() {
         return this.currentAlbum;
     }
-
 
     /**
      * @return current loaded episode
@@ -528,63 +548,6 @@ public final class Musicplayer {
     }
 
     /**
-     * @return true if a song is loaded
-     */
-    public boolean isSongLoaded() {
-        return this.currentSong != null;
-    }
-
-    /**
-     * @return true if a Playlist is loaded
-     */
-    public boolean isPlaylistLoaded() {
-        return this.currentPlaylist != null;
-    }
-
-    /**
-     * @return true if a Playlist is loaded
-     */
-    public boolean isAlbumLoaded() {
-        return this.currentAlbum != null;
-    }
-
-
-    /**
-     * @return true if a podcast is loaded
-     */
-    public boolean isPodcastLoaded() {
-        return this.currentPodcast != null;
-    }
-
-    /**
-     * @return if anything is loaded
-     */
-    public boolean isLoaded() {
-        return this.isSongLoaded() || this.isPlaylistLoaded() || this.isPodcastLoaded();
-    }
-
-    /**
-     * @return if the player is pause
-     */
-    public boolean isPaused() {
-        return this.paused;
-    }
-
-    /**
-     * @return if the player is on repeat
-     */
-    public boolean isOnRepeat() {
-        return this.repeat != 0;
-    }
-
-    /**
-     * @return if the shuffle option is active
-     */
-    public boolean isShuffled() {
-        return this.shuffle;
-    }
-
-    /**
      * @return an object which describes the current state of the musicplayer
      */
     public MusicPlayerStatusOutput getStatus() {
@@ -608,6 +571,63 @@ public final class Musicplayer {
         playerStatus.setPaused(this.paused);
 
         return playerStatus;
+    }
+
+    /**
+     * @return true if a song is loaded
+     */
+    public boolean isSongLoaded() {
+        return this.currentSong != null;
+    }
+
+    /**
+     * @return true if a Playlist is loaded
+     */
+    public boolean isPlaylistLoaded() {
+        return this.currentPlaylist != null;
+    }
+
+    /**
+     * @return true if a Playlist is loaded
+     */
+    public boolean isAlbumLoaded() {
+        return this.currentAlbum != null;
+    }
+
+    /**
+     * @return true if a podcast is loaded
+     */
+    public boolean isPodcastLoaded() {
+        return this.currentPodcast != null;
+    }
+
+    /**
+     * @return if anything is loaded
+     */
+    public boolean isLoaded() {
+        return this.isSongLoaded() || this.isPlaylistLoaded()
+                || this.isPodcastLoaded() || this.isAlbumLoaded();
+    }
+
+    /**
+     * @return if the player is pause
+     */
+    public boolean isPaused() {
+        return this.paused;
+    }
+
+    /**
+     * @return if the player is on repeat
+     */
+    public boolean isOnRepeat() {
+        return this.repeat != 0;
+    }
+
+    /**
+     * @return if the shuffle option is active
+     */
+    public boolean isShuffled() {
+        return this.shuffle;
     }
 }
 

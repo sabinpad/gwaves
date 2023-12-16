@@ -39,6 +39,8 @@ public final class Searchbar {
         this.resultsPlaylist = null;
         this.resultsAlbum = null;
         this.resultsPodcast = null;
+        this.resultsArtist = null;
+        this.resultsHost = null;
     }
 
     /**
@@ -68,7 +70,7 @@ public final class Searchbar {
     /**
      * @param filter used to search for the playlists
      * @return an ArrayList containg the name of the playlists that have been
-     * found
+     *         found
      */
     public ArrayList<String> searchPlaylists(final FilterInput filter) {
         ArrayList<String> resultsName = new ArrayList<>();
@@ -94,7 +96,7 @@ public final class Searchbar {
     /**
      * @param filter used to search for the playlists
      * @return an ArrayList containg the name of the playlists that have been
-     * found
+     *         found
      */
     public ArrayList<String> searchAlbums(final FilterInput filter) {
         ArrayList<String> resultsName = new ArrayList<>();
@@ -119,7 +121,7 @@ public final class Searchbar {
     /**
      * @param filter used to search for the podcasts
      * @return an ArrayList containg the name of the podcasts that have been
-     * found
+     *         found
      */
     public ArrayList<String> searchPodcasts(final FilterInput filter) {
         ArrayList<String> resultsName = new ArrayList<>();
@@ -141,6 +143,11 @@ public final class Searchbar {
         return resultsName;
     }
 
+    /**
+     *
+     * @param filter
+     * @return
+     */
     public ArrayList<String> searchArtists(final FilterInput filter) {
         ArrayList<String> resultsName = new ArrayList<>();
 
@@ -159,6 +166,11 @@ public final class Searchbar {
         return resultsName;
     }
 
+    /**
+     *
+     * @param filter
+     * @return
+     */
     public ArrayList<String> searchHosts(final FilterInput filter) {
         ArrayList<String> resultsName = new ArrayList<>();
 
@@ -216,6 +228,7 @@ public final class Searchbar {
 
     /**
      * After the call the search results are cleared
+     *
      * @return selected song
      */
     public Song getSelectedSong() {
@@ -233,6 +246,7 @@ public final class Searchbar {
 
     /**
      * After the call the search results are cleared
+     *
      * @return selected playlist
      */
     public Playlist getSelectedPlaylist() {
@@ -249,7 +263,16 @@ public final class Searchbar {
     }
 
     /**
+     *
+     * @return
+     */
+    public Playlist getPlaylistForFollow() {
+        return this.resultsPlaylist.get(this.resultsIndex);
+    }
+
+    /**
      * After the call the search results are cleared
+     *
      * @return selected album
      */
     public Album getSelectedAlbum() {
@@ -267,6 +290,7 @@ public final class Searchbar {
 
     /**
      * After the call the search results are cleared
+     *
      * @return selected podcast
      */
     public Podcast getSelectedPodcast() {
@@ -284,6 +308,7 @@ public final class Searchbar {
 
     /**
      * After the call the search results are cleared
+     *
      * @return selected artist
      */
     public Artist getSelectedArtist() {
@@ -301,6 +326,7 @@ public final class Searchbar {
 
     /**
      * After the call the search results are cleared
+     *
      * @return selected host
      */
     public Host getSelectedHost() {
@@ -321,11 +347,11 @@ public final class Searchbar {
      */
     public boolean isEmpty() {
         return this.resultsSong == null
-               && this.resultsPlaylist == null
-               && this.resultsAlbum == null
-               && this.resultsPodcast == null
-               && this.resultsArtist == null
-               && this.resultsHost == null;
+                && this.resultsPlaylist == null
+                && this.resultsAlbum == null
+                && this.resultsPodcast == null
+                && this.resultsArtist == null
+                && this.resultsHost == null;
     }
 
     /**

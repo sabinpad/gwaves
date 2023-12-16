@@ -52,6 +52,10 @@ public final class Song extends AudioRec implements Filterable {
         return this.likes.intValue();
     }
 
+    public String getArtist() {
+        return this.artist;
+    }
+
     /**
      * @param filter used to match
      * @return true if the song is matched by the filter

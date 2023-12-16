@@ -1,13 +1,27 @@
 package gwaves.tools;
 
+import java.util.ArrayList;
+
 import fileio.input.CommandInput;
 import fileio.output.CommandOutput;
 
-import gwaves.context.*;
+import gwaves.context.User;
+import gwaves.context.NormalUser;
+import gwaves.context.Artist;
+import gwaves.context.Host;
 import gwaves.storage.DataBase;
 
-public class CommandExecuter {
-    public static CommandOutput run(CommandInput commandInput) {
+public final class CommandExecuter {
+    private CommandExecuter() {
+
+    }
+
+    /**
+     *
+     * @param commandInput
+     * @return
+     */
+    public static CommandOutput run(final CommandInput commandInput) {
         CommandOutput commandOutput = new CommandOutput();
 
         commandOutput.setCommand(commandInput.getCommand());
@@ -15,6 +29,12 @@ public class CommandExecuter {
         commandOutput.setTimestamp(commandInput.getTimestamp());
 
         switch (commandInput.getCommand()) {
+            case "changePage":
+                CommandExecuter.execChangePage(commandInput, commandOutput);
+                break;
+            case "printCurrentPage":
+                CommandExecuter.execPrintPage(commandInput, commandOutput);
+                break;
             case "addUser":
                 CommandExecuter.execAddUser(commandInput, commandOutput);
                 break;
@@ -107,7 +127,7 @@ public class CommandExecuter {
                 break;
             case "showPodcasts":
                 CommandExecuter.execShowPodcasts(commandInput, commandOutput);
-                    break;
+                break;
             case "switchConnectionStatus":
                 CommandExecuter.execSwitchConnectionStatus(commandInput, commandOutput);
                 break;
@@ -136,19 +156,33 @@ public class CommandExecuter {
         return commandOutput;
     }
 
-    private static void execSearch(CommandInput commandInput, CommandOutput commandOutput) {
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execSearch(final CommandInput commandInput,
+                                   final CommandOutput commandOutput) {
         NormalUser normaluser = DataBase.getInstance().queryNormalUser(commandInput.getUsername());
-        
+
         if (!normaluser.isActive()) {
             commandOutput.setMessage(commandInput.getUsername() + " is offline.");
+            commandOutput.setResults(new ArrayList<>());
             return;
         }
 
-        commandOutput.setResults(normaluser.doSearch(commandInput.getType(), commandInput.getFilters()));
+        commandOutput.setResults(normaluser.doSearch(commandInput.getType(),
+                                 commandInput.getFilters()));
         commandOutput.setMessage(normaluser.getLastCommandMessage());
     }
 
-    private static void execSelect(CommandInput commandInput, CommandOutput commandOutput) {
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execSelect(final CommandInput commandInput,
+                                   final CommandOutput commandOutput) {
         NormalUser normaluser = DataBase.getInstance().queryNormalUser(commandInput.getUsername());
 
         if (!normaluser.isActive()) {
@@ -160,7 +194,13 @@ public class CommandExecuter {
         commandOutput.setMessage(normaluser.getLastCommandMessage());
     }
 
-    private static void execLoad(CommandInput commandInput, CommandOutput commandOutput) {
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execLoad(final CommandInput commandInput,
+                                 final CommandOutput commandOutput) {
         NormalUser normaluser = DataBase.getInstance().queryNormalUser(commandInput.getUsername());
 
         if (!normaluser.isActive()) {
@@ -172,7 +212,13 @@ public class CommandExecuter {
         commandOutput.setMessage(normaluser.getLastCommandMessage());
     }
 
-    private static void execPlayPause(CommandInput commandInput, CommandOutput commandOutput) {
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execPlayPause(final CommandInput commandInput,
+                                      final CommandOutput commandOutput) {
         NormalUser normaluser = DataBase.getInstance().queryNormalUser(commandInput.getUsername());
 
         if (!normaluser.isActive()) {
@@ -184,7 +230,13 @@ public class CommandExecuter {
         commandOutput.setMessage(normaluser.getLastCommandMessage());
     }
 
-    private static void execRepeat(CommandInput commandInput, CommandOutput commandOutput) {
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execRepeat(final CommandInput commandInput,
+                                   final CommandOutput commandOutput) {
         NormalUser normaluser = DataBase.getInstance().queryNormalUser(commandInput.getUsername());
 
         if (!normaluser.isActive()) {
@@ -196,7 +248,13 @@ public class CommandExecuter {
         commandOutput.setMessage(normaluser.getLastCommandMessage());
     }
 
-    private static void execShuffle(CommandInput commandInput, CommandOutput commandOutput) {
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execShuffle(final CommandInput commandInput,
+                                    final CommandOutput commandOutput) {
         NormalUser normaluser = DataBase.getInstance().queryNormalUser(commandInput.getUsername());
 
         if (!normaluser.isActive()) {
@@ -213,7 +271,13 @@ public class CommandExecuter {
         commandOutput.setMessage(normaluser.getLastCommandMessage());
     }
 
-    private static void execForward(CommandInput commandInput, CommandOutput commandOutput) {
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execForward(final CommandInput commandInput,
+                                    final CommandOutput commandOutput) {
         NormalUser normaluser = DataBase.getInstance().queryNormalUser(commandInput.getUsername());
 
         if (!normaluser.isActive()) {
@@ -225,7 +289,13 @@ public class CommandExecuter {
         commandOutput.setMessage(normaluser.getLastCommandMessage());
     }
 
-    private static void execBackward(CommandInput commandInput, CommandOutput commandOutput) {
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execBackward(final CommandInput commandInput,
+                                     final CommandOutput commandOutput) {
         NormalUser normaluser = DataBase.getInstance().queryNormalUser(commandInput.getUsername());
 
         if (!normaluser.isActive()) {
@@ -237,7 +307,13 @@ public class CommandExecuter {
         commandOutput.setMessage(normaluser.getLastCommandMessage());
     }
 
-    private static void execLike(CommandInput commandInput, CommandOutput commandOutput) {
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execLike(final CommandInput commandInput,
+                                 final CommandOutput commandOutput) {
         NormalUser normaluser = DataBase.getInstance().queryNormalUser(commandInput.getUsername());
 
         if (!normaluser.isActive()) {
@@ -249,7 +325,13 @@ public class CommandExecuter {
         commandOutput.setMessage(normaluser.getLastCommandMessage());
     }
 
-    private static void execNext(CommandInput commandInput, CommandOutput commandOutput) {
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execNext(final CommandInput commandInput,
+                                 final CommandOutput commandOutput) {
         NormalUser normaluser = DataBase.getInstance().queryNormalUser(commandInput.getUsername());
 
         if (!normaluser.isActive()) {
@@ -261,7 +343,13 @@ public class CommandExecuter {
         commandOutput.setMessage(normaluser.getLastCommandMessage());
     }
 
-    private static void execPrev(CommandInput commandInput, CommandOutput commandOutput) {
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execPrev(final CommandInput commandInput,
+                                 final CommandOutput commandOutput) {
         NormalUser normaluser = DataBase.getInstance().queryNormalUser(commandInput.getUsername());
 
         if (!normaluser.isActive()) {
@@ -273,7 +361,13 @@ public class CommandExecuter {
         commandOutput.setMessage(normaluser.getLastCommandMessage());
     }
 
-    private static void execAddRemoveInPlaylist(CommandInput commandInput, CommandOutput commandOutput) {
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execAddRemoveInPlaylist(final CommandInput commandInput,
+                                                final CommandOutput commandOutput) {
         NormalUser normaluser = DataBase.getInstance().queryNormalUser(commandInput.getUsername());
 
         if (!normaluser.isActive()) {
@@ -284,15 +378,27 @@ public class CommandExecuter {
         normaluser.doAddRemoveInPlaylist(commandInput.getPlaylistId());
         commandOutput.setMessage(normaluser.getLastCommandMessage());
     }
-    
-    private static void execStatus(CommandInput commandInput, CommandOutput commandOutput) {
+
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execStatus(final CommandInput commandInput,
+                                   final CommandOutput commandOutput) {
         NormalUser normaluser = DataBase.getInstance().queryNormalUser(commandInput.getUsername());
 
         commandOutput.setStats(normaluser.doMPlayerStatus());
         commandOutput.setMessage(normaluser.getLastCommandMessage());
     }
 
-    private static void execCreatePlaylist(CommandInput commandInput, CommandOutput commandOutput) {
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execCreatePlaylist(final CommandInput commandInput,
+                                           final CommandOutput commandOutput) {
         NormalUser normaluser = DataBase.getInstance().queryNormalUser(commandInput.getUsername());
 
         if (!normaluser.isActive()) {
@@ -304,7 +410,13 @@ public class CommandExecuter {
         commandOutput.setMessage(normaluser.getLastCommandMessage());
     }
 
-    private static void execSwitchVisibility(CommandInput commandInput, CommandOutput commandOutput) {
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execSwitchVisibility(final CommandInput commandInput,
+                                             final CommandOutput commandOutput) {
         NormalUser normaluser = DataBase.getInstance().queryNormalUser(commandInput.getUsername());
 
         if (!normaluser.isActive()) {
@@ -316,7 +428,13 @@ public class CommandExecuter {
         commandOutput.setMessage(normaluser.getLastCommandMessage());
     }
 
-    private static void execFollow(CommandInput commandInput, CommandOutput commandOutput) {
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execFollow(final CommandInput commandInput,
+                                   final CommandOutput commandOutput) {
         NormalUser normaluser = DataBase.getInstance().queryNormalUser(commandInput.getUsername());
 
         if (!normaluser.isActive()) {
@@ -328,34 +446,98 @@ public class CommandExecuter {
         commandOutput.setMessage(normaluser.getLastCommandMessage());
     }
 
-    private static void execShowPlaylists(CommandInput commandInput, CommandOutput commandOutput) {
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execShowPlaylists(final CommandInput commandInput,
+                                          final CommandOutput commandOutput) {
         NormalUser normaluser = DataBase.getInstance().queryNormalUser(commandInput.getUsername());
-        
+
         commandOutput.setResult(normaluser.doShowPlaylists());
         commandOutput.setMessage(normaluser.getLastCommandMessage());
     }
 
-    private static void execShowPreferredSongs(CommandInput commandInput, CommandOutput commandOutput) {
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execShowPreferredSongs(final CommandInput commandInput,
+                                               final CommandOutput commandOutput) {
         NormalUser normaluser = DataBase.getInstance().queryNormalUser(commandInput.getUsername());
 
         commandOutput.setResult(normaluser.getPreferredSongsName());
     }
 
-    private static void execGetTop5Songs(CommandInput commandInput, CommandOutput commandOutput) {
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execGetTop5Songs(final CommandInput commandInput,
+                                         final CommandOutput commandOutput) {
         commandOutput.setResult(DataBase.getInstance().getTop5SongsName());
     }
 
-    private static void execGetTop5Playlists(CommandInput commandInput, CommandOutput commandOutput) {
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execGetTop5Playlists(final CommandInput commandInput,
+                                             final CommandOutput commandOutput) {
         commandOutput.setResult(DataBase.getInstance().getTop5PlaylistsName());
     }
 
-    //
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execChangePage(final CommandInput commandInput,
+                                       final CommandOutput commandOutput) {
+        NormalUser normaluser = DataBase.getInstance().queryNormalUser(commandInput.getUsername());
 
-    private static void execSwitchConnectionStatus(CommandInput commandInput, CommandOutput commandOutput) {
+        if (!normaluser.isActive()) {
+            commandOutput.setMessage(commandInput.getUsername() + " is offline.");
+            return;
+        }
+
+        normaluser.doChangePage(commandInput.getNextPage());
+        commandOutput.setMessage(normaluser.getLastCommandMessage());
+    }
+
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execPrintPage(final CommandInput commandInput,
+                                      final CommandOutput commandOutput) {
+        NormalUser normaluser = DataBase.getInstance().queryNormalUser(commandInput.getUsername());
+
+        if (!normaluser.isActive()) {
+            commandOutput.setMessage(commandInput.getUsername() + " is offline.");
+            return;
+        }
+
+        commandOutput.setMessage(normaluser.doGetPage());
+    }
+
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execSwitchConnectionStatus(final CommandInput commandInput,
+                                                   final CommandOutput commandOutput) {
         NormalUser user = null;
 
         if (DataBase.getInstance().queryUser(commandInput.getUsername()) == null) {
-            commandOutput.setMessage("The username " + commandInput.getUsername() + " doesn't exist.");
+            commandOutput.setMessage("The username " + commandInput.getUsername()
+                                     + " doesn't exist.");
             return;
         }
 
@@ -367,62 +549,124 @@ public class CommandExecuter {
         }
 
         user.doSwitchStatus();
-  
+
         commandOutput.setMessage(user.getLastCommandMessage());
     }
 
-    private static void execAddUser(CommandInput commandInput, CommandOutput commandOutput) {
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execAddUser(final CommandInput commandInput,
+                                    final CommandOutput commandOutput) {
+        NormalUser normaluser;
         DataBase database = DataBase.getInstance();
 
         if (database.queryUser(commandInput.getUsername()) != null) {
-            commandOutput.setMessage("The username " + commandInput.getUsername() + " is already taken.");
+            commandOutput.setMessage("The username " + commandInput.getUsername()
+                                     + " is already taken.");
             return;
         }
 
         switch (commandInput.getType()) {
             case "user":
-                database.addNormalUser(new NormalUser(commandInput.getUsername(), commandInput.getAge(), commandInput.getCity()));
+                normaluser = new NormalUser(commandInput.getUsername(),
+                                            commandInput.getAge(),
+                                            commandInput.getCity());
+                database.addNormalUser(normaluser);
+                UserManager.getInstance().addUser(normaluser);
                 break;
             case "artist":
-                database.addArtist(new Artist(commandInput.getUsername(), commandInput.getAge(), commandInput.getCity()));
+                database.addArtist(
+                        new Artist(commandInput.getUsername(),
+                                   commandInput.getAge(),
+                                   commandInput.getCity()));
                 break;
             case "host":
-                database.addHost(new Host(commandInput.getUsername(), commandInput.getAge(), commandInput.getCity()));
+                database.addHost(new Host(commandInput.getUsername(),
+                                          commandInput.getAge(),
+                                          commandInput.getCity()));
                 break;
             default:
                 return;
         }
 
-        commandOutput.setMessage("The username " + commandInput.getUsername() + " has been added successfully.");
+        commandOutput.setMessage("The username " + commandInput.getUsername()
+                                 + " has been added successfully.");
     }
 
-    private static void execDeleteUser(CommandInput commandInput, CommandOutput commandOutput) {
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execDeleteUser(final CommandInput commandInput,
+                                       final CommandOutput commandOutput) {
         User user = null;
         DataBase database = DataBase.getInstance();
-        
+        UserManager userManager = UserManager.getInstance();
+
         user = database.queryUser(commandInput.getUsername());
 
         if (user == null) {
-            commandOutput.setMessage("The username " + commandInput.getUsername() + " doesn't exist.");
+            commandOutput.setMessage("The username " + commandInput.getUsername()
+                                     + " doesn't exist.");
             return;
         }
 
-        // if (!UserManager.getInstance().isSafeToRemove(user)) {
-        //     commandOutput.setMessage(commandInput.getUsername() + " can't be deleted.");
-        //     return;
-        // }
-        
-        // TODO
-        // database.removeUser(user);
+        if (database.queryNormalUser(commandInput.getUsername()) != null) {
+            NormalUser normaluser = database.queryNormalUser(commandInput.getUsername());
+
+            if (!userManager.isSafeToRemove(normaluser)) {
+                commandOutput.setMessage(commandInput.getUsername() + " can't be deleted.");
+                return;
+            }
+
+            userManager.rmvUser(normaluser);
+            userManager.toUnlink(normaluser);
+
+            normaluser.rmvAllHistory();
+            database.removeNormalUser(normaluser);
+        } else if (database.queryArtist(commandInput.getUsername()) != null) {
+            Artist artist = database.queryArtist(commandInput.getUsername());
+
+            if (!userManager.isSafeToRemove(artist)) {
+                commandOutput.setMessage(commandInput.getUsername() + " can't be deleted.");
+                return;
+            }
+
+            userManager.toUnlink(artist);
+
+            artist.rmvAllAlbums();
+            database.removeArtist(artist);
+        } else if (database.queryHost(commandInput.getUsername()) != null) {
+            Host host = database.queryHost(commandInput.getUsername());
+
+            if (!userManager.isSafeToRemove(host)) {
+                commandOutput.setMessage(commandInput.getUsername() + " can't be deleted.");
+                return;
+            }
+
+            host.rmvAllPodcasts();
+            database.removeHost(host);
+        }
 
         commandOutput.setMessage(commandInput.getUsername() + " was successfully deleted.");
     }
 
-    private static void execAddAlbum(CommandInput commandInput, CommandOutput commandOutput) {
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execAddAlbum(final CommandInput commandInput,
+                                     final CommandOutput commandOutput) {
         Artist artist = null;
 
         if (DataBase.getInstance().queryUser(commandInput.getUsername()) == null) {
-            commandOutput.setMessage("The username " + commandInput.getUsername() + " doesn't exist.");
+            commandOutput.setMessage("The username " + commandInput.getUsername()
+                                     + " doesn't exist.");
             return;
         }
 
@@ -434,19 +678,26 @@ public class CommandExecuter {
         }
 
         artist.doAddAlbum(commandInput.getName(),
-                          commandInput.getUsername(),
-                          commandInput.getReleaseYear(),
-                          commandInput.getDescription(),
-                          commandInput.getSongs());
-  
+                commandInput.getUsername(),
+                commandInput.getReleaseYear(),
+                commandInput.getDescription(),
+                commandInput.getSongs());
+
         commandOutput.setMessage(artist.getLastCommandMessage());
     }
 
-    private static void execRemoveAlbum(CommandInput commandInput, CommandOutput commandOutput) {
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execRemoveAlbum(final CommandInput commandInput,
+                                        final CommandOutput commandOutput) {
         Artist artist = null;
 
         if (DataBase.getInstance().queryUser(commandInput.getUsername()) == null) {
-            commandOutput.setMessage("The username " + commandInput.getUsername() + " doesn't exist.");
+            commandOutput.setMessage("The username " + commandInput.getUsername()
+                                     + " doesn't exist.");
             return;
         }
 
@@ -458,15 +709,22 @@ public class CommandExecuter {
         }
 
         artist.doRmvAlbum(commandInput.getName());
-  
+
         commandOutput.setMessage(artist.getLastCommandMessage());
     }
 
-    private static void execAddEvent(CommandInput commandInput, CommandOutput commandOutput) {
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execAddEvent(final CommandInput commandInput,
+                                     final CommandOutput commandOutput) {
         Artist artist = null;
 
         if (DataBase.getInstance().queryUser(commandInput.getUsername()) == null) {
-            commandOutput.setMessage("The username " + commandInput.getUsername() + " doesn't exist.");
+            commandOutput.setMessage("The username " + commandInput.getUsername()
+                                     + " doesn't exist.");
             return;
         }
 
@@ -478,17 +736,24 @@ public class CommandExecuter {
         }
 
         artist.doAddEvent(commandInput.getName(),
-                          commandInput.getDescription(),
-                          commandInput.getDate());
-  
+                commandInput.getDescription(),
+                commandInput.getDate());
+
         commandOutput.setMessage(artist.getLastCommandMessage());
     }
 
-    private static void execRemoveEvent(CommandInput commandInput, CommandOutput commandOutput) {
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execRemoveEvent(final CommandInput commandInput,
+                                        final CommandOutput commandOutput) {
         Artist artist = null;
 
         if (DataBase.getInstance().queryUser(commandInput.getUsername()) == null) {
-            commandOutput.setMessage("The username " + commandInput.getUsername() + " doesn't exist.");
+            commandOutput.setMessage("The username " + commandInput.getUsername()
+                                     + " doesn't exist.");
             return;
         }
 
@@ -500,15 +765,22 @@ public class CommandExecuter {
         }
 
         artist.doRmvEvent(commandInput.getName());
-  
+
         commandOutput.setMessage(artist.getLastCommandMessage());
     }
 
-    private static void execAddMerch(CommandInput commandInput, CommandOutput commandOutput) {
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execAddMerch(final CommandInput commandInput,
+                                     final CommandOutput commandOutput) {
         Artist artist = null;
 
         if (DataBase.getInstance().queryUser(commandInput.getUsername()) == null) {
-            commandOutput.setMessage("The username " + commandInput.getUsername() + " doesn't exist.");
+            commandOutput.setMessage("The username " + commandInput.getUsername()
+                                     + " doesn't exist.");
             return;
         }
 
@@ -520,22 +792,35 @@ public class CommandExecuter {
         }
 
         artist.doAddMerch(commandInput.getName(),
-                          commandInput.getDescription(),
-                          commandInput.getPrice());
-  
+                commandInput.getDescription(),
+                commandInput.getPrice());
+
         commandOutput.setMessage(artist.getLastCommandMessage());
     }
 
-    private static void execShowAlbums(CommandInput commandInput, CommandOutput commandOutput) {
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execShowAlbums(final CommandInput commandInput,
+                                       final CommandOutput commandOutput) {
         Artist artist = DataBase.getInstance().queryArtist(commandInput.getUsername());
         commandOutput.setResult(artist.doShowAlbums());
     }
 
-    private static void execAddPodcast(CommandInput commandInput, CommandOutput commandOutput) {
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execAddPodcast(final CommandInput commandInput,
+                                       final CommandOutput commandOutput) {
         Host host = null;
 
         if (DataBase.getInstance().queryUser(commandInput.getUsername()) == null) {
-            commandOutput.setMessage("The username " + commandInput.getUsername() + " doesn't exist.");
+            commandOutput.setMessage("The username " + commandInput.getUsername()
+                                     + " doesn't exist.");
             return;
         }
 
@@ -547,17 +832,24 @@ public class CommandExecuter {
         }
 
         host.doAddPodcast(commandInput.getName(),
-                          commandInput.getUsername(),
-                          commandInput.getEpisodes());
-  
+                commandInput.getUsername(),
+                commandInput.getEpisodes());
+
         commandOutput.setMessage(host.getLastCommandMessage());
     }
 
-    private static void execRemovePodcast(CommandInput commandInput, CommandOutput commandOutput) {
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execRemovePodcast(final CommandInput commandInput,
+                                          final CommandOutput commandOutput) {
         Host host = null;
 
         if (DataBase.getInstance().queryUser(commandInput.getUsername()) == null) {
-            commandOutput.setMessage("The username " + commandInput.getUsername() + " doesn't exist.");
+            commandOutput.setMessage("The username " + commandInput.getUsername()
+                                     + " doesn't exist.");
             return;
         }
 
@@ -569,15 +861,22 @@ public class CommandExecuter {
         }
 
         host.doRmvPodcast(commandInput.getName());
-  
+
         commandOutput.setMessage(host.getLastCommandMessage());
     }
 
-    private static void execAddAnnouncement(CommandInput commandInput, CommandOutput commandOutput) {
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execAddAnnouncement(final CommandInput commandInput,
+                                            final CommandOutput commandOutput) {
         Host host = null;
 
         if (DataBase.getInstance().queryUser(commandInput.getUsername()) == null) {
-            commandOutput.setMessage("The username " + commandInput.getUsername() + " doesn't exist.");
+            commandOutput.setMessage("The username " + commandInput.getUsername()
+                                     + " doesn't exist.");
             return;
         }
 
@@ -589,15 +888,22 @@ public class CommandExecuter {
         }
 
         host.doAddAnnouncement(commandInput.getName(), commandInput.getDescription());
-  
+
         commandOutput.setMessage(host.getLastCommandMessage());
     }
 
-    private static void execRemoveAnnouncement(CommandInput commandInput, CommandOutput commandOutput) {
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execRemoveAnnouncement(final CommandInput commandInput,
+                                               final CommandOutput commandOutput) {
         Host host = null;
 
         if (DataBase.getInstance().queryUser(commandInput.getUsername()) == null) {
-            commandOutput.setMessage("The username " + commandInput.getUsername() + " doesn't exist.");
+            commandOutput.setMessage("The username " + commandInput.getUsername()
+                                     + " doesn't exist.");
             return;
         }
 
@@ -609,28 +915,58 @@ public class CommandExecuter {
         }
 
         host.doRmvAnnouncement(commandInput.getName());
-  
+
         commandOutput.setMessage(host.getLastCommandMessage());
     }
 
-    private static void execShowPodcasts(CommandInput commandInput, CommandOutput commandOutput) {
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execShowPodcasts(final CommandInput commandInput,
+                                         final CommandOutput commandOutput) {
         Host host = DataBase.getInstance().queryHost(commandInput.getUsername());
         commandOutput.setResult(host.doShowPodcasts());
     }
 
-    private static void execGetTop5AlbumsName(CommandInput commandInput, CommandOutput commandOutput) {
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execGetTop5AlbumsName(final CommandInput commandInput,
+                                              final CommandOutput commandOutput) {
         commandOutput.setResult(DataBase.getInstance().getTop5AlbumsName());
     }
 
-    private static void execGetTop5ArtistsName(CommandInput commandInput, CommandOutput commandOutput) {
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execGetTop5ArtistsName(final CommandInput commandInput,
+                                               final CommandOutput commandOutput) {
         commandOutput.setResult(DataBase.getInstance().getTop5ArtistsName());
     }
 
-    private static void execGetAllUsersName(CommandInput commandInput, CommandOutput commandOutput) {
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execGetAllUsersName(final CommandInput commandInput,
+                                            final CommandOutput commandOutput) {
         commandOutput.setResult(DataBase.getInstance().getAllUsersName());
     }
 
-    private static void execGetOnlineUsersName(CommandInput commandInput, CommandOutput commandOutput) {
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execGetOnlineUsersName(final CommandInput commandInput,
+                                               final CommandOutput commandOutput) {
         commandOutput.setResult(DataBase.getInstance().getOnlineUsersName());
     }
 }

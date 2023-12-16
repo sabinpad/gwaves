@@ -15,11 +15,12 @@ public final class Podcast extends AudioCollection implements Filterable {
     /**
      * Create new Podcast object
      *
-     * @param name of Podcast
-     * @param owner name of Podcast owner
+     * @param name          of Podcast
+     * @param owner         name of Podcast owner
      * @param episodesInput list of episodes
      */
-    public Podcast(final String name, final String owner, final ArrayList<EpisodeInput> episodesInput) {
+    public Podcast(final String name, final String owner,
+                   final ArrayList<EpisodeInput> episodesInput) {
         super(name, owner);
 
         this.episodes = new ArrayList<>();
@@ -65,6 +66,17 @@ public final class Podcast extends AudioCollection implements Filterable {
         return this.episodes.get(number);
     }
 
+    /**
+     *
+     * @return
+     */
+    public ArrayList<Episode> getEpisodes() {
+        return this.episodes;
+    }
+
+    /**
+     *
+     */
     public ArrayList<String> getEpisodesNameList() {
         ArrayList<String> nameList = new ArrayList<>();
 

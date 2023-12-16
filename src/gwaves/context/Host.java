@@ -7,14 +7,19 @@ import fileio.input.FilterInput;
 import fileio.input.EpisodeInput;
 import fileio.output.PodcastOutput;
 
+import gwaves.sample.Episode;
 import gwaves.collection.Podcast;
 import gwaves.storage.DataBase;
+import gwaves.tools.UserManager;
 import gwaves.util.Filterable;
+import gwaves.ui.PageCreator;
 
-public class Host extends User implements Filterable {
+public final class Host extends User implements Filterable {
     private LinkedHashMap<String, HostAnnouncement> announcements;
 
     private LinkedHashMap<String, Podcast> podcasts;
+
+    private HostPageCreator pageCreator;
 
     /**
      * Create new Host object
@@ -23,21 +28,36 @@ public class Host extends User implements Filterable {
      * @param age
      * @param city
      */
-    public Host(String username, int age, String city) {
+    public Host(final String username, final int age, final String city) {
         super(username, age, city);
 
         this.announcements = new LinkedHashMap<>();
         this.podcasts = new LinkedHashMap<>();
+        this.pageCreator = new HostPageCreator(announcements, podcasts);
     }
 
-    public void doAddPodcast(final String name, final String owner, final ArrayList<EpisodeInput> episodesInput) {
+    /**
+     *
+     * @param name
+     * @param owner
+     * @param episodesInput
+     */
+    public void doAddPodcast(final String name, final String owner,
+                             final ArrayList<EpisodeInput> episodesInput) {
         if (this.podcasts.containsKey(name)) {
             this.commandMessage = this.getUserName() + " has another podcast with the same name.";
             return;
         }
 
-        // TODO sa verific daca podcastul are 2 episoade la fel
-        // this.commandMessage = this.getUserName() + " has the same episode in this podcast.";
+        for (var ep1 : episodesInput) {
+            for (var ep2 : episodesInput) {
+                if (ep1.getName().equals(ep2.getName()) && (ep1 != ep2)) {
+                    this.commandMessage = this.getUserName()
+                                          + " has the same episode in this podcast.";
+                    return;
+                }
+            }
+        }
 
         Podcast newPodcast = new Podcast(name, owner, episodesInput);
         DataBase database = DataBase.getInstance();
@@ -48,42 +68,67 @@ public class Host extends User implements Filterable {
         this.commandMessage = this.getUserName() + " has added new podcast successfully.";
     }
 
-    public void doRmvPodcast(String name) {
+    /**
+     *
+     * @param name
+     */
+    public void doRmvPodcast(final String name) {
         if (!this.podcasts.containsKey(name)) {
-            this.commandMessage = this.getUserName() + " doesn't have a podcast with the given name.";
+            this.commandMessage = this.getUserName()
+                                  + " doesn't have a podcast with the given name.";
             return;
         }
 
-        // TODO sa verific daca cineva asculta podcastul
-        // this.commandMessage = this.getUserName() + " can't delete this podcast.";
+        if (!UserManager.getInstance().isSafeToRemove(this.podcasts.get(name))) {
+            this.commandMessage = this.getUserName() + " can't delete this podcast.";
+            return;
+        }
 
+        DataBase.getInstance().removePodcast(this.podcasts.get(name));
         this.podcasts.remove(name);
 
         this.commandMessage = this.getUserName() + " deleted the podcast successfully.";
     }
 
-    public void doAddAnnouncement(String name, String description) {
+    /**
+     *
+     * @param name
+     * @param description
+     */
+    public void doAddAnnouncement(final String name, final String description) {
         if (this.announcements.containsKey(name)) {
-            this.commandMessage = this.getUserName() + " has already added an announcement with this name.";
+            this.commandMessage = this.getUserName()
+                                  + " has already added an announcement with this name.";
             return;
         }
 
         this.announcements.put(name, new HostAnnouncement(name, description));
 
-        this.commandMessage = this.getUserName() + " has successfully added new announcement.";
+        this.commandMessage = this.getUserName()
+                            + " has successfully added new announcement.";
     }
 
-    public void doRmvAnnouncement(String name) {
+    /**
+     *
+     * @param name
+     */
+    public void doRmvAnnouncement(final String name) {
         if (!this.announcements.containsKey(name)) {
-            this.commandMessage = this.getUserName() + " has no announcement with the given name.";
+            this.commandMessage = this.getUserName()
+                                  + " has no announcement with the given name.";
             return;
         }
 
         this.announcements.remove(name);
 
-        this.commandMessage = this.getUserName() + " has successfully deleted the announcement.";
+        this.commandMessage = this.getUserName()
+                              + " has successfully deleted the announcement.";
     }
 
+    /**
+     *
+     * @return
+     */
     public ArrayList<PodcastOutput> doShowPodcasts() {
         PodcastOutput podOutput;
         ArrayList<PodcastOutput> result = new ArrayList<>();
@@ -102,7 +147,54 @@ public class Host extends User implements Filterable {
         return result;
     }
 
-    public boolean isMatchedByFilter(FilterInput filter) {
+    /**
+     *
+     * @return
+     */
+    public String doGetPage() {
+        return this.pageCreator.createPage();
+    }
+
+    /**
+     *
+     * @return
+     */
+    public PageCreator getPageCreator() {
+        return this.pageCreator;
+    }
+
+    /**
+     *
+     */
+    public void rmvAllPodcasts() {
+        DataBase database = DataBase.getInstance();
+
+        for (var entry : this.podcasts.entrySet()) {
+            database.removePodcast(entry.getValue());
+        }
+    }
+
+    /**
+     *
+     * @return
+     */
+    public ArrayList<Podcast> getPodcasts() {
+        return new ArrayList<>(this.podcasts.values());
+    }
+
+    /**
+     *
+     * @param name
+     * @return
+     */
+    public boolean hasPodcastWithName(final String name) {
+        return this.podcasts.containsKey(name);
+    }
+
+    /**
+     *
+     */
+    public boolean isMatchedByFilter(final FilterInput filter) {
         if (filter.getName() != null) {
             if (!this.getUserName().startsWith(filter.getName())) {
                 return false;
@@ -117,16 +209,96 @@ class HostAnnouncement {
     private String name;
     private String description;
 
-    public HostAnnouncement(String name, String description) {
+    /**
+     *
+     * @param name
+     * @param description
+     */
+    HostAnnouncement(final String name, final String description) {
         this.name = name;
         this.description = description;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getName() {
         return this.name;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getDescription() {
         return this.description;
+    }
+}
+
+class HostPageCreator implements PageCreator {
+    private LinkedHashMap<String, HostAnnouncement> announcements;
+    private LinkedHashMap<String, Podcast> podcasts;
+
+    /**
+     *
+     * @param announcements
+     * @param podcasts
+     */
+    HostPageCreator(final LinkedHashMap<String, HostAnnouncement> announcements,
+                           final LinkedHashMap<String, Podcast> podcasts) {
+        this.announcements = announcements;
+        this.podcasts = podcasts;
+    }
+
+    /**
+     *
+     */
+    public String createPage() {
+        int i = 0, j = 0;
+        String page = "Podcasts:\n\t[";
+        ArrayList<HostAnnouncement> announs = new ArrayList<>(this.announcements.values());
+        ArrayList<Podcast> modifpodcasts = new ArrayList<>(this.podcasts.values());
+        ArrayList<Episode> episodes;
+
+        for (var podcast : modifpodcasts) {
+            page += (podcast.getName() + ":\n\t[");
+
+            episodes = podcast.getEpisodes();
+
+            i = 0;
+            for (var episode : episodes) {
+                page += (episode.getName() + " - " + episode.getDescription());
+
+                i++;
+                if (i != episodes.size()) {
+                    page += ", ";
+                }
+            }
+
+            page += "]\n";
+
+            j++;
+            if (j != podcasts.size()) {
+                page += ", ";
+            }
+        }
+
+        page += "]\n\nAnnouncements:\n\t[";
+
+        i = 0;
+        for (var announ : announs) {
+            page += (announ.getName() + ":\n\t");
+            page += (announ.getDescription() + "\n");
+
+            i++;
+            if (i != announs.size()) {
+                page += ", ";
+            }
+        }
+
+        page += "]";
+
+        return page;
     }
 }

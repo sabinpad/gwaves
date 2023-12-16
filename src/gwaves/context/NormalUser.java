@@ -11,9 +11,12 @@ import gwaves.sample.Song;
 import gwaves.storage.DataBase;
 import gwaves.tools.Musicplayer;
 import gwaves.tools.Searchbar;
+import gwaves.ui.HomePageCreator;
+import gwaves.ui.LikedPageCreator;
+import gwaves.ui.PageCreator;
 import gwaves.collection.Playlist;
 
-public class NormalUser extends User {
+public final class NormalUser extends User {
     private ArrayList<Song> likedSongs;
     private ArrayList<Playlist> personalPlaylists;
     private ArrayList<Playlist> followedPlaylists;
@@ -23,10 +26,15 @@ public class NormalUser extends User {
 
     private boolean active;
 
+    private PageCreator loadedCreator;
+
+    private HomePageCreator homeCreator;
+    private LikedPageCreator likedCreator;
+
     /**
      * Default Constructor
      */
-    public NormalUser(String username, int age, String city) {
+    public NormalUser(final String username, final int age, final String city) {
         super(username, age, city);
         this.personalPlaylists = new ArrayList<>();
         this.followedPlaylists = new ArrayList<>();
@@ -35,6 +43,9 @@ public class NormalUser extends User {
         this.musicplayer = new Musicplayer();
         this.commandMessage = null;
         this.active = true;
+        this.homeCreator = new HomePageCreator(likedSongs, followedPlaylists);
+        this.likedCreator = new LikedPageCreator(likedSongs, followedPlaylists);
+        this.loadedCreator = this.homeCreator;
     }
 
     /**
@@ -49,12 +60,25 @@ public class NormalUser extends User {
         this.musicplayer = new Musicplayer();
         this.commandMessage = null;
         this.active = true;
+        this.homeCreator = new HomePageCreator(likedSongs, followedPlaylists);
+        this.likedCreator = new LikedPageCreator(likedSongs, followedPlaylists);
+        this.loadedCreator = this.homeCreator;
     }
 
-    public void runMusicPlayer(int timeInterval) {
+    /**
+     *
+     * @param timeInterval
+     */
+    public void runMusicPlayer(final int timeInterval) {
         this.musicplayer.playFor(timeInterval);
     }
 
+    /**
+     *
+     * @param type
+     * @param filter
+     * @return
+     */
     public ArrayList<String> doSearch(final String type, final FilterInput filter) {
         ArrayList<String> results = null;
 
@@ -88,6 +112,10 @@ public class NormalUser extends User {
         return results;
     }
 
+    /**
+     *
+     * @param itemNumber
+     */
     public void doSelect(final int itemNumber) {
         if (this.searchbar.isEmpty()) {
             this.commandMessage = "Please conduct a search before making a selection.";
@@ -101,9 +129,20 @@ public class NormalUser extends User {
 
         this.searchbar.selectResult(itemNumber - 1);
 
-        this.commandMessage = "Successfully selected " + this.searchbar.getSelectedResultName() + ".";
+        if (this.searchbar.searchedForArtists()) {
+            this.commandMessage = "Successfully selected " + this.searchbar.getSelectedResultName() + "'s page.";
+            this.loadedCreator = this.searchbar.getSelectedArtist().getPageCreator();
+        } else if (this.searchbar.searchedForHosts()) {
+            this.commandMessage = "Successfully selected " + this.searchbar.getSelectedResultName() + "'s page.";
+            this.loadedCreator = this.searchbar.getSelectedHost().getPageCreator();
+        } else {
+            this.commandMessage = "Successfully selected " + this.searchbar.getSelectedResultName() + ".";
+        }
     }
 
+    /**
+     *
+     */
     public void doLoad() {
         if (!this.searchbar.isSelected()) {
             this.commandMessage = "Please select a source before attempting to load.";
@@ -123,6 +162,9 @@ public class NormalUser extends User {
         this.commandMessage = "Playback loaded successfully.";
     }
 
+    /**
+     *
+     */
     public void doPlayPause() {
         if (!this.musicplayer.isLoaded()) {
             this.commandMessage = "Please load a source before attempting to pause or resume playback.";
@@ -138,6 +180,9 @@ public class NormalUser extends User {
         }
     }
 
+    /**
+     *
+     */
     public void doRepeat() {
         if (!this.musicplayer.isLoaded()) {
             this.commandMessage = "Please load a source before setting the repeat status.";
@@ -149,6 +194,10 @@ public class NormalUser extends User {
         this.commandMessage = "Repeat mode changed to " + this.musicplayer.getRepeatModeName() + ".";
     }
 
+    /**
+     *
+     * @param seed
+     */
     public void doShuffle(final int seed) {
         if (!this.musicplayer.isLoaded()) {
             this.commandMessage = "Please load a source before using the shuffle function.";
@@ -169,6 +218,9 @@ public class NormalUser extends User {
         }
     }
 
+    /**
+     *
+     */
     public void doForward() {
         if (!this.musicplayer.isLoaded()) {
             this.commandMessage = "Please load a source before attempting to forward.";
@@ -185,6 +237,9 @@ public class NormalUser extends User {
         this.commandMessage = "Skipped forward successfully.";
     }
 
+    /**
+     *
+     */
     public void doBackward() {
         if (!this.musicplayer.isLoaded()) {
             this.commandMessage = "Please select a source before rewinding.";
@@ -201,6 +256,9 @@ public class NormalUser extends User {
         this.commandMessage = "Rewound successfully.";
     }
 
+    /**
+     *
+     */
     public void doLike() {
         Song currentSong;
 
@@ -227,6 +285,9 @@ public class NormalUser extends User {
         }
     }
 
+    /**
+     *
+     */
     public void doNext() {
         String trackName;
 
@@ -246,6 +307,9 @@ public class NormalUser extends User {
         }
     }
 
+    /**
+     *
+     */
     public void doPrev() {
         String trackName;
 
@@ -261,6 +325,10 @@ public class NormalUser extends User {
         this.commandMessage = "Returned to previous track successfully. The current track is " + trackName + ".";
     }
 
+    /**
+     *
+     * @param playlistId
+     */
     public void doAddRemoveInPlaylist(final int playlistId) {
         int playlistIndex;
         Song loadedSong;
@@ -294,6 +362,10 @@ public class NormalUser extends User {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public MusicPlayerStatusOutput doMPlayerStatus() {
         MusicPlayerStatusOutput mpStatusOutput = new MusicPlayerStatusOutput();
 
@@ -333,6 +405,10 @@ public class NormalUser extends User {
         return mpStatusOutput;
     }
 
+    /**
+     *
+     * @param playlistName
+     */
     public void doCreatePlaylist(final String playlistName) {
         Playlist newPlaylist;
         DataBase database;
@@ -353,6 +429,10 @@ public class NormalUser extends User {
         this.commandMessage = "Playlist created successfully.";
     }
 
+    /**
+     *
+     * @param playlistId
+     */
     public void doSwitchVisibility(final int playlistId) {
         int playlistIndex;
         Playlist selectedPlaylist;
@@ -373,6 +453,9 @@ public class NormalUser extends User {
         }
     }
 
+    /**
+     *
+     */
     public void doFollowPlaylist() {
         Playlist selectedPlaylist;
 
@@ -386,7 +469,8 @@ public class NormalUser extends User {
             return;
         }
 
-        selectedPlaylist = this.searchbar.getSelectedPlaylist();
+        // selectedPlaylist = this.searchbar.getSelectedPlaylist();
+        selectedPlaylist = this.searchbar.getPlaylistForFollow();
 
         if (this.personalPlaylists.contains(selectedPlaylist)) {
             this.commandMessage = "You cannot follow or unfollow your own playlist.";
@@ -405,6 +489,10 @@ public class NormalUser extends User {
         this.commandMessage = "Playlist followed successfully.";
     }
 
+    /**
+     *
+     * @return
+     */
     public ArrayList<PlaylistOutput> doShowPlaylists() {
         PlaylistOutput plOutput;
         ArrayList<PlaylistOutput> result = new ArrayList<>();
@@ -431,6 +519,10 @@ public class NormalUser extends User {
         return result;
     }
 
+    /**
+     *
+     * @return
+     */
     public ArrayList<String> getPreferredSongsName() {
         ArrayList<String> result = new ArrayList<>();
 
@@ -441,13 +533,188 @@ public class NormalUser extends User {
         return result;
     }
 
+    /**
+     *
+     */
     public void doSwitchStatus() {
         this.active = !this.active;
 
         this.commandMessage = this.getUserName() + " has changed status successfully.";
     }
 
+    /**
+     *
+     * @param page
+     */
+    public void doChangePage(final String page) {
+        if (!page.equals("Home") && !page.equals("LikedContent")) {
+            this.commandMessage = this.getUserName() + " is trying to access a non-existent page.";
+            return;
+        }
+
+        switch (page) {
+            case "Home":
+                this.loadedCreator = this.homeCreator;
+                break;
+            case "LikedContent":
+                this.loadedCreator = this.likedCreator;
+                break;
+            default:
+                break;
+        }
+
+        this.commandMessage = this.getUserName() + " accessed " + page + " successfully.";
+    }
+
+    /**
+     *
+     */
+    public String doGetPage() {
+        return this.loadedCreator.createPage();
+    }
+
+    /**
+     *
+     */
+    public void rmvAllHistory() {
+        DataBase database = DataBase.getInstance();
+
+        for (var playlist : this.personalPlaylists) {
+            database.removePlaylist(playlist);
+        }
+
+        for (var playlist : this.followedPlaylists) {
+            playlist.removeFollower();
+        }
+
+        for (var song : this.likedSongs) {
+            song.removeLike();
+        }
+    }
+
+    /**
+     *
+     * @param song
+     */
+    public void checkRemoveSong(final Song song) {
+        if (this.likedSongs.contains(song)) {
+            this.likedSongs.remove(song);
+        }
+
+        for (var playlist : this.personalPlaylists) {
+            if (playlist.hasSong(song)) {
+                playlist.removeSong(song);
+            }
+        }
+    }
+
+    /**
+     *
+     * @param playlist
+     */
+    public void checkRemovePlaylist(final Playlist playlist) {
+        // for (var followedplaylist : this.followedPlaylists) {
+        //     if (followedplaylist == playlist) {
+        //         this.followedPlaylists.remove(playlist);
+        //         return;
+        //     }
+        // }
+
+        if (this.followedPlaylists.contains(playlist)) {
+            this.followedPlaylists.remove(playlist);
+        }
+    }
+
+    /**
+     *
+     * @return
+     */
+    public ArrayList<Playlist> getOwnPlaylists() {
+        return this.personalPlaylists;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public PageCreator getPageCreator() {
+        return this.loadedCreator;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getListeningColl() {
+        return this.musicplayer.getListeningColl();
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getListeningSong() {
+        return this.musicplayer.getListeningSong();
+    }
+
+    /**
+     * 
+     */
+    public String getListeningSongName() {
+        if (this.musicplayer.isSongLoaded())
+            return this.musicplayer.getLoadedSong().getName();
+
+        return null;
+    }
+
+    /**
+     *
+     */
+    public String getListeningCollName() {
+        if (this.musicplayer.isPlaylistLoaded())
+            return this.musicplayer.getLoadedPlaylist().getName();
+
+        if (this.musicplayer.isAlbumLoaded())
+            return this.musicplayer.getLoadedAlbum().getName();
+
+        if (this.musicplayer.isPodcastLoaded())
+            return this.musicplayer.getLoadedPodcast().getName();
+        
+        return null;
+    }
+
+    /**
+     *
+     */
+    public ArrayList<Song> getListeningSongs() {
+        if (this.musicplayer.isPlaylistLoaded())
+            return this.musicplayer.getLoadedPlaylist().getSongs();
+
+        if (this.musicplayer.isAlbumLoaded())
+            return this.musicplayer.getLoadedAlbum().getSongs();
+        
+        return null;
+    }
+
+    /**
+     *
+     * @param name
+     * @return
+     */
+    public boolean hasPlaylistWithName(final String name) {
+        for (var playlist : this.personalPlaylists) {
+            if (playlist.getName().equals(name)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     *
+     */
     public boolean isActive() {
         return this.active;
-    } 
+    }
 }

@@ -14,9 +14,9 @@ public final class Playlist extends AudioCollection implements Filterable {
     private ArrayList<Song> songs;
 
     /**
-     * Creates empty playlist 
+     * Creates empty playlist
      *
-     * @param name of Playlist
+     * @param name  of Playlist
      * @param owner name of Playlist owner
      */
     public Playlist(final String name, final String owner) {
@@ -96,6 +96,20 @@ public final class Playlist extends AudioCollection implements Filterable {
     }
 
     /**
+     *
+     * @return
+     */
+    public int getNrOfLikes() {
+        int sum = 0;
+
+        for (var song : this.songs) {
+            sum += song.getNrOfLikes();
+        }
+
+        return sum;
+    }
+
+    /**
      * @param number
      * @return song that coresponds with the number
      */
@@ -105,6 +119,13 @@ public final class Playlist extends AudioCollection implements Filterable {
         }
 
         return this.songs.get(number);
+    }
+
+    /**
+     * @return Songs in the album
+     */
+    public ArrayList<Song> getSongs() {
+        return this.songs;
     }
 
     /**

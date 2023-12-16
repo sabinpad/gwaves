@@ -6,7 +6,7 @@ import fileio.CommandIO;
 
 public final class CommandInput extends CommandIO {
     // Argument fields based on command
-    
+
     private String username;
     private String type;
     private FilterInput filters;
@@ -24,7 +24,7 @@ public final class CommandInput extends CommandIO {
     private ArrayList<EpisodeInput> episodes;
     private String date;
     private Integer price;
-    
+
 
     public CommandInput() {
     }
@@ -127,7 +127,7 @@ public final class CommandInput extends CommandIO {
         return this.playlistId;
     }
 
-    public void setAge(Integer age) {
+    public void setAge(final Integer age) {
         this.age = age;
     }
 
@@ -135,7 +135,7 @@ public final class CommandInput extends CommandIO {
         return this.age;
     }
 
-    public void setNextPage(String nextPage) {
+    public void setNextPage(final String nextPage) {
         this.nextPage = nextPage;
     }
 
@@ -143,7 +143,7 @@ public final class CommandInput extends CommandIO {
         return this.nextPage;
     }
 
-    public void setCity(String city) {
+    public void setCity(final String city) {
         this.city = city;
     }
 
@@ -151,7 +151,7 @@ public final class CommandInput extends CommandIO {
         return this.city;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -159,7 +159,7 @@ public final class CommandInput extends CommandIO {
         return this.name;
     }
 
-    public void setReleaseYear(Integer releaseYear) {
+    public void setReleaseYear(final Integer releaseYear) {
         this.releaseYear = releaseYear;
     }
 
@@ -167,7 +167,7 @@ public final class CommandInput extends CommandIO {
         return this.releaseYear;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         this.description = description;
     }
 
@@ -175,7 +175,7 @@ public final class CommandInput extends CommandIO {
         return this.description;
     }
 
-    public void setSongs(ArrayList<SongInput> songs) {
+    public void setSongs(final ArrayList<SongInput> songs) {
         this.songs = songs;
     }
 
@@ -183,7 +183,7 @@ public final class CommandInput extends CommandIO {
         return this.songs;
     }
 
-    public void setEpisodes(ArrayList<EpisodeInput> episodes) {
+    public void setEpisodes(final ArrayList<EpisodeInput> episodes) {
         this.episodes = episodes;
     }
 
@@ -191,7 +191,7 @@ public final class CommandInput extends CommandIO {
         return this.episodes;
     }
 
-    public void setDate(String date) {
+    public void setDate(final String date) {
         this.date = date;
     }
 
@@ -199,7 +199,7 @@ public final class CommandInput extends CommandIO {
         return this.date;
     }
 
-    public void setPrice(Integer price) {
+    public void setPrice(final Integer price) {
         this.price = price;
     }
 

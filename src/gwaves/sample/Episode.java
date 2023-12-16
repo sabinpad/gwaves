@@ -10,4 +10,8 @@ public final class Episode extends AudioRec {
         this.duration = episodeInput.getDuration();
         this.description = episodeInput.getDescription();
     }
+
+    public String getDescription() {
+        return this.description;
+    }
 }

@@ -2,12 +2,15 @@ package gwaves.storage;
 
 import java.util.Comparator;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import fileio.input.FilterInput;
 import fileio.input.LibraryInput;
 
-import gwaves.context.*;
+import gwaves.context.User;
+import gwaves.context.NormalUser;
+import gwaves.context.Artist;
+import gwaves.context.Host;
 
 import gwaves.sample.Song;
 import gwaves.collection.Playlist;
@@ -17,23 +20,25 @@ import gwaves.collection.Podcast;
 public final class DataBase {
     private static DataBase instance;
 
-    private HashMap<String, NormalUser> normalusers;
-    private HashMap<String, Artist> artists;
-    private HashMap<String, Host> hosts;
+    private LinkedHashMap<String, NormalUser> normalusers;
+    private LinkedHashMap<String, Artist> artists;
+    private LinkedHashMap<String, Host> hosts;
 
     private ArrayList<Song> library;
     private ArrayList<Playlist> playlists;
     private ArrayList<Album> albums;
     private ArrayList<Podcast> podcasts;
 
+    private static final int MaxCount = 5;
+
     static {
         instance = new DataBase();
     }
 
     private DataBase() {
-        this.normalusers = new HashMap<>();
-        this.artists = new HashMap<>();
-        this.hosts = new HashMap<>();
+        this.normalusers = new LinkedHashMap<>();
+        this.artists = new LinkedHashMap<>();
+        this.hosts = new LinkedHashMap<>();
 
         this.library = new ArrayList<>();
         this.playlists = new ArrayList<>();
@@ -175,20 +180,23 @@ public final class DataBase {
      * @return user queried by name
      */
     public User queryUser(final String username) {
-        if (this.normalusers.containsKey(username))
+        if (this.normalusers.containsKey(username)) {
             return this.normalusers.get(username);
+        }
 
-        if (this.artists.containsKey(username))
+        if (this.artists.containsKey(username)) {
             return this.artists.get(username);
+        }
 
-        if (this.hosts.containsKey(username))
+        if (this.hosts.containsKey(username)) {
             return this.hosts.get(username);
+        }
 
         return null;
     }
 
     /**
-     * 
+     *
      * @param username
      * @return
      */
@@ -244,11 +252,16 @@ public final class DataBase {
         return result;
     }
 
+    /**
+     *
+     * @return
+     */
     public ArrayList<NormalUser> queryAllNormalUsers() {
         ArrayList<NormalUser> list = new ArrayList<>();
 
-        for (var entry : this.normalusers.entrySet())
+        for (var entry : this.normalusers.entrySet()) {
             list.add(entry.getValue());
+        }
 
         return list;
     }
@@ -272,8 +285,9 @@ public final class DataBase {
     /**
      * Returns an ArrayList of playlists that are either public(visible) or
      * are owned by the user with name {@code owner}
+     *
      * @param filter used to match
-     * @param owner name of playlist owner
+     * @param owner  name of playlist owner
      * @return ArrayList of matched playlists
      */
     public ArrayList<Playlist> queryVisiblePlaylistsAndOwnedBy(final FilterInput filter, final String owner) {
@@ -282,7 +296,7 @@ public final class DataBase {
         for (var playlist : this.playlists) {
             if (playlist.isMatchedByFilter(filter)) {
                 if (playlist.isVisible()
-                    || (!playlist.isVisible() && owner.equals(playlist.getOwner()))) {
+                        || (!playlist.isVisible() && owner.equals(playlist.getOwner()))) {
                     result.add(playlist);
                 }
             }
@@ -344,7 +358,7 @@ public final class DataBase {
             }
         });
 
-        resultsNumber = ((topSongsList.size() > 5) ? 5 : topSongsList.size());
+        resultsNumber = ((topSongsList.size() > MaxCount) ? MaxCount : topSongsList.size());
         topSongsList.retainAll(topSongsList.subList(0, resultsNumber));
 
         for (var song : topSongsList) {
@@ -356,7 +370,7 @@ public final class DataBase {
 
     /**
      * @return ArrayList containing the names of the top 5 most followed
-     * playlists
+     *         playlists
      */
     public ArrayList<String> getTop5PlaylistsName() {
         int resultsNumber;
@@ -376,7 +390,7 @@ public final class DataBase {
             }
         });
 
-        resultsNumber = ((topPlaylistsList.size() > 5) ? 5 : topPlaylistsList.size());
+        resultsNumber = ((topPlaylistsList.size() > MaxCount) ? MaxCount : topPlaylistsList.size());
         topPlaylistsList.retainAll(topPlaylistsList.subList(0, resultsNumber));
 
         for (var playlist : topPlaylistsList) {
@@ -386,6 +400,10 @@ public final class DataBase {
         return result;
     }
 
+    /**
+     *
+     * @return
+     */
     public ArrayList<String> getTop5AlbumsName() {
         int resultsNumber;
         ArrayList<Album> topAlbumsList = new ArrayList<>(this.albums);
@@ -399,12 +417,12 @@ public final class DataBase {
                 } else if (album1.getNrOfLikes() > album2.getNrOfLikes()) {
                     return -1;
                 } else {
-                    return 0;
+                    return album1.getName().compareTo(album2.getName());
                 }
             }
         });
 
-        resultsNumber = ((topAlbumsList.size() > 5) ? 5 : topAlbumsList.size());
+        resultsNumber = ((topAlbumsList.size() > MaxCount) ? MaxCount : topAlbumsList.size());
         topAlbumsList.retainAll(topAlbumsList.subList(0, resultsNumber));
 
         for (var album : topAlbumsList) {
@@ -414,6 +432,10 @@ public final class DataBase {
         return result;
     }
 
+    /**
+     *
+     * @return
+     */
     public ArrayList<String> getTop5ArtistsName() {
         int resultsNumber;
         ArrayList<Artist> topArtistsList = new ArrayList<>(this.artists.values());
@@ -432,7 +454,7 @@ public final class DataBase {
             }
         });
 
-        resultsNumber = ((topArtistsList.size() > 5) ? 5 : topArtistsList.size());
+        resultsNumber = ((topArtistsList.size() > MaxCount) ? MaxCount : topArtistsList.size());
         topArtistsList.retainAll(topArtistsList.subList(0, resultsNumber));
 
         for (var artist : topArtistsList) {
@@ -442,27 +464,40 @@ public final class DataBase {
         return result;
     }
 
+    /**
+     *
+     * @return
+     */
     public ArrayList<String> getAllUsersName() {
         ArrayList<String> result = new ArrayList<>();
 
-        for (var entry : this.normalusers.entrySet())
+        for (var entry : this.normalusers.entrySet()) {
             result.add(entry.getValue().getUserName());
+        }
 
-        for (var entry : this.artists.entrySet())
+        for (var entry : this.artists.entrySet()) {
             result.add(entry.getValue().getUserName());
+        }
 
-        for (var entry : this.hosts.entrySet())
+        for (var entry : this.hosts.entrySet()) {
             result.add(entry.getValue().getUserName());
+        }
 
         return result;
     }
 
+    /**
+     *
+     * @return
+     */
     public ArrayList<String> getOnlineUsersName() {
         ArrayList<String> result = new ArrayList<>();
 
-        for (var entry : this.normalusers.entrySet())
-            if (entry.getValue().isActive())
+        for (var entry : this.normalusers.entrySet()) {
+            if (entry.getValue().isActive()) {
                 result.add(entry.getValue().getUserName());
+            }
+        }
 
         return result;
     }

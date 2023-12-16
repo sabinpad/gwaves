@@ -7,22 +7,41 @@ public class AlbumOutput {
 
     private ArrayList<String> songs;
 
+    /**
+     *
+     */
     public AlbumOutput() {
-        
+
     }
 
-    public void setName(String name) {
+    /**
+     *
+     * @param name
+     */
+    public void setName(final String name) {
         this.name = name;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getName() {
         return this.name;
     }
 
-    public void setSongs(ArrayList<String> songs) {
+    /**
+     *
+     * @param songs
+     */
+    public void setSongs(final ArrayList<String> songs) {
         this.songs = songs;
     }
 
+    /**
+     *
+     * @return
+     */
     public ArrayList<String> getSongs() {
         return this.songs;
     }

@@ -8,21 +8,37 @@ public class PodcastOutput {
     private ArrayList<String> episodes;
 
     public PodcastOutput() {
-        
+
     }
 
-    public void setName(String name) {
+    /**
+     *
+     * @param name
+     */
+    public void setName(final String name) {
         this.name = name;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getName() {
         return this.name;
     }
 
-    public void setEpisodes(ArrayList<String> episodes) {
+    /**
+     *
+     * @param episodes
+     */
+    public void setEpisodes(final ArrayList<String> episodes) {
         this.episodes = episodes;
     }
 
+    /**
+     *
+     * @return
+     */
     public ArrayList<String> getEpisodes() {
         return this.episodes;
     }

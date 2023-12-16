@@ -29,13 +29,19 @@ public final class Test {
             Arrays.sort(inputDir);
 
             Scanner scanner = new Scanner(System.in);
-            String fileName = scanner.next();
+            // String fileName = scanner.next();
+            // String fileName = "test08_etapa2_searchHost_printCurrentPage.json";
+            // String fileName = "test09_etapa2_shuffle_album.json";
+            String fileName = "test15_etapa2_complex.json";
             for (File file : inputDir) {
                 if (file.getName().equalsIgnoreCase(fileName)) {
-                    Main.action(file.getAbsolutePath(), CheckerConstants.OUT_FILE);
+                    // Main.action(file.getAbsolutePath(), CheckerConstants.OUT_FILE);
+                    Main.action(fileName, CheckerConstants.OUT_FILE);
                     break;
                 }
             }
+
+            scanner.close();
         }
     }
 }
