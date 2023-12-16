@@ -28,7 +28,7 @@ public class HomePageCreator implements PageCreator {
             page += song.getName();
 
             i++;
-            if (i != songs.size()) {
+            if (i != sortedSongs.size()) {
                 page += ", ";
             }
         }
@@ -40,7 +40,7 @@ public class HomePageCreator implements PageCreator {
             page += playlist.getName();
 
             i++;
-            if (i != playlists.size()) {
+            if (i != sortedPlaylists.size()) {
                 page += ", ";
             }
         }

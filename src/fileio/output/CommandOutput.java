@@ -8,6 +8,7 @@ public final class CommandOutput extends CommandIO {
     // Standard argument fields
 
     private String user;
+    private Integer timestamp;
     private String message;
     private ArrayList<String> results;
     private MusicPlayerStatusOutput stats;
@@ -16,6 +17,20 @@ public final class CommandOutput extends CommandIO {
 
     public CommandOutput() {
 
+    }
+
+    /**
+     * @param timestamp
+     */
+    public void setTimestamp(final Integer timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    /**
+     * @return
+     */
+    public Integer getTimestamp() {
+        return this.timestamp;
     }
 
     /**
