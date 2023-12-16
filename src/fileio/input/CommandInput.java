@@ -8,7 +8,6 @@ public final class CommandInput extends CommandIO {
     // Argument fields based on command
 
     private String username;
-    private Integer timestamp;
     private String type;
     private FilterInput filters;
     private Integer itemNumber;
@@ -28,20 +27,6 @@ public final class CommandInput extends CommandIO {
 
 
     public CommandInput() {
-    }
-
-    /**
-     * @param timestamp
-     */
-    public void setTimestamp(final Integer timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    /**
-     * @return
-     */
-    public Integer getTimestamp() {
-        return this.timestamp;
     }
 
     /**
