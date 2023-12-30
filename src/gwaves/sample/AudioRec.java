@@ -1,20 +1,14 @@
 package gwaves.sample;
 
+import lombok.Getter;
+
+@Getter
 public abstract class AudioRec {
-    protected String name;
-    protected Integer duration;
+    private String name;
+    private Integer duration;
 
-    /**
-     * @return
-     */
-    public String getName() {
-        return this.name;
-    }
-
-    /**
-     * @return
-     */
-    public Integer getDuration() {
-        return this.duration;
-    }
+    public AudioRec(final String name, final Integer duration) {
+        this.name = name;
+        this.duration = duration;
+    } 
 }

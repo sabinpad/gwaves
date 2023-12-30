@@ -206,7 +206,7 @@ public final class UserManager {
         //     for (var song : album.getSongs())
         //         normaluser.checkRemoveSong(song);
         // }
-        for (var song : album.getSongs()) {
+        for (var song : album.getCollection()) {
             this.toUnlink(song);
         }
     }

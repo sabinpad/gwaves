@@ -2,6 +2,8 @@ package gwaves.sample;
 
 import java.util.ArrayList;
 
+import lombok.Getter;
+
 import fileio.input.FilterInput;
 import fileio.input.SongInput;
 
@@ -13,13 +15,14 @@ public final class Song extends AudioRec implements Filterable {
     private String lyrics;
     private String genre;
     private Integer releaseYear;
+    @Getter
     private String artist;
-
-    private Integer likes;
+    @Getter
+    private int likes;
 
     public Song(final SongInput songInput) {
-        this.name = songInput.getName();
-        this.duration = songInput.getDuration();
+        super(songInput.getName(), songInput.getDuration());
+        
         this.album = songInput.getAlbum();
         this.tags = songInput.getTags();
         this.lyrics = songInput.getLyrics();
@@ -45,16 +48,12 @@ public final class Song extends AudioRec implements Filterable {
         }
     }
 
-    /**
-     * @return number of likes the song has
-     */
-    public int getNrOfLikes() {
-        return this.likes.intValue();
-    }
-
-    public String getArtist() {
-        return this.artist;
-    }
+    // /**
+    //  * @return number of likes the song has
+    //  */
+    // public int getNrOfLikes() {
+    //     return this.likes;
+    // }
 
     /**
      * @param filter used to match
@@ -65,7 +64,7 @@ public final class Song extends AudioRec implements Filterable {
         String fmtReleaseYear;
 
         if (filter.getName() != null) {
-            if (!this.name.startsWith(filter.getName())) {
+            if (!this.getName().startsWith(filter.getName())) {
                 return false;
             }
         }

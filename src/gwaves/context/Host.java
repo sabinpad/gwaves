@@ -137,7 +137,7 @@ public final class Host extends User implements Filterable {
             podOutput = new PodcastOutput();
 
             podOutput.setName(entry.getValue().getName());
-            podOutput.setEpisodes(entry.getValue().getEpisodesNameList());
+            podOutput.setEpisodes(entry.getValue().getAudRecsName());
 
             result.add(podOutput);
         }
@@ -264,7 +264,7 @@ class HostPageCreator implements PageCreator {
         for (var podcast : modifpodcasts) {
             page += (podcast.getName() + ":\n\t[");
 
-            episodes = podcast.getEpisodes();
+            episodes = podcast.getCollection();
 
             i = 0;
             for (var episode : episodes) {

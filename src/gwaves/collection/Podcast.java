@@ -9,9 +9,7 @@ import fileio.input.FilterInput;
 import gwaves.sample.Episode;
 import gwaves.util.Filterable;
 
-public final class Podcast extends AudioCollection implements Filterable {
-    private ArrayList<Episode> episodes;
-
+public final class Podcast extends AudioCollection<Episode> implements Filterable {
     /**
      * Create new Podcast object
      *
@@ -23,11 +21,9 @@ public final class Podcast extends AudioCollection implements Filterable {
                    final ArrayList<EpisodeInput> episodesInput) {
         super(name, owner);
 
-        this.episodes = new ArrayList<>();
-
         for (var episodeInput : episodesInput) {
-            this.episodes.add(new Episode(episodeInput));
-            this.entireDuration += episodeInput.getDuration();
+            this.getCollection().add(new Episode(episodeInput));
+            // this.entireDuration += episodeInput.getDuration();
         }
     }
 
@@ -39,52 +35,10 @@ public final class Podcast extends AudioCollection implements Filterable {
     public Podcast(final PodcastInput podcastInput) {
         super(podcastInput.getName(), podcastInput.getOwner());
 
-        this.episodes = new ArrayList<>();
-
         for (var episodeInput : podcastInput.getEpisodes()) {
-            this.episodes.add(new Episode(episodeInput));
-            this.entireDuration += episodeInput.getDuration();
+            this.getCollection().add(new Episode(episodeInput));
+            // this.entireDuration += episodeInput.getDuration();
         }
-    }
-
-    /**
-     * @return nr of episodes the podcast has
-     */
-    public int getNrOfEpisodes() {
-        return this.episodes.size();
-    }
-
-    /**
-     * @param number
-     * @return episode that coresponds with the number
-     */
-    public Episode getEpisode(final int number) {
-        if (number >= this.episodes.size()) {
-            return null;
-        }
-
-        return this.episodes.get(number);
-    }
-
-    /**
-     *
-     * @return
-     */
-    public ArrayList<Episode> getEpisodes() {
-        return this.episodes;
-    }
-
-    /**
-     *
-     */
-    public ArrayList<String> getEpisodesNameList() {
-        ArrayList<String> nameList = new ArrayList<>();
-
-        for (var episode : this.episodes) {
-            nameList.add(episode.getName());
-        }
-
-        return nameList;
     }
 
     /**
@@ -93,13 +47,13 @@ public final class Podcast extends AudioCollection implements Filterable {
      */
     public boolean isMatchedByFilter(final FilterInput filter) {
         if (filter.getName() != null) {
-            if (!this.name.startsWith(filter.getName())) {
+            if (!this.getName().startsWith(filter.getName())) {
                 return false;
             }
         }
 
         if (filter.getOwner() != null) {
-            if (!this.owner.equals(filter.getOwner())) {
+            if (!this.getOwner().equals(filter.getOwner())) {
                 return false;
             }
         }

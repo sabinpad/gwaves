@@ -353,11 +353,11 @@ public final class NormalUser extends User {
         loadedSong = this.musicplayer.getLoadedSong();
         selectedPlaylist = this.personalPlaylists.get(playlistIndex);
 
-        if (selectedPlaylist.hasSong(loadedSong)) {
-            selectedPlaylist.removeSong(loadedSong);
+        if (selectedPlaylist.hasAudRec(loadedSong)) {
+            selectedPlaylist.removeAudRec(loadedSong);
             this.commandMessage = "Successfully removed from playlist.";
         } else {
-            selectedPlaylist.addSong(loadedSong);
+            selectedPlaylist.addAudRec(loadedSong);
             this.commandMessage = "Successfully added to playlist.";
         }
     }
@@ -375,7 +375,7 @@ public final class NormalUser extends User {
             mpStatusOutput.setName("");
         }
 
-        mpStatusOutput.setRemainedTime(this.musicplayer.getRemainedTime());
+        mpStatusOutput.setRemainedTime(this.musicplayer.getRemainingTime());
 
         switch (this.musicplayer.getRepeatModeName()) {
             case "no repeat":
@@ -501,7 +501,7 @@ public final class NormalUser extends User {
             plOutput = new PlaylistOutput();
 
             plOutput.setName(playlist.getName());
-            plOutput.setSongs(playlist.getSongsNameList());
+            plOutput.setSongs(playlist.getAudRecsName());
 
             if (playlist.isVisible()) {
                 plOutput.setVisibility("public");
@@ -602,8 +602,8 @@ public final class NormalUser extends User {
         }
 
         for (var playlist : this.personalPlaylists) {
-            if (playlist.hasSong(song)) {
-                playlist.removeSong(song);
+            if (playlist.hasAudRec(song)) {
+                playlist.removeAudRec(song);
             }
         }
     }
@@ -646,7 +646,7 @@ public final class NormalUser extends User {
      * @return
      */
     public String getListeningColl() {
-        return this.musicplayer.getListeningColl();
+        return this.musicplayer.getCurrentCollecName();
     }
 
     /**
@@ -654,7 +654,7 @@ public final class NormalUser extends User {
      * @return
      */
     public String getListeningSong() {
-        return this.musicplayer.getListeningSong();
+        return this.musicplayer.getCurrentRecName();
     }
 
     /**
@@ -692,11 +692,11 @@ public final class NormalUser extends User {
      */
     public ArrayList<Song> getListeningSongs() {
         if (this.musicplayer.isPlaylistLoaded()) {
-            return this.musicplayer.getLoadedPlaylist().getSongs();
+            return this.musicplayer.getLoadedPlaylist().getCollection();
         }
 
         if (this.musicplayer.isAlbumLoaded()) {
-            return this.musicplayer.getLoadedAlbum().getSongs();
+            return this.musicplayer.getLoadedAlbum().getCollection();
         }
 
         return null;

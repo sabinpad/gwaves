@@ -57,9 +57,9 @@ public class HomePageCreator implements PageCreator {
         sorted.sort(new Comparator<Song>() {
             @Override
             public int compare(final Song song1, final Song song2) {
-                if (song1.getNrOfLikes() < song2.getNrOfLikes()) {
+                if (song1.getLikes() < song2.getLikes()) {
                     return 1;
-                } else if (song1.getNrOfLikes() > song2.getNrOfLikes()) {
+                } else if (song1.getLikes() > song2.getLikes()) {
                     return -1;
                 } else {
                     return 0;

@@ -8,11 +8,9 @@ import fileio.input.FilterInput;
 import gwaves.sample.Song;
 import gwaves.util.Filterable;
 
-public final class Album extends AudioCollection implements Filterable {
+public final class Album extends AudioCollection<Song> implements Filterable {
     private int releaseYear;
     private String description;
-
-    private ArrayList<Song> songs;
 
     /**
      * Create new Album object
@@ -30,10 +28,9 @@ public final class Album extends AudioCollection implements Filterable {
 
         this.releaseYear = releaseYear;
         this.description = description;
-        this.songs = new ArrayList<>();
 
         for (var songInput : songsInput) {
-            this.songs.add(new Song(songInput));
+            this.getCollection().add(new Song(songInput));
         }
     }
 
@@ -44,61 +41,15 @@ public final class Album extends AudioCollection implements Filterable {
     public int getNrOfLikes() {
         int sum = 0;
 
-        for (var song : this.songs) {
-            sum += song.getNrOfLikes();
+        for (var rec : this.getCollection()) {
+            sum += rec.getLikes();
         }
 
         return sum;
     }
 
-    /**
-     * @return the number of songs the album contains
-     */
-    public int getNrOfSongs() {
-        return this.songs.size();
-    }
-
-    /**
-     * @param number
-     * @return song that coresponds with the number
-     */
-    public Song getSong(final int number) {
-        if (number >= this.songs.size()) {
-            return null;
-        }
-
-        return this.songs.get(number);
-    }
-
-    /**
-     *
-     * @return
-     */
-    public ArrayList<Song> getSongs() {
-        return this.songs;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public ArrayList<String> getSongsNameList() {
-        ArrayList<String> nameList = new ArrayList<>();
-
-        for (var song : this.songs) {
-            nameList.add(song.getName());
-        }
-
-        return nameList;
-    }
-
-    /**
-     *
-     * @param name
-     * @return
-     */
-    public boolean hasSongWithName(final String name) {
-        for (var song : this.songs) {
+    public boolean hasSongWithName(String name) {
+        for (var song : this.getCollection()) {
             if (song.getName().equals(name)) {
                 return true;
             }
@@ -113,13 +64,13 @@ public final class Album extends AudioCollection implements Filterable {
      */
     public boolean isMatchedByFilter(final FilterInput filter) {
         if (filter.getName() != null) {
-            if (!this.name.startsWith(filter.getName())) {
+            if (!this.getName().startsWith(filter.getName())) {
                 return false;
             }
         }
 
         if (filter.getOwner() != null) {
-            if (!this.owner.equals(filter.getOwner())) {
+            if (!this.getOwner().equals(filter.getOwner())) {
                 return false;
             }
         }
