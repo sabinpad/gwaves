@@ -2,12 +2,16 @@ package fileio.input;
 
 import java.util.ArrayList;
 
+import lombok.Getter;
+
 import fileio.CommandIO;
 
 public final class CommandInput extends CommandIO {
     // Argument fields based on command
 
     private String username;
+    @Getter
+    private Integer timestamp;
     private String type;
     private FilterInput filters;
     private Integer itemNumber;
