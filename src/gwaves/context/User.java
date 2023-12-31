@@ -1,17 +1,16 @@
 package gwaves.context;
 
+import lombok.Getter;
+
 import fileio.input.UserInput;
 
+@Getter
 public abstract class User {
     private String username;
     private Integer age;
     private String city;
 
     protected String commandMessage;
-
-    public User() {
-
-    }
 
     public User(final String username, final int age, final String city) {
         this.username = username;
@@ -26,28 +25,7 @@ public abstract class User {
     }
 
     /**
-     * @return name of the user
-     */
-    public String getUserName() {
-        return this.username;
-    }
-
-    /**
-     * @return age number
-     */
-    public Integer getAge() {
-        return this.age;
-    }
-
-    /**
-     * @return name of the user's city
-     */
-    public String getCity() {
-        return this.city;
-    }
-
-    /**
-     * @return result of the last executed command
+     * @return result message of the last executed command
      */
     public String getLastCommandMessage() {
         return this.commandMessage;

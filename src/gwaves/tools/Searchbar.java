@@ -77,7 +77,7 @@ public final class Searchbar {
 
         this.clearResults();
         this.resultsPlaylist = DataBase.getInstance().queryVisiblePlaylistsAndOwnedBy(filter,
-                this.ownerUser.getUserName());
+                this.ownerUser.getUsername());
         // this.resultsSong = null;
         // this.resultsPodcast = null;
 
@@ -158,7 +158,7 @@ public final class Searchbar {
         this.resultsArtist.retainAll(this.resultsArtist.subList(0, this.resultsNumber));
 
         for (var artist : this.resultsArtist) {
-            resultsName.add(artist.getUserName());
+            resultsName.add(artist.getUsername());
         }
 
         this.resultsIndex = -1;
@@ -181,7 +181,7 @@ public final class Searchbar {
         this.resultsHost.retainAll(this.resultsHost.subList(0, this.resultsNumber));
 
         for (var host : this.resultsHost) {
-            resultsName.add(host.getUserName());
+            resultsName.add(host.getUsername());
         }
 
         this.resultsIndex = -1;
@@ -218,9 +218,9 @@ public final class Searchbar {
         } else if (this.resultsPodcast != null) {
             return this.resultsPodcast.get(this.resultsIndex).getName();
         } else if (this.resultsArtist != null) {
-            return this.resultsArtist.get(this.resultsIndex).getUserName();
+            return this.resultsArtist.get(this.resultsIndex).getUsername();
         } else if (this.resultsHost != null) {
-            return this.resultsHost.get(this.resultsIndex).getUserName();
+            return this.resultsHost.get(this.resultsIndex).getUsername();
         }
 
         return null;

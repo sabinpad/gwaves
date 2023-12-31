@@ -420,7 +420,7 @@ public final class NormalUser extends User {
             }
         }
 
-        newPlaylist = new Playlist(playlistName, this.getUserName());
+        newPlaylist = new Playlist(playlistName, this.getUsername());
         database = DataBase.getInstance();
 
         this.personalPlaylists.add(newPlaylist);
@@ -539,7 +539,7 @@ public final class NormalUser extends User {
     public void doSwitchStatus() {
         this.active = !this.active;
 
-        this.commandMessage = this.getUserName() + " has changed status successfully.";
+        this.commandMessage = this.getUsername() + " has changed status successfully.";
     }
 
     /**
@@ -548,7 +548,7 @@ public final class NormalUser extends User {
      */
     public void doChangePage(final String page) {
         if (!page.equals("Home") && !page.equals("LikedContent")) {
-            this.commandMessage = this.getUserName() + " is trying to access a non-existent page.";
+            this.commandMessage = this.getUsername() + " is trying to access a non-existent page.";
             return;
         }
 
@@ -563,7 +563,7 @@ public final class NormalUser extends User {
                 break;
         }
 
-        this.commandMessage = this.getUserName() + " accessed " + page + " successfully.";
+        this.commandMessage = this.getUsername() + " accessed " + page + " successfully.";
     }
 
     /**

@@ -45,14 +45,14 @@ public final class Host extends User implements Filterable {
     public void doAddPodcast(final String name, final String owner,
                              final ArrayList<EpisodeInput> episodesInput) {
         if (this.podcasts.containsKey(name)) {
-            this.commandMessage = this.getUserName() + " has another podcast with the same name.";
+            this.commandMessage = this.getUsername() + " has another podcast with the same name.";
             return;
         }
 
         for (var ep1 : episodesInput) {
             for (var ep2 : episodesInput) {
                 if (ep1.getName().equals(ep2.getName()) && (ep1 != ep2)) {
-                    this.commandMessage = this.getUserName()
+                    this.commandMessage = this.getUsername()
                                           + " has the same episode in this podcast.";
                     return;
                 }
@@ -65,7 +65,7 @@ public final class Host extends User implements Filterable {
         this.podcasts.put(name, newPodcast);
         database.addPodcast(newPodcast);
 
-        this.commandMessage = this.getUserName() + " has added new podcast successfully.";
+        this.commandMessage = this.getUsername() + " has added new podcast successfully.";
     }
 
     /**
@@ -74,20 +74,20 @@ public final class Host extends User implements Filterable {
      */
     public void doRmvPodcast(final String name) {
         if (!this.podcasts.containsKey(name)) {
-            this.commandMessage = this.getUserName()
+            this.commandMessage = this.getUsername()
                                   + " doesn't have a podcast with the given name.";
             return;
         }
 
         if (!UserManager.getInstance().isSafeToRemove(this.podcasts.get(name))) {
-            this.commandMessage = this.getUserName() + " can't delete this podcast.";
+            this.commandMessage = this.getUsername() + " can't delete this podcast.";
             return;
         }
 
         DataBase.getInstance().removePodcast(this.podcasts.get(name));
         this.podcasts.remove(name);
 
-        this.commandMessage = this.getUserName() + " deleted the podcast successfully.";
+        this.commandMessage = this.getUsername() + " deleted the podcast successfully.";
     }
 
     /**
@@ -97,14 +97,14 @@ public final class Host extends User implements Filterable {
      */
     public void doAddAnnouncement(final String name, final String description) {
         if (this.announcements.containsKey(name)) {
-            this.commandMessage = this.getUserName()
+            this.commandMessage = this.getUsername()
                                   + " has already added an announcement with this name.";
             return;
         }
 
         this.announcements.put(name, new HostAnnouncement(name, description));
 
-        this.commandMessage = this.getUserName()
+        this.commandMessage = this.getUsername()
                             + " has successfully added new announcement.";
     }
 
@@ -114,14 +114,14 @@ public final class Host extends User implements Filterable {
      */
     public void doRmvAnnouncement(final String name) {
         if (!this.announcements.containsKey(name)) {
-            this.commandMessage = this.getUserName()
+            this.commandMessage = this.getUsername()
                                   + " has no announcement with the given name.";
             return;
         }
 
         this.announcements.remove(name);
 
-        this.commandMessage = this.getUserName()
+        this.commandMessage = this.getUsername()
                               + " has successfully deleted the announcement.";
     }
 
@@ -196,7 +196,7 @@ public final class Host extends User implements Filterable {
      */
     public boolean isMatchedByFilter(final FilterInput filter) {
         if (filter.getName() != null) {
-            if (!this.getUserName().startsWith(filter.getName())) {
+            if (!this.getUsername().startsWith(filter.getName())) {
                 return false;
             }
         }

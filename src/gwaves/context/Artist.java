@@ -51,14 +51,14 @@ public final class Artist extends User implements Filterable {
     public void doAddAlbum(final String name, final String owner, final Integer releaseYear, final String description,
             final ArrayList<SongInput> songsInput) {
         if (this.albums.containsKey(name)) {
-            this.commandMessage = this.getUserName() + " has another album with the same name.";
+            this.commandMessage = this.getUsername() + " has another album with the same name.";
             return;
         }
 
         for (var sg1 : songsInput) {
             for (var sg2 : songsInput) {
                 if (sg1.getName().equals(sg2.getName()) && (sg1 != sg2)) {
-                    this.commandMessage = this.getUserName()
+                    this.commandMessage = this.getUsername()
                                           + " has the same song at least twice in this album.";
                     return;
                 }
@@ -76,7 +76,7 @@ public final class Artist extends User implements Filterable {
 
         database.addAlbum(newAlbum);
 
-        this.commandMessage = this.getUserName() + " has added new album successfully.";
+        this.commandMessage = this.getUsername() + " has added new album successfully.";
     }
 
     /**
@@ -85,13 +85,13 @@ public final class Artist extends User implements Filterable {
      */
     public void doRmvAlbum(final String name) {
         if (!this.albums.containsKey(name)) {
-            this.commandMessage = this.getUserName()
+            this.commandMessage = this.getUsername()
                                   + " doesn't have an album with the given name.";
             return;
         }
 
         if (!UserManager.getInstance().isSafeToRemove(this.albums.get(name))) {
-            this.commandMessage = this.getUserName() + " can't delete this album.";
+            this.commandMessage = this.getUsername() + " can't delete this album.";
             return;
         }
 
@@ -107,7 +107,7 @@ public final class Artist extends User implements Filterable {
 
         this.albums.remove(name);
 
-        this.commandMessage = this.getUserName() + " deleted the album successfully.";
+        this.commandMessage = this.getUsername() + " deleted the album successfully.";
     }
 
     /**
@@ -118,7 +118,7 @@ public final class Artist extends User implements Filterable {
      */
     public void doAddEvent(final String name, final String description, final String date) {
         if (this.events.containsKey(name)) {
-            this.commandMessage = this.getUserName() + " has another event with the same name.";
+            this.commandMessage = this.getUsername() + " has another event with the same name.";
             return;
         }
 
@@ -128,14 +128,14 @@ public final class Artist extends User implements Filterable {
         try {
             dateFormat.parse(date);
         } catch (ParseException e) {
-            this.commandMessage = "Event for " + this.getUserName()
+            this.commandMessage = "Event for " + this.getUsername()
                                   + " does not have a valid date.";
             return;
         }
 
         this.events.put(name, new ArtistEvent(name, description, date));
 
-        this.commandMessage = this.getUserName() + " has added new event successfully.";
+        this.commandMessage = this.getUsername() + " has added new event successfully.";
     }
 
     /**
@@ -144,14 +144,14 @@ public final class Artist extends User implements Filterable {
      */
     public void doRmvEvent(final String name) {
         if (!this.events.containsKey(name)) {
-            this.commandMessage = this.getUserName()
+            this.commandMessage = this.getUsername()
                                   + " doesn't have an event with the given name.";
             return;
         }
 
         this.events.remove(name);
 
-        this.commandMessage = this.getUserName() + " deleted the event successfully.";
+        this.commandMessage = this.getUsername() + " deleted the event successfully.";
     }
 
     /**
@@ -162,7 +162,7 @@ public final class Artist extends User implements Filterable {
      */
     public void doAddMerch(final String name, final String description, final int price) {
         if (this.merches.containsKey(name)) {
-            this.commandMessage = this.getUserName() + " has merchandise with the same name.";
+            this.commandMessage = this.getUsername() + " has merchandise with the same name.";
             return;
         }
 
@@ -173,7 +173,7 @@ public final class Artist extends User implements Filterable {
 
         this.merches.put(name, new ArtistMerch(name, description, price));
 
-        this.commandMessage = this.getUserName() + " has added new merchandise successfully.";
+        this.commandMessage = this.getUsername() + " has added new merchandise successfully.";
     }
 
     /**
@@ -282,7 +282,7 @@ public final class Artist extends User implements Filterable {
      */
     public boolean isMatchedByFilter(final FilterInput filter) {
         if (filter.getName() != null) {
-            if (!this.getUserName().startsWith(filter.getName())) {
+            if (!this.getUsername().startsWith(filter.getName())) {
                 return false;
             }
         }

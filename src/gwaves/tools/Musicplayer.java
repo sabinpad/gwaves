@@ -30,13 +30,13 @@ public final class Musicplayer {
         PODCAST
     }
 
+    private Type loadedType;
+
+    private int currentIndex;
     private AudioRec currentRec;
     private AudioCollection<?> currentCollec;
 
-    private int currentIndex;
     private int remainingTime;
-
-    private Type loadedType;
 
     private boolean paused;
     private int repeat;

@@ -50,14 +50,14 @@ public final class DataBase {
      * @return
      */
     public static void changeInstance() {
-        instance = new DataBase();
+        DataBase.instance = new DataBase();
     }
 
     /**
      * @return unique database instance
      */
     public static DataBase getInstance() {
-        return instance;
+        return DataBase.instance;
     }
 
     /**
@@ -81,42 +81,42 @@ public final class DataBase {
      * @param playlist to add
      */
     public void addNormalUser(final NormalUser user) {
-        this.normalusers.put(user.getUserName(), user);
+        this.normalusers.put(user.getUsername(), user);
     }
 
     /**
      * @param playlist to remove
      */
     public void removeNormalUser(final NormalUser user) {
-        normalusers.remove(user.getUserName());
+        normalusers.remove(user.getUsername());
     }
 
     /**
      * @param playlist to add
      */
     public void addArtist(final Artist artist) {
-        this.artists.put(artist.getUserName(), artist);
+        this.artists.put(artist.getUsername(), artist);
     }
 
     /**
      * @param playlist to remove
      */
     public void removeArtist(final Artist artist) {
-        artists.remove(artist.getUserName());
+        artists.remove(artist.getUsername());
     }
 
     /**
      * @param playlist to add
      */
     public void addHost(final Host host) {
-        this.hosts.put(host.getUserName(), host);
+        this.hosts.put(host.getUsername(), host);
     }
 
     /**
      * @param playlist to remove
      */
     public void removeHost(final Host host) {
-        hosts.remove(host.getUserName());
+        hosts.remove(host.getUsername());
     }
 
     /**
@@ -465,7 +465,7 @@ public final class DataBase {
         topArtistsList.retainAll(topArtistsList.subList(0, resultsNumber));
 
         for (var artist : topArtistsList) {
-            result.add(artist.getUserName());
+            result.add(artist.getUsername());
         }
 
         return result;
@@ -479,15 +479,15 @@ public final class DataBase {
         ArrayList<String> result = new ArrayList<>();
 
         for (var entry : this.normalusers.entrySet()) {
-            result.add(entry.getValue().getUserName());
+            result.add(entry.getValue().getUsername());
         }
 
         for (var entry : this.artists.entrySet()) {
-            result.add(entry.getValue().getUserName());
+            result.add(entry.getValue().getUsername());
         }
 
         for (var entry : this.hosts.entrySet()) {
-            result.add(entry.getValue().getUserName());
+            result.add(entry.getValue().getUsername());
         }
 
         return result;
@@ -502,7 +502,7 @@ public final class DataBase {
 
         for (var entry : this.normalusers.entrySet()) {
             if (entry.getValue().isActive()) {
-                result.add(entry.getValue().getUserName());
+                result.add(entry.getValue().getUsername());
             }
         }
 
