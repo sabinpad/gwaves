@@ -33,7 +33,9 @@ public final class Musicplayer {
     private Type loadedType;
 
     private int currentIndex;
+    @Getter
     private AudioRec currentRec;
+    @Getter
     private AudioCollection<?> currentCollec;
 
     private int remainingTime;
@@ -386,17 +388,17 @@ public final class Musicplayer {
         return null;
     }
 
-    /**
-     *
-     * @return
-     */
-    public String getCurrentCollecName() {
-        if (this.currentCollec != null) {
-            return this.currentCollec.getName();
-        }
+    // /**
+    //  *
+    //  * @return
+    //  */
+    // public String getCurrentCollecName() {
+    //     if (this.currentCollec != null) {
+    //         return this.currentCollec.getName();
+    //     }
 
-        return null;
-    }
+    //     return null;
+    // }
 
     /**
      * @return current loaded song

@@ -264,7 +264,7 @@ class HostPageCreator implements PageCreator {
         for (var podcast : modifpodcasts) {
             page += (podcast.getName() + ":\n\t[");
 
-            episodes = podcast.getCollection();
+            episodes = podcast.getAudRecs();
 
             i = 0;
             for (var episode : episodes) {

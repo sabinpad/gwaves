@@ -59,7 +59,7 @@ public final class Playlist extends AudioCollection<Song> implements Filterable 
     public int getNrOfLikes() {
         int sum = 0;
 
-        for (var rec : this.getCollection()) {
+        for (var rec : this.getAudRecs()) {
             sum += rec.getLikes();
         }
 

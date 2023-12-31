@@ -30,7 +30,7 @@ public final class Album extends AudioCollection<Song> implements Filterable {
         this.description = description;
 
         for (var songInput : songsInput) {
-            this.getCollection().add(new Song(songInput));
+            this.getAudRecs().add(new Song(songInput));
         }
     }
 
@@ -41,7 +41,7 @@ public final class Album extends AudioCollection<Song> implements Filterable {
     public int getNrOfLikes() {
         int sum = 0;
 
-        for (var rec : this.getCollection()) {
+        for (var rec : this.getAudRecs()) {
             sum += rec.getLikes();
         }
 
@@ -49,7 +49,7 @@ public final class Album extends AudioCollection<Song> implements Filterable {
     }
 
     public boolean hasSongWithName(String name) {
-        for (var song : this.getCollection()) {
+        for (var song : this.getAudRecs()) {
             if (song.getName().equals(name)) {
                 return true;
             }

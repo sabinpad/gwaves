@@ -70,7 +70,7 @@ public final class Artist extends User implements Filterable {
 
         this.albums.put(name, newAlbum);
 
-        for (var song : newAlbum.getCollection()) {
+        for (var song : newAlbum.getAudRecs()) {
             database.addSong(song);
         }
 
@@ -99,7 +99,7 @@ public final class Artist extends User implements Filterable {
 
         DataBase database = DataBase.getInstance();
 
-        for (var song : this.albums.get(name).getCollection()) {
+        for (var song : this.albums.get(name).getAudRecs()) {
             database.removeSong(song);
         }
 
@@ -213,7 +213,7 @@ public final class Artist extends User implements Filterable {
         DataBase database = DataBase.getInstance();
 
         for (var entry : this.albums.entrySet()) {
-            for (var song : entry.getValue().getCollection()) {
+            for (var song : entry.getValue().getAudRecs()) {
                 database.removeSong(song);
             }
 
@@ -267,7 +267,7 @@ public final class Artist extends User implements Filterable {
      */
     public boolean hasSongWithName(final String name) {
         for (var entry : this.albums.entrySet()) {
-            for (var song : entry.getValue().getCollection()) {
+            for (var song : entry.getValue().getAudRecs()) {
                 if (song.getName().equals(name)) {
                     return true;
                 }

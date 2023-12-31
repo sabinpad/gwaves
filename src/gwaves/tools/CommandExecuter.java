@@ -468,7 +468,7 @@ public final class CommandExecuter {
                                                final CommandOutput commandOutput) {
         NormalUser normaluser = DataBase.getInstance().queryNormalUser(commandInput.getUsername());
 
-        commandOutput.setResult(normaluser.getPreferredSongsName());
+        commandOutput.setResult(normaluser.doShowPreferredSongs());
     }
 
     /**

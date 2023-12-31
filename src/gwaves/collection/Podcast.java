@@ -22,7 +22,7 @@ public final class Podcast extends AudioCollection<Episode> implements Filterabl
         super(name, owner);
 
         for (var episodeInput : episodesInput) {
-            this.getCollection().add(new Episode(episodeInput));
+            this.getAudRecs().add(new Episode(episodeInput));
             // this.entireDuration += episodeInput.getDuration();
         }
     }
@@ -36,7 +36,7 @@ public final class Podcast extends AudioCollection<Episode> implements Filterabl
         super(podcastInput.getName(), podcastInput.getOwner());
 
         for (var episodeInput : podcastInput.getEpisodes()) {
-            this.getCollection().add(new Episode(episodeInput));
+            this.getAudRecs().add(new Episode(episodeInput));
             // this.entireDuration += episodeInput.getDuration();
         }
     }

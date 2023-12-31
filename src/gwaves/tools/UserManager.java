@@ -1,6 +1,7 @@
 package gwaves.tools;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import gwaves.sample.Song;
@@ -15,7 +16,7 @@ public final class UserManager {
     private static UserManager instance;
 
     private int lastTimestamp;
-    private LinkedList<NormalUser> normalusers;
+    private LinkedList<NormalUser> normalUsers;
 
     static {
         instance = new UserManager();
@@ -23,7 +24,7 @@ public final class UserManager {
 
     private UserManager() {
         this.lastTimestamp = 0;
-        this.normalusers = new LinkedList<>();
+        this.normalUsers = new LinkedList<>();
     }
 
     /**
@@ -46,14 +47,14 @@ public final class UserManager {
      * @param users list of users to be loaded
      */
     public void loadUsers(final List<NormalUser> users) {
-        this.normalusers.addAll(users);
+        this.normalUsers.addAll(users);
     }
 
     /**
      * Unload all users from the user
      */
     public void reset() {
-        this.normalusers.clear();
+        this.normalUsers.clear();
     }
 
     /**
@@ -62,7 +63,7 @@ public final class UserManager {
      * @param user to be added
      */
     public void addUser(final NormalUser user) {
-        this.normalusers.add(user);
+        this.normalUsers.add(user);
     }
 
     /**
@@ -71,7 +72,7 @@ public final class UserManager {
      * @param user to be removed
      */
     public void rmvUser(final NormalUser user) {
-        this.normalusers.remove(user);
+        this.normalUsers.remove(user);
     }
 
     /**
@@ -80,9 +81,9 @@ public final class UserManager {
     public void updateAll(final int currentTimeStamp) {
         int timeInterval = currentTimeStamp - this.lastTimestamp;
 
-        for (var normaluser : this.normalusers) {
-            if (normaluser.isActive()) {
-                normaluser.runMusicPlayer(timeInterval);
+        for (var normalUser : this.normalUsers) {
+            if (normalUser.isActive()) {
+                normalUser.runMusicPlayer(timeInterval);
             }
         }
 
@@ -91,22 +92,91 @@ public final class UserManager {
 
     /**
      *
+     * @param song
+     */
+    private void toUnlink(final Song song) {
+        for (var normalUser : this.normalUsers) {
+            normalUser.checkRemoveSong(song);
+        }
+    }
+
+    /**
+     *
+     * @param song
+     */
+    public void toUnlink(final Album album) {
+        for (var song : album.getAudRecs()) {
+            this.toUnlink(song);
+        }
+    }
+
+    /**
+     *
+     * @param song
+     */
+    public void toUnlink(final Playlist playlist) {
+        for (var normalUser : this.normalUsers) {
+            normalUser.checkRemovePlaylist(playlist);
+        }
+    }
+
+    /**
+     *
+     * @param song
+     */
+    public void toUnlink(final NormalUser normalUser) {
+        for (var playlist : normalUser.getPersonalPlaylists()) {
+            this.toUnlink(playlist);
+        }
+    }
+
+    /**
+     *
+     * @param song
+     */
+    public void toUnlink(final Artist artist) {
+        for (var album : artist.getAlbums()) {
+            this.toUnlink(album);
+        }
+    }
+
+    /**
+     *
      * @param user to be checked
      * @return true if no user is interacting with the specified user
      */
     public boolean isSafeToRemove(final Album album) {
-        for (var normaluser : this.normalusers) {
-            if (album.getName().equals(normaluser.getListeningCollName())) {
+        // for (var normaluser : this.normalUsers) {
+        //     if (album.getName().equals(normaluser.getListeningCollName())) {
+        //         return false;
+        //     }
+
+        //     if (album.hasSongWithName(normaluser.getListeningSongName())) {
+        //         return false;
+        //     }
+
+        //     if (normaluser.getListeningSongs() != null) {
+        //         for (var song : normaluser.getListeningSongs()) {
+        //             if (album.hasSongWithName(song.getName())) {
+        //                 return false;
+        //             }
+        //         }
+        //     }
+        // }
+
+        for (var normalUser: this.normalUsers) {
+            if (album.equals(normalUser.getListeningCollec())) {
                 return false;
             }
 
-            if (album.hasSongWithName(normaluser.getListeningSongName())) {
+            if (album.hasAudRec(normalUser.getListeningAudRec())) {
                 return false;
             }
 
-            if (normaluser.getListeningSongs() != null) {
-                for (var song : normaluser.getListeningSongs()) {
-                    if (album.hasSongWithName(song.getName())) {
+            // TODO nu e foarte eficient
+            if (normalUser.getListeningCollec() != null) {
+                for (var audRec : normalUser.getListeningCollec().getAudRecs()) {
+                    if (album.hasAudRec(audRec)) {
                         return false;
                     }
                 }
@@ -122,11 +192,18 @@ public final class UserManager {
      * @return true if no user is interacting with the specified user
      */
     public boolean isSafeToRemove(final Podcast podcast) {
-        for (var normaluser : this.normalusers) {
-            if (podcast.getName().equals(normaluser.getListeningCollName())) {
+        // for (var normalUser : this.normalUsers) {
+        //     if (podcast.getName().equals(normalUser.getListeningCollName())) {
+        //         return false;
+        //     }
+        // }
+
+        for (var normalUser : this.normalUsers) {
+            if (podcast.equals(normalUser.getListeningCollec())) {
                 return false;
             }
         }
+
         return true;
     }
 
@@ -135,9 +212,17 @@ public final class UserManager {
      * @param user to be checked
      * @return true if no user is interacting with the specified user
      */
-    public boolean isSafeToRemove(final NormalUser normaluser) {
-        for (var othernormaluser : this.normalusers) {
-            if (normaluser.hasPlaylistWithName(othernormaluser.getListeningCollName())) {
+    public boolean isSafeToRemove(final NormalUser normalUser) {
+        // for (var otherNormalUser : this.normalUsers) {
+        //     if (normalUser.hasPlaylistWithName(otherNormalUser.getListeningCollName())) {
+        //         return false;
+        //     }
+        // }
+
+        ArrayList<Playlist> playlists = normalUser.getPersonalPlaylists();
+
+        for (var otherNormalUser : this.normalUsers) {
+            if (playlists.contains(otherNormalUser.getListeningCollec())) {
                 return false;
             }
         }
@@ -157,8 +242,8 @@ public final class UserManager {
             }
         }
 
-        for (var normaluser : this.normalusers) {
-            if (normaluser.getPageCreator() == artist.getPageCreator()) {
+        for (var normalUser : this.normalUsers) {
+            if (normalUser.getPageCreator() == artist.getPageCreator()) {
                 return false;
             }
         }
@@ -178,66 +263,12 @@ public final class UserManager {
             }
         }
 
-        for (var normaluser : this.normalusers) {
-            if (host.getPageCreator() == normaluser.getPageCreator()) {
+        for (var normalUser : this.normalUsers) {
+            if (host.getPageCreator() == normalUser.getPageCreator()) {
                 return false;
             }
         }
 
         return true;
-    }
-
-    /**
-     *
-     * @param song
-     */
-    private void toUnlink(final Song song) {
-        for (var normaluser : this.normalusers) {
-            normaluser.checkRemoveSong(song);
-        }
-    }
-
-    /**
-     *
-     * @param song
-     */
-    public void toUnlink(final Album album) {
-        // for (var normaluser : this.normalusers) {
-        //     for (var song : album.getSongs())
-        //         normaluser.checkRemoveSong(song);
-        // }
-        for (var song : album.getCollection()) {
-            this.toUnlink(song);
-        }
-    }
-
-    /**
-     *
-     * @param song
-     */
-    public void toUnlink(final Playlist playlist) {
-        for (var normaluser : this.normalusers) {
-            normaluser.checkRemovePlaylist(playlist);
-        }
-    }
-
-    /**
-     *
-     * @param song
-     */
-    public void toUnlink(final NormalUser normaluser) {
-        for (var playlist : normaluser.getOwnPlaylists()) {
-            this.toUnlink(playlist);
-        }
-    }
-
-    /**
-     *
-     * @param song
-     */
-    public void toUnlink(final Artist artist) {
-        for (var album : artist.getAlbums()) {
-            this.toUnlink(album);
-        }
     }
 }
