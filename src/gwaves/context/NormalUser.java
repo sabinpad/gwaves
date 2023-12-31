@@ -294,8 +294,6 @@ public final class NormalUser extends User {
      *
      */
     public void doNext() {
-        // String trackName;
-
         if (!this.musicplayer.isLoaded()) {
             this.commandMessage = "Please load a source before skipping to the next track.";
             return;
@@ -303,12 +301,7 @@ public final class NormalUser extends User {
 
         this.musicplayer.next();
 
-        // TODO
-        // trackName = this.musicplayer.getCurrentRecName();
-        // trackName = this.musicplayer.getCurrentRec().getName();
-
         if (this.musicplayer.isLoaded()) {
-            // this.commandMessage = "Skipped to next track successfully. The current track is " + trackName + ".";
             this.commandMessage = "Skipped to next track successfully. The current track is " 
                                   + this.musicplayer.getCurrentRec().getName() + ".";
         } else {
@@ -320,8 +313,6 @@ public final class NormalUser extends User {
      *
      */
     public void doPrev() {
-        String trackName;
-
         if (!this.musicplayer.isLoaded()) {
             this.commandMessage = "Please load a source before returning to the previous track.";
             return;
@@ -329,11 +320,8 @@ public final class NormalUser extends User {
 
         this.musicplayer.prev();
 
-        // TODO de facut ca la next
-        // trackName = this.musicplayer.getCurrentRecName();
-        trackName = this.musicplayer.getCurrentRec().getName();
-
-        this.commandMessage = "Returned to previous track successfully. The current track is " + trackName + ".";
+        this.commandMessage = "Returned to previous track successfully. The current track is "
+                              + this.musicplayer.getCurrentRec().getName() + ".";
     }
 
     /**
@@ -381,7 +369,6 @@ public final class NormalUser extends User {
         MusicPlayerStatusOutput mpStatusOutput = new MusicPlayerStatusOutput();
 
         if (this.musicplayer.isLoaded()) {
-            // mpStatusOutput.setName(this.musicplayer.getCurrentRecName());
             mpStatusOutput.setName(this.musicplayer.getCurrentRec().getName());
         } else {
             mpStatusOutput.setName("");
@@ -481,7 +468,6 @@ public final class NormalUser extends User {
             return;
         }
 
-        // selectedPlaylist = this.searchbar.getSelectedPlaylist();
         selectedPlaylist = this.searchbar.getPlaylistForFollow();
 
         if (this.personalPlaylists.contains(selectedPlaylist)) {
@@ -630,105 +616,20 @@ public final class NormalUser extends User {
         }
     }
 
-    /**
-     *
-     * @return
-     */
-    public PageCreator getPageCreator() {
-        return this.loadedCreator;
-    }
-
-    // TODO doar pentru test
-    /**
-     *
-     * @return
-     */
-    // public ArrayList<Playlist> getOwnPlaylists() {
-    //     return this.personalPlaylists;
-    // }
-
-    // /**
-    //  *
-    //  * @return
-    //  */
-    // public String getListeningColl() {
-    //     return this.musicplayer.getCurrentCollecName();
-    // }
-
-    // /**
-    //  *
-    //  * @return
-    //  */
-    // public String getListeningSong() {
-    //     return this.musicplayer.getCurrentRecName();
-    // }
-
-    // /**
-    //  *
-    //  */
-    // public String getListeningSongName() {
-    //     if (this.musicplayer.isSongLoaded()) {
-    //         return this.musicplayer.getLoadedSong().getName();
-    //     }
-
-    //     return null;
-    // }
-
-    // /**
-    //  *
-    //  */
-    // public String getListeningCollName() {
-    //     if (this.musicplayer.isPlaylistLoaded()) {
-    //         return this.musicplayer.getLoadedPlaylist().getName();
-    //     }
-
-    //     if (this.musicplayer.isAlbumLoaded()) {
-    //         return this.musicplayer.getLoadedAlbum().getName();
-    //     }
-
-    //     if (this.musicplayer.isPodcastLoaded()) {
-    //         return this.musicplayer.getLoadedPodcast().getName();
-    //     }
-
-    //     return null;
-    // }
-
-    // /**
-    //  *
-    //  */
-    // public ArrayList<Song> getListeningSongs() {
-    //     if (this.musicplayer.isPlaylistLoaded()) {
-    //         return this.musicplayer.getLoadedPlaylist().getCollection();
-    //     }
-
-    //     if (this.musicplayer.isAlbumLoaded()) {
-    //         return this.musicplayer.getLoadedAlbum().getCollection();
-    //     }
-
-    //     return null;
-    // }
-
-    // /**
-    //  *
-    //  * @param name
-    //  * @return
-    //  */
-    // public boolean hasPlaylistWithName(final String name) {
-    //     for (var playlist : this.personalPlaylists) {
-    //         if (playlist.getName().equals(name)) {
-    //             return true;
-    //         }
-    //     }
-
-    //     return false;
-    // }
-
     public AudioRec getListeningAudRec() {
         return this.musicplayer.getCurrentRec();
     }
 
     public AudioCollection<?> getListeningCollec() {
         return this.musicplayer.getCurrentCollec();
+    }
+
+    /**
+     *
+     * @return
+     */
+    public PageCreator getPageCreator() {
+        return this.loadedCreator;
     }
 
     /**

@@ -157,14 +157,6 @@ public final class Host extends User implements Filterable {
 
     /**
      *
-     * @return
-     */
-    public PageCreator getPageCreator() {
-        return this.pageCreator;
-    }
-
-    /**
-     *
      */
     public void rmvAllPodcasts() {
         DataBase database = DataBase.getInstance();
@@ -184,12 +176,20 @@ public final class Host extends User implements Filterable {
 
     /**
      *
+     * @return
+     */
+    public PageCreator getPageCreator() {
+        return this.pageCreator;
+    }
+
+    /**
+     *
      * @param name
      * @return
      */
-    public boolean hasPodcastWithName(final String name) {
-        return this.podcasts.containsKey(name);
-    }
+    // public boolean hasPodcastWithName(final String name) {
+    //     return this.podcasts.containsKey(name);
+    // }
 
     /**
      *

@@ -48,13 +48,6 @@ public final class Song extends AudioRec implements Filterable {
         }
     }
 
-    // /**
-    //  * @return number of likes the song has
-    //  */
-    // public int getNrOfLikes() {
-    //     return this.likes;
-    // }
-
     /**
      * @param filter used to match
      * @return true if the song is matched by the filter

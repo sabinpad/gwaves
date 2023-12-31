@@ -239,25 +239,16 @@ public final class Artist extends User implements Filterable {
      *
      * @return
      */
-    public PageCreator getPageCreator() {
-        return this.pageCreator;
-    }
-
-    /**
-     *
-     * @return
-     */
     public ArrayList<Album> getAlbums() {
         return new ArrayList<>(this.albums.values());
     }
 
     /**
      *
-     * @param name
      * @return
      */
-    public boolean hasAlbumWithName(final String name) {
-        return this.albums.containsKey(name);
+    public PageCreator getPageCreator() {
+        return this.pageCreator;
     }
 
     /**
@@ -265,17 +256,26 @@ public final class Artist extends User implements Filterable {
      * @param name
      * @return
      */
-    public boolean hasSongWithName(final String name) {
-        for (var entry : this.albums.entrySet()) {
-            for (var song : entry.getValue().getAudRecs()) {
-                if (song.getName().equals(name)) {
-                    return true;
-                }
-            }
-        }
+    // public boolean hasAlbumWithName(final String name) {
+    //     return this.albums.containsKey(name);
+    // }
 
-        return false;
-    }
+    /**
+     *
+     * @param name
+     * @return
+     */
+    // public boolean hasSongWithName(final String name) {
+    //     for (var entry : this.albums.entrySet()) {
+    //         for (var song : entry.getValue().getAudRecs()) {
+    //             if (song.getName().equals(name)) {
+    //                 return true;
+    //             }
+    //         }
+    //     }
+
+    //     return false;
+    // }
 
     /**
      *

@@ -11,8 +11,6 @@ public abstract class AudioCollection<T extends AudioRec> {
     private String name;
     private String owner;
     private int entireDuration;
-    // TODO de modificat in audRecs
-    // private ArrayList<T> collection;
     private ArrayList<T> audRecs;
 
     public AudioCollection(final String name, final String owner) {
@@ -53,10 +51,6 @@ public abstract class AudioCollection<T extends AudioRec> {
 
         return nameList;
     }
-
-    // public boolean hasAudRec(T audRec) {
-    //     return this.collection.contains(audRec);
-    // }
 
     public boolean hasAudRec(AudioRec audRec) {
         return this.audRecs.contains(audRec);

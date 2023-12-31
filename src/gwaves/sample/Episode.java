@@ -12,8 +12,4 @@ public final class Episode extends AudioRec {
         super(episodeInput.getName(), episodeInput.getDuration());
         this.description = episodeInput.getDescription();
     }
-
-    // public String getDescription() {
-    //     return this.description;
-    // }
 }
