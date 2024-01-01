@@ -158,12 +158,14 @@ public final class Host extends User implements Filterable {
     /**
      *
      */
-    public void rmvAllPodcasts() {
+    public void clearAll() {
         DataBase database = DataBase.getInstance();
 
         for (var entry : this.podcasts.entrySet()) {
             database.removePodcast(entry.getValue());
         }
+
+        this.podcasts.clear();
     }
 
     /**
@@ -181,15 +183,6 @@ public final class Host extends User implements Filterable {
     public PageCreator getPageCreator() {
         return this.pageCreator;
     }
-
-    /**
-     *
-     * @param name
-     * @return
-     */
-    // public boolean hasPodcastWithName(final String name) {
-    //     return this.podcasts.containsKey(name);
-    // }
 
     /**
      *

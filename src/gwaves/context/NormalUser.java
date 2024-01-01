@@ -574,20 +574,26 @@ public final class NormalUser extends User {
     /**
      *
      */
-    public void rmvAllHistory() {
+    public void clearAll() {
         DataBase database = DataBase.getInstance();
 
         for (var playlist : this.personalPlaylists) {
             database.removePlaylist(playlist);
         }
 
+        this.personalPlaylists.clear();
+
         for (var playlist : this.followedPlaylists) {
             playlist.removeFollower();
         }
 
+        this.followedPlaylists.clear();
+
         for (var song : this.likedSongs) {
             song.removeLike();
         }
+
+        this.likedSongs.clear();
     }
 
     /**

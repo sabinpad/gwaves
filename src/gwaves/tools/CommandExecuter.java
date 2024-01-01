@@ -626,7 +626,7 @@ public final class CommandExecuter {
             userManager.rmvUser(normaluser);
             userManager.toUnlink(normaluser);
 
-            normaluser.rmvAllHistory();
+            normaluser.clearAll();
             database.removeNormalUser(normaluser);
         } else if (database.queryArtist(commandInput.getUsername()) != null) {
             Artist artist = database.queryArtist(commandInput.getUsername());
@@ -638,7 +638,7 @@ public final class CommandExecuter {
 
             userManager.toUnlink(artist);
 
-            artist.rmvAllAlbums();
+            artist.clearAll();
             database.removeArtist(artist);
         } else if (database.queryHost(commandInput.getUsername()) != null) {
             Host host = database.queryHost(commandInput.getUsername());
@@ -648,7 +648,7 @@ public final class CommandExecuter {
                 return;
             }
 
-            host.rmvAllPodcasts();
+            host.clearAll();
             database.removeHost(host);
         }
 

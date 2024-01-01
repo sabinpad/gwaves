@@ -24,6 +24,8 @@ public abstract class User {
         this.city = userInput.getCity();
     }
 
+    public abstract void clearAll();
+
     /**
      * @return result message of the last executed command
      */

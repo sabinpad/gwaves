@@ -146,24 +146,6 @@ public final class UserManager {
      * @return true if no user is interacting with the specified user
      */
     public boolean isSafeToRemove(final Album album) {
-        // for (var normaluser : this.normalUsers) {
-        //     if (album.getName().equals(normaluser.getListeningCollName())) {
-        //         return false;
-        //     }
-
-        //     if (album.hasSongWithName(normaluser.getListeningSongName())) {
-        //         return false;
-        //     }
-
-        //     if (normaluser.getListeningSongs() != null) {
-        //         for (var song : normaluser.getListeningSongs()) {
-        //             if (album.hasSongWithName(song.getName())) {
-        //                 return false;
-        //             }
-        //         }
-        //     }
-        // }
-
         for (var normalUser: this.normalUsers) {
             if (album.equals(normalUser.getListeningCollec())) {
                 return false;
@@ -173,7 +155,6 @@ public final class UserManager {
                 return false;
             }
 
-            // TODO nu e foarte eficient
             if (normalUser.getListeningCollec() != null) {
                 for (var audRec : normalUser.getListeningCollec().getAudRecs()) {
                     if (album.hasAudRec(audRec)) {
@@ -192,12 +173,6 @@ public final class UserManager {
      * @return true if no user is interacting with the specified user
      */
     public boolean isSafeToRemove(final Podcast podcast) {
-        // for (var normalUser : this.normalUsers) {
-        //     if (podcast.getName().equals(normalUser.getListeningCollName())) {
-        //         return false;
-        //     }
-        // }
-
         for (var normalUser : this.normalUsers) {
             if (podcast.equals(normalUser.getListeningCollec())) {
                 return false;
@@ -213,12 +188,6 @@ public final class UserManager {
      * @return true if no user is interacting with the specified user
      */
     public boolean isSafeToRemove(final NormalUser normalUser) {
-        // for (var otherNormalUser : this.normalUsers) {
-        //     if (normalUser.hasPlaylistWithName(otherNormalUser.getListeningCollName())) {
-        //         return false;
-        //     }
-        // }
-
         ArrayList<Playlist> playlists = normalUser.getPersonalPlaylists();
 
         for (var otherNormalUser : this.normalUsers) {

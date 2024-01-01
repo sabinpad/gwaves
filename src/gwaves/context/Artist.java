@@ -209,7 +209,7 @@ public final class Artist extends User implements Filterable {
     /**
      *
      */
-    public void rmvAllAlbums() {
+    public void clearAll() {
         DataBase database = DataBase.getInstance();
 
         for (var entry : this.albums.entrySet()) {
@@ -219,6 +219,8 @@ public final class Artist extends User implements Filterable {
 
             database.removeAlbum(entry.getValue());
         }
+
+        this.albums.clear();
     }
 
     /**
@@ -250,32 +252,6 @@ public final class Artist extends User implements Filterable {
     public PageCreator getPageCreator() {
         return this.pageCreator;
     }
-
-    /**
-     *
-     * @param name
-     * @return
-     */
-    // public boolean hasAlbumWithName(final String name) {
-    //     return this.albums.containsKey(name);
-    // }
-
-    /**
-     *
-     * @param name
-     * @return
-     */
-    // public boolean hasSongWithName(final String name) {
-    //     for (var entry : this.albums.entrySet()) {
-    //         for (var song : entry.getValue().getAudRecs()) {
-    //             if (song.getName().equals(name)) {
-    //                 return true;
-    //             }
-    //         }
-    //     }
-
-    //     return false;
-    // }
 
     /**
      *
