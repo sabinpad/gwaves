@@ -15,6 +15,7 @@ public final class Song extends AudioRec implements Filterable {
     private String lyrics;
     private String genre;
     private Integer releaseYear;
+    // TODO in loc de String sa fie referinta la artist
     @Getter
     private String artist;
     @Getter
@@ -108,5 +109,17 @@ public final class Song extends AudioRec implements Filterable {
         }
 
         return true;
+    }
+
+    // TODO de incercat Override la metoda equals doar pentru comparare intre songuri
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj.getClass() == this.getClass()) {
+            return ((Song)obj).getName() == this.getName()
+                    && ((Song)obj).getArtist() == this.getArtist();
+        }
+
+        return super.equals(obj);
     }
 }
