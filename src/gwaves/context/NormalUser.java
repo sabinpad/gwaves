@@ -3,6 +3,7 @@ package gwaves.context;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import fileio.input.UserInput;
@@ -46,6 +47,8 @@ public final class NormalUser extends User {
     private LinkedHashMap<Album, Integer> listenedAlbums;
     private LinkedHashMap<Episode, Integer> listenedEpisodes;
 
+    private ArrayList<AppNotification> notifications;
+
     /**
      * Default Constructor
      */
@@ -61,6 +64,7 @@ public final class NormalUser extends User {
         this.homeCreator = new HomePageCreator(likedSongs, followedPlaylists);
         this.likedCreator = new LikedPageCreator(likedSongs, followedPlaylists);
         this.loadedCreator = this.homeCreator;
+        this.notifications = new ArrayList<>();
     }
 
     /**
@@ -78,6 +82,7 @@ public final class NormalUser extends User {
         this.homeCreator = new HomePageCreator(likedSongs, followedPlaylists);
         this.likedCreator = new LikedPageCreator(likedSongs, followedPlaylists);
         this.loadedCreator = this.homeCreator;
+        this.notifications = new ArrayList<>();
     }
 
     /**
@@ -636,6 +641,10 @@ public final class NormalUser extends User {
         }
     }
 
+    public void addNotification(String name, String description) {
+        this.notifications.add(new AppNotification(name, description));
+    }
+
     /**
      *
      */
@@ -709,4 +718,10 @@ public final class NormalUser extends User {
     public boolean isActive() {
         return this.active;
     }
+}
+
+@Getter @AllArgsConstructor
+class AppNotification {
+    private String name;
+    private String description;
 }

@@ -23,6 +23,8 @@ public final class Host extends User implements Filterable {
 
     private LinkedHashMap<NormalUser, Integer> listeners;
 
+    private ArrayList<NormalUser> subscribers;
+
     /**
      * Create new Host object
      *
@@ -36,6 +38,7 @@ public final class Host extends User implements Filterable {
         this.announcements = new LinkedHashMap<>();
         this.podcasts = new LinkedHashMap<>();
         this.pageCreator = new HostPageCreator(announcements, podcasts);
+        this.subscribers = new ArrayList<>();
     }
 
     /**
@@ -66,6 +69,8 @@ public final class Host extends User implements Filterable {
 
         this.podcasts.put(name, newPodcast);
         database.addPodcast(newPodcast);
+
+        this.notifySubs("New Podcast", "New Podcast from " + this.getUsername());
 
         this.commandMessage = this.getUsername() + " has added new podcast successfully.";
     }
@@ -105,6 +110,8 @@ public final class Host extends User implements Filterable {
         }
 
         this.announcements.put(name, new HostAnnouncement(name, description));
+
+        this.notifySubs("New Announcement", "New Announcement from " + this.getUsername());
 
         this.commandMessage = this.getUsername()
                             + " has successfully added new announcement.";
@@ -163,6 +170,12 @@ public final class Host extends User implements Filterable {
             val++;
         } else {
             this.listeners.put(normalUser, 1);
+        }
+    }
+
+    private void notifySubs(String name, String description) {
+        for (var sub : this.subscribers) {
+            sub.addNotification(name, description);
         }
     }
 

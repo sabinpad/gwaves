@@ -26,6 +26,8 @@ public final class Artist extends User implements Filterable {
 
     private LinkedHashMap<NormalUser, Integer> listeners;
 
+    private ArrayList<NormalUser> subscribers;
+
     /**
      * Create new Artist object
      *
@@ -41,6 +43,7 @@ public final class Artist extends User implements Filterable {
         this.albums = new LinkedHashMap<>();
         this.pageCreator = new ArtistPageCreator(events, merches, albums);
         this.listeners = new LinkedHashMap<>();
+        this.subscribers = new ArrayList<>();
     }
 
     /**
@@ -78,6 +81,8 @@ public final class Artist extends User implements Filterable {
         }
 
         database.addAlbum(newAlbum);
+
+        this.notifySubs("New Album", "New Album from " + this.getUsername());
 
         this.commandMessage = this.getUsername() + " has added new album successfully.";
     }
@@ -138,6 +143,8 @@ public final class Artist extends User implements Filterable {
 
         this.events.put(name, new ArtistEvent(name, description, date));
 
+        this.notifySubs("New Event", "New Event from " + this.getUsername());
+
         this.commandMessage = this.getUsername() + " has added new event successfully.";
     }
 
@@ -175,6 +182,8 @@ public final class Artist extends User implements Filterable {
         }
 
         this.merches.put(name, new ArtistMerch(name, description, price));
+
+        this.notifySubs("New Merch", "New Merch from " + this.getUsername());
 
         this.commandMessage = this.getUsername() + " has added new merchandise successfully.";
     }
@@ -215,6 +224,12 @@ public final class Artist extends User implements Filterable {
             val++;
         } else {
             this.listeners.put(normalUser, 1);
+        }
+    }
+
+    private void notifySubs(String name, String description) {
+        for (var sub : this.subscribers) {
+            sub.addNotification(name, description);
         }
     }
 
