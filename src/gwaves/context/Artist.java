@@ -13,6 +13,8 @@ import fileio.output.AlbumOutput;
 import gwaves.collection.Album;
 import gwaves.storage.DataBase;
 import gwaves.tools.UserManager;
+import gwaves.misc.ArtistEvent;
+import gwaves.misc.ArtistMerch;
 import gwaves.util.Filterable;
 import gwaves.ui.PageCreator;
 
@@ -291,90 +293,6 @@ public final class Artist extends User implements Filterable {
         }
 
         return true;
-    }
-}
-
-class ArtistEvent {
-    private String name;
-    private String description;
-    private String date;
-
-    /**
-     *
-     * @param name
-     * @param description
-     * @param date
-     */
-    ArtistEvent(final String name, final String description, final String date) {
-        this.name = name;
-        this.description = description;
-        this.date = date;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String getName() {
-        return this.name;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String getDescription() {
-        return this.description;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String getDate() {
-        return this.date;
-    }
-}
-
-class ArtistMerch {
-    private String name;
-    private String description;
-    private int price;
-
-    /**
-     *
-     * @param name
-     * @param description
-     * @param price
-     */
-    ArtistMerch(final String name, final String description, final int price) {
-        this.name = name;
-        this.description = description;
-        this.price = price;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String getName() {
-        return this.name;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String getDescription() {
-        return this.description;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public int getPrice() {
-        return this.price;
     }
 }
 

@@ -11,6 +11,7 @@ import gwaves.sample.Episode;
 import gwaves.collection.Podcast;
 import gwaves.storage.DataBase;
 import gwaves.tools.UserManager;
+import gwaves.misc.HostAnnouncement;
 import gwaves.util.Filterable;
 import gwaves.ui.PageCreator;
 
@@ -219,37 +220,6 @@ public final class Host extends User implements Filterable {
         }
 
         return true;
-    }
-}
-
-class HostAnnouncement {
-    private String name;
-    private String description;
-
-    /**
-     *
-     * @param name
-     * @param description
-     */
-    HostAnnouncement(final String name, final String description) {
-        this.name = name;
-        this.description = description;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String getName() {
-        return this.name;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public String getDescription() {
-        return this.description;
     }
 }
 
