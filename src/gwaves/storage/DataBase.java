@@ -24,6 +24,7 @@ public final class DataBase {
     private LinkedHashMap<String, Artist> artists;
     private LinkedHashMap<String, Host> hosts;
 
+    private Song add;
     private ArrayList<Song> library;
     private ArrayList<Playlist> playlists;
     private ArrayList<Album> albums;
@@ -69,9 +70,9 @@ public final class DataBase {
         }
 
         for (var songInput : libInput.getSongs()) {
-            this.library.add(new Song(songInput));
+            this.add = new Song(songInput);
         }
-
+        
         for (var podcastInput : libInput.getPodcasts()) {
             this.podcasts.add(new Podcast(podcastInput));
         }

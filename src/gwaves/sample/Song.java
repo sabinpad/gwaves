@@ -7,6 +7,8 @@ import lombok.Getter;
 import fileio.input.FilterInput;
 import fileio.input.SongInput;
 
+import gwaves.context.Artist;
+import gwaves.storage.DataBase;
 import gwaves.util.Filterable;
 
 public final class Song extends AudioRec implements Filterable {
@@ -17,7 +19,7 @@ public final class Song extends AudioRec implements Filterable {
     private Integer releaseYear;
     // TODO in loc de String sa fie referinta la artist
     @Getter
-    private String artist;
+    private Artist artist;
     @Getter
     private int likes;
 
@@ -29,7 +31,7 @@ public final class Song extends AudioRec implements Filterable {
         this.lyrics = songInput.getLyrics();
         this.genre = songInput.getGenre();
         this.releaseYear = songInput.getReleaseYear();
-        this.artist = songInput.getArtist();
+        this.artist = DataBase.getInstance().queryArtist(songInput.getArtist());
         this.likes = 0;
     }
 
