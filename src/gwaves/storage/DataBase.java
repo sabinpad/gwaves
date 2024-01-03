@@ -4,6 +4,8 @@ import java.util.Comparator;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
+import lombok.Getter;
+
 import fileio.input.FilterInput;
 import fileio.input.LibraryInput;
 
@@ -24,6 +26,7 @@ public final class DataBase {
     private LinkedHashMap<String, Artist> artists;
     private LinkedHashMap<String, Host> hosts;
 
+    @Getter
     private Song add;
     private ArrayList<Song> library;
     private ArrayList<Playlist> playlists;
