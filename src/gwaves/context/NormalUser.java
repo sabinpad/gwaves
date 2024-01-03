@@ -1,6 +1,7 @@
 package gwaves.context;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 import lombok.Getter;
 
@@ -8,6 +9,7 @@ import fileio.input.UserInput;
 import fileio.input.FilterInput;
 import fileio.output.MusicPlayerStatusOutput;
 import fileio.output.PlaylistOutput;
+import fileio.output.WrappedOutput;
 
 import gwaves.sample.AudioRec;
 import gwaves.sample.Song;
@@ -19,6 +21,8 @@ import gwaves.ui.LikedPageCreator;
 import gwaves.ui.PageCreator;
 import gwaves.collection.AudioCollection;
 import gwaves.collection.Playlist;
+import gwaves.collection.Album;
+import gwaves.sample.Episode;
 
 public final class NormalUser extends User {
     @Getter
@@ -36,6 +40,12 @@ public final class NormalUser extends User {
     private HomePageCreator homeCreator;
     private LikedPageCreator likedCreator;
 
+    private LinkedHashMap<Artist, Integer> listenedArtists;
+    private LinkedHashMap<String, Integer> listenedGenres;
+    private LinkedHashMap<Song, Integer> listenedSongs;
+    private LinkedHashMap<Album, Integer> listenedAlbums;
+    private LinkedHashMap<Episode, Integer> listenedEpisodes;
+
     /**
      * Default Constructor
      */
@@ -45,7 +55,7 @@ public final class NormalUser extends User {
         this.followedPlaylists = new ArrayList<>();
         this.likedSongs = new ArrayList<>();
         this.searchbar = new Searchbar(this);
-        this.musicplayer = new Musicplayer();
+        this.musicplayer = new Musicplayer(this);
         this.commandMessage = null;
         this.active = true;
         this.homeCreator = new HomePageCreator(likedSongs, followedPlaylists);
@@ -62,7 +72,7 @@ public final class NormalUser extends User {
         this.followedPlaylists = new ArrayList<>();
         this.likedSongs = new ArrayList<>();
         this.searchbar = new Searchbar(this);
-        this.musicplayer = new Musicplayer();
+        this.musicplayer = new Musicplayer(this);
         this.commandMessage = null;
         this.active = true;
         this.homeCreator = new HomePageCreator(likedSongs, followedPlaylists);
@@ -569,6 +579,61 @@ public final class NormalUser extends User {
      */
     public String doGetPage() {
         return this.loadedCreator.createPage();
+    }
+
+    public WrappedOutput doWrapped() {
+        WrappedOutput wrOut = new WrappedOutput();
+
+        // TODO
+
+        return wrOut;
+    }
+
+    public void updateStatistics(Song song) {
+        Integer val;
+
+        if (this.listenedSongs.containsKey(song)) {
+            val = this.listenedSongs.get(song);
+            val++;
+        } else {
+            this.listenedSongs.put(song, 1);
+        }
+
+        if (this.listenedArtists.containsKey(song.getArtist())) {
+            val = this.listenedArtists.get(song.getArtist());
+            val++;
+        } else {
+            this.listenedArtists.put(song.getArtist(), 1);
+        }
+
+        if (this.listenedGenres.containsKey(song.getGenre())) {
+            val = this.listenedGenres.get(song.getGenre());
+            val++;
+        } else {
+            this.listenedGenres.put(song.getGenre(), 1);
+        }
+    }
+
+    public void updateStatistics(Episode episode) {
+        Integer val;
+
+        if (this.listenedEpisodes.containsKey(episode)) {
+            val = this.listenedEpisodes.get(episode);
+            val++;
+        } else {
+            this.listenedEpisodes.put(episode, 1);
+        }
+    }
+
+    public void updateStatistics(Album album) {
+        Integer val;
+
+        if (this.listenedAlbums.containsKey(album)) {
+            val = this.listenedAlbums.get(album);
+            val++;
+        } else {
+            this.listenedAlbums.put(album, 1);
+        }
     }
 
     /**

@@ -11,6 +11,7 @@ import gwaves.context.Artist;
 import gwaves.storage.DataBase;
 import gwaves.util.Filterable;
 
+@Getter
 public final class Song extends AudioRec implements Filterable {
     private String album;
     private ArrayList<String> tags;
@@ -18,10 +19,9 @@ public final class Song extends AudioRec implements Filterable {
     private String genre;
     private Integer releaseYear;
     // TODO in loc de String sa fie referinta la artist
-    @Getter
     private Artist artist;
-    @Getter
     private int likes;
+    private int listenings;
 
     public Song(final SongInput songInput) {
         super(songInput.getName(), songInput.getDuration());
@@ -49,6 +49,10 @@ public final class Song extends AudioRec implements Filterable {
         if (this.likes > 0) {
             this.likes--;
         }
+    }
+
+    public void addListen() {
+        this.listenings++;
     }
 
     /**

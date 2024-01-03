@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,6 +18,7 @@ import gwaves.collection.Playlist;
 import gwaves.collection.Album;
 import gwaves.collection.AudioCollection;
 import gwaves.collection.Podcast;
+import gwaves.context.NormalUser;
 
 public final class Musicplayer {
     private static final Random RAND = new Random(0);
@@ -29,6 +31,8 @@ public final class Musicplayer {
         ALBUM,
         PODCAST
     }
+
+    private NormalUser ownerUser;
 
     private Type loadedType;
 
@@ -48,7 +52,8 @@ public final class Musicplayer {
 
     private HashMap<Podcast, PodcastSavedInfo> watchedPodcasts;
 
-    public Musicplayer() {
+    public Musicplayer(NormalUser ownerUser) {
+        this.ownerUser = ownerUser;
         this.loadedType = Musicplayer.Type.NA;
         this.paused = true;
         this.shuffledIndices = new ArrayList<>();
@@ -99,6 +104,8 @@ public final class Musicplayer {
         this.remainingTime = this.currentRec.getDuration();
         this.loadedType = Musicplayer.Type.SONG;
         this.paused = false;
+
+        this.updateStatistics();
     }
 
     /**
@@ -114,6 +121,8 @@ public final class Musicplayer {
         this.remainingTime = this.currentRec.getDuration();
         this.loadedType = Musicplayer.Type.PLAYLIST;
         this.paused = false;
+
+        this.updateStatistics();
     }
 
     /**
@@ -129,6 +138,8 @@ public final class Musicplayer {
         this.remainingTime = this.currentRec.getDuration();
         this.loadedType = Musicplayer.Type.ALBUM;
         this.paused = false;
+
+        this.updateStatistics();
     }
 
     /**
@@ -154,6 +165,8 @@ public final class Musicplayer {
         this.remainingTime = podcastSavedInfo.getLastEpisodePlayedRemainingTime();
         this.loadedType = Musicplayer.Type.PODCAST;
         this.paused = false;
+
+        this.updateStatistics();
     }
 
     /**
@@ -291,6 +304,8 @@ public final class Musicplayer {
 
         this.currentRec = this.currentCollec.getAudRec(index);
         this.remainingTime = this.currentRec.getDuration();
+
+        this.updateStatistics();
     }
 
     public void prev() {
@@ -374,6 +389,34 @@ public final class Musicplayer {
             Collections.shuffle(this.shuffledIndices, Musicplayer.RAND);
 
             this.currentIndex = this.shuffledIndices.indexOf(prevIndex);
+        }
+    }
+
+    private void updateStatistics() {
+        if (this.currentRec == null) {
+            return;
+        }
+
+        if (this.loadedType == Musicplayer.Type.PODCAST) {
+            Episode currentEpisode = (Episode)this.currentRec;
+
+            currentEpisode.addListen();
+            // TODO sa adaug listen la host
+        } else {
+            Song currentSong = (Song)this.currentRec;
+
+            currentSong.addListen();
+            currentSong.getArtist().addListen(this.ownerUser);
+
+            this.ownerUser.updateStatistics(currentSong);
+
+            if (this.loadedType == Musicplayer.Type.ALBUM) {
+                if (this.currentIndex == 0) {
+                    ((Album)this.currentCollec).addListen();
+                }
+
+                this.ownerUser.updateStatistics((Album)currentCollec);
+            }
         }
     }
 

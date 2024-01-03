@@ -24,6 +24,8 @@ public final class Artist extends User implements Filterable {
 
     private ArtistPageCreator pageCreator;
 
+    private LinkedHashMap<NormalUser, Integer> listeners;
+
     /**
      * Create new Artist object
      *
@@ -38,6 +40,7 @@ public final class Artist extends User implements Filterable {
         this.merches = new LinkedHashMap<>();
         this.albums = new LinkedHashMap<>();
         this.pageCreator = new ArtistPageCreator(events, merches, albums);
+        this.listeners = new LinkedHashMap<>();
     }
 
     /**
@@ -204,6 +207,15 @@ public final class Artist extends User implements Filterable {
      */
     public String doGetPage() {
         return this.pageCreator.createPage();
+    }
+
+    public void addListen(NormalUser normalUser) {
+        if (this.listeners.containsKey(normalUser)) {
+            Integer val = this.listeners.get(normalUser);
+            val++;
+        } else {
+            this.listeners.put(normalUser, 1);
+        }
     }
 
     /**

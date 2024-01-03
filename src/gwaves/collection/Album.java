@@ -2,15 +2,19 @@ package gwaves.collection;
 
 import java.util.ArrayList;
 
+import lombok.Getter;
+
 import fileio.input.SongInput;
 import fileio.input.FilterInput;
 
 import gwaves.sample.Song;
 import gwaves.util.Filterable;
 
+@Getter
 public final class Album extends AudioCollection<Song> implements Filterable {
     private int releaseYear;
     private String description;
+    private int listenings;
 
     /**
      * Create new Album object
@@ -34,6 +38,10 @@ public final class Album extends AudioCollection<Song> implements Filterable {
         }
     }
 
+    public void addListen() {
+        this.listenings++;
+    }
+
     /**
      *
      * @return
@@ -46,16 +54,6 @@ public final class Album extends AudioCollection<Song> implements Filterable {
         }
 
         return sum;
-    }
-
-    public boolean hasSongWithName(String name) {
-        for (var song : this.getAudRecs()) {
-            if (song.getName().equals(name)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     /**

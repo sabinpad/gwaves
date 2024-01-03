@@ -21,6 +21,8 @@ public final class Host extends User implements Filterable {
 
     private HostPageCreator pageCreator;
 
+    private LinkedHashMap<NormalUser, Integer> listeners;
+
     /**
      * Create new Host object
      *
@@ -153,6 +155,15 @@ public final class Host extends User implements Filterable {
      */
     public String doGetPage() {
         return this.pageCreator.createPage();
+    }
+
+    public void addListen(NormalUser normalUser) {
+        if (this.listeners.containsKey(normalUser)) {
+            Integer val = this.listeners.get(normalUser);
+            val++;
+        } else {
+            this.listeners.put(normalUser, 1);
+        }
     }
 
     /**
