@@ -7,13 +7,13 @@ import fileio.input.FilterInput;
 import fileio.input.EpisodeInput;
 import fileio.output.PodcastOutput;
 
-import gwaves.sample.Episode;
 import gwaves.collection.Podcast;
 import gwaves.storage.DataBase;
 import gwaves.tools.UserManager;
 import gwaves.misc.HostAnnouncement;
 import gwaves.util.Filterable;
 import gwaves.ui.PageCreator;
+import gwaves.ui.HostPageCreator;
 
 public final class Host extends User implements Filterable {
     private LinkedHashMap<String, HostAnnouncement> announcements;
@@ -220,72 +220,5 @@ public final class Host extends User implements Filterable {
         }
 
         return true;
-    }
-}
-
-class HostPageCreator implements PageCreator {
-    private LinkedHashMap<String, HostAnnouncement> announcements;
-    private LinkedHashMap<String, Podcast> podcasts;
-
-    /**
-     *
-     * @param announcements
-     * @param podcasts
-     */
-    HostPageCreator(final LinkedHashMap<String, HostAnnouncement> announcements,
-                           final LinkedHashMap<String, Podcast> podcasts) {
-        this.announcements = announcements;
-        this.podcasts = podcasts;
-    }
-
-    /**
-     *
-     */
-    public String createPage() {
-        int i = 0, j = 0;
-        String page = "Podcasts:\n\t[";
-        ArrayList<HostAnnouncement> announs = new ArrayList<>(this.announcements.values());
-        ArrayList<Podcast> modifpodcasts = new ArrayList<>(this.podcasts.values());
-        ArrayList<Episode> episodes;
-
-        for (var podcast : modifpodcasts) {
-            page += (podcast.getName() + ":\n\t[");
-
-            episodes = podcast.getAudRecs();
-
-            i = 0;
-            for (var episode : episodes) {
-                page += (episode.getName() + " - " + episode.getDescription());
-
-                i++;
-                if (i != episodes.size()) {
-                    page += ", ";
-                }
-            }
-
-            page += "]\n";
-
-            j++;
-            if (j != podcasts.size()) {
-                page += ", ";
-            }
-        }
-
-        page += "]\n\nAnnouncements:\n\t[";
-
-        i = 0;
-        for (var announ : announs) {
-            page += (announ.getName() + ":\n\t");
-            page += (announ.getDescription() + "\n");
-
-            i++;
-            if (i != announs.size()) {
-                page += ", ";
-            }
-        }
-
-        page += "]";
-
-        return page;
     }
 }
