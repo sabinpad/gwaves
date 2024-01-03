@@ -23,7 +23,6 @@ public final class Podcast extends AudioCollection<Episode> implements Filterabl
 
         for (var episodeInput : episodesInput) {
             this.getAudRecs().add(new Episode(episodeInput));
-            // this.entireDuration += episodeInput.getDuration();
         }
     }
 
@@ -37,7 +36,6 @@ public final class Podcast extends AudioCollection<Episode> implements Filterabl
 
         for (var episodeInput : podcastInput.getEpisodes()) {
             this.getAudRecs().add(new Episode(episodeInput));
-            // this.entireDuration += episodeInput.getDuration();
         }
     }
 

@@ -352,13 +352,6 @@ public final class DataBase {
         topSongsList.sort(new Comparator<Song>() {
             @Override
             public int compare(final Song song1, final Song song2) {
-                // if (song1.getNrOfLikes() < song2.getNrOfLikes()) {
-                //     return 1;
-                // } else if (song1.getNrOfLikes() > song2.getNrOfLikes()) {
-                //     return -1;
-                // } else {
-                //     return 0;
-                // }
                 if (song1.getLikes() < song2.getLikes()) {
                     return 1;
                 } else if (song1.getLikes() > song2.getLikes()) {

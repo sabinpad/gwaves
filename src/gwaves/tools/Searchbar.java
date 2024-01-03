@@ -52,8 +52,6 @@ public final class Searchbar {
 
         this.clearResults();
         this.resultsSong = DataBase.getInstance().querySongs(filter);
-        // this.resultsPlaylist = null;
-        // this.resultsPodcast = null;
 
         this.resultsNumber = ((this.resultsSong.size() > 5) ? 5 : this.resultsSong.size());
         this.resultsSong.retainAll(this.resultsSong.subList(0, this.resultsNumber));
@@ -78,8 +76,6 @@ public final class Searchbar {
         this.clearResults();
         this.resultsPlaylist = DataBase.getInstance().queryVisiblePlaylistsAndOwnedBy(filter,
                 this.ownerUser.getUsername());
-        // this.resultsSong = null;
-        // this.resultsPodcast = null;
 
         this.resultsNumber = ((this.resultsPlaylist.size() > 5) ? 5 : this.resultsPlaylist.size());
         this.resultsPlaylist.retainAll(this.resultsPlaylist.subList(0, this.resultsNumber));
@@ -103,8 +99,6 @@ public final class Searchbar {
 
         this.clearResults();
         this.resultsAlbum = DataBase.getInstance().queryAlbums(filter);
-        // this.resultsSong = null;
-        // this.resultsPodcast = null;
 
         this.resultsNumber = ((this.resultsAlbum.size() > 5) ? 5 : this.resultsAlbum.size());
         this.resultsAlbum.retainAll(this.resultsAlbum.subList(0, this.resultsNumber));
@@ -128,8 +122,6 @@ public final class Searchbar {
 
         this.clearResults();
         this.resultsPodcast = DataBase.getInstance().queryPodcasts(filter);
-        // this.resultsSong = null;
-        // this.resultsPlaylist = null;
 
         this.resultsNumber = ((this.resultsPodcast.size() > 5) ? 5 : this.resultsPodcast.size());
         this.resultsPodcast.retainAll(this.resultsPodcast.subList(0, this.resultsNumber));

@@ -421,29 +421,6 @@ public final class Musicplayer {
     }
 
     /**
-     * @return name of current audio recording
-     */
-    public String getCurrentRecName() {
-        if (this.currentRec != null) {
-            return this.currentRec.getName();
-        }
-
-        return null;
-    }
-
-    // /**
-    //  *
-    //  * @return
-    //  */
-    // public String getCurrentCollecName() {
-    //     if (this.currentCollec != null) {
-    //         return this.currentCollec.getName();
-    //     }
-
-    //     return null;
-    // }
-
-    /**
      * @return current loaded song
      */
     public Song getLoadedSong() {
