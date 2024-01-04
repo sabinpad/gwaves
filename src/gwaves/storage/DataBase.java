@@ -77,7 +77,7 @@ public final class DataBase {
         }
         
         for (var podcastInput : libInput.getPodcasts()) {
-            this.podcasts.add(new Podcast(podcastInput));
+            this.podcasts.add(new Podcast(podcastInput, true));
         }
     }
 
@@ -114,6 +114,12 @@ public final class DataBase {
      */
     public void addHost(final Host host) {
         this.hosts.put(host.getUsername(), host);
+
+        for (var podcast : this.podcasts) {
+            if (podcast.getOwner().equals(host.getUsername())) {
+                host.addGhostedPodcast(podcast);
+            }
+        }
     }
 
     /**

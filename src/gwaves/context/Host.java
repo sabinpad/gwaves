@@ -65,7 +65,7 @@ public final class Host extends User implements Filterable {
             }
         }
 
-        Podcast newPodcast = new Podcast(name, owner, episodesInput);
+        Podcast newPodcast = new Podcast(name, owner, episodesInput, false);
         DataBase database = DataBase.getInstance();
 
         this.podcasts.put(name, newPodcast);
@@ -174,6 +174,10 @@ public final class Host extends User implements Filterable {
         }
     }
 
+    public void addGhostedPodcast(Podcast podcast) {
+        this.podcasts.put(podcast.getName(), podcast);
+    }
+
     private void notifySubs(String name, String description) {
         for (var sub : this.subscribers) {
             sub.addNotification(name, description);
@@ -187,7 +191,9 @@ public final class Host extends User implements Filterable {
         DataBase database = DataBase.getInstance();
 
         for (var entry : this.podcasts.entrySet()) {
-            database.removePodcast(entry.getValue());
+            if (!entry.getValue().isGhosted()) {
+                database.removePodcast(entry.getValue());
+            }
         }
 
         this.podcasts.clear();

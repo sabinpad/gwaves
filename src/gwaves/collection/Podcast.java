@@ -10,6 +10,8 @@ import gwaves.sample.Episode;
 import gwaves.util.Filterable;
 
 public final class Podcast extends AudioCollection<Episode> implements Filterable {
+    private boolean ghost;
+
     /**
      * Create new Podcast object
      *
@@ -18,12 +20,14 @@ public final class Podcast extends AudioCollection<Episode> implements Filterabl
      * @param episodesInput list of episodes
      */
     public Podcast(final String name, final String owner,
-                   final ArrayList<EpisodeInput> episodesInput) {
+                   final ArrayList<EpisodeInput> episodesInput, final boolean ghosted) {
         super(name, owner);
 
         for (var episodeInput : episodesInput) {
             this.getAudRecs().add(new Episode(episodeInput));
         }
+
+        this.ghost = ghosted;
     }
 
     /**
@@ -31,12 +35,18 @@ public final class Podcast extends AudioCollection<Episode> implements Filterabl
      *
      * @param podcastInput object to create the instance from
      */
-    public Podcast(final PodcastInput podcastInput) {
+    public Podcast(final PodcastInput podcastInput, final boolean ghosted) {
         super(podcastInput.getName(), podcastInput.getOwner());
 
         for (var episodeInput : podcastInput.getEpisodes()) {
             this.getAudRecs().add(new Episode(episodeInput));
         }
+
+        this.ghost = ghosted;
+    }
+
+    public boolean isGhosted() {
+        return this.ghost;
     }
 
     /**
