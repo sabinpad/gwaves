@@ -16,8 +16,8 @@ import gwaves.tools.UserManager;
 import gwaves.misc.ArtistEvent;
 import gwaves.misc.ArtistMerch;
 import gwaves.util.Filterable;
-import gwaves.ui.PageCreator;
-import gwaves.ui.ArtistPageCreator;
+import gwaves.ui.Page;
+import gwaves.ui.ArtistPage;
 
 public final class Artist extends User implements Filterable {
     private LinkedHashMap<String, ArtistEvent> events;
@@ -25,7 +25,7 @@ public final class Artist extends User implements Filterable {
 
     private LinkedHashMap<String, Album> albums;
 
-    private ArtistPageCreator pageCreator;
+    private ArtistPage page;
 
     private LinkedHashMap<NormalUser, Integer> listeners;
 
@@ -44,7 +44,7 @@ public final class Artist extends User implements Filterable {
         this.events = new LinkedHashMap<>();
         this.merches = new LinkedHashMap<>();
         this.albums = new LinkedHashMap<>();
-        this.pageCreator = new ArtistPageCreator(events, merches, albums);
+        this.page = new ArtistPage(this, events, merches, albums);
         this.listeners = new LinkedHashMap<>();
         this.subscribers = new ArrayList<>();
     }
@@ -218,7 +218,7 @@ public final class Artist extends User implements Filterable {
      * @return
      */
     public String doGetPage() {
-        return this.pageCreator.createPage();
+        return this.page.strigify();
     }
 
     public void addListen(NormalUser normalUser) {
@@ -279,8 +279,8 @@ public final class Artist extends User implements Filterable {
      *
      * @return
      */
-    public PageCreator getPageCreator() {
-        return this.pageCreator;
+    public Page getPage() {
+        return this.page;
     }
 
     /**

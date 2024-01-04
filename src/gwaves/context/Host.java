@@ -12,15 +12,15 @@ import gwaves.storage.DataBase;
 import gwaves.tools.UserManager;
 import gwaves.misc.HostAnnouncement;
 import gwaves.util.Filterable;
-import gwaves.ui.PageCreator;
-import gwaves.ui.HostPageCreator;
+import gwaves.ui.Page;
+import gwaves.ui.HostPage;
 
 public final class Host extends User implements Filterable {
     private LinkedHashMap<String, HostAnnouncement> announcements;
 
     private LinkedHashMap<String, Podcast> podcasts;
 
-    private HostPageCreator pageCreator;
+    private HostPage page;
 
     private LinkedHashMap<NormalUser, Integer> listeners;
 
@@ -38,7 +38,7 @@ public final class Host extends User implements Filterable {
 
         this.announcements = new LinkedHashMap<>();
         this.podcasts = new LinkedHashMap<>();
-        this.pageCreator = new HostPageCreator(announcements, podcasts);
+        this.page = new HostPage(this, announcements, podcasts);
         this.subscribers = new ArrayList<>();
     }
 
@@ -162,7 +162,7 @@ public final class Host extends User implements Filterable {
      * @return
      */
     public String doGetPage() {
-        return this.pageCreator.createPage();
+        return this.page.strigify();
     }
 
     public void addListen(NormalUser normalUser) {
@@ -205,8 +205,8 @@ public final class Host extends User implements Filterable {
      *
      * @return
      */
-    public PageCreator getPageCreator() {
-        return this.pageCreator;
+    public Page getPage() {
+        return this.page;
     }
 
     /**

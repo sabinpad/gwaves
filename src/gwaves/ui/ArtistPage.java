@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 import gwaves.collection.Album;
+import gwaves.context.User;
+import gwaves.context.Artist;
 import gwaves.misc.ArtistEvent;
 import gwaves.misc.ArtistMerch;
 
-public class ArtistPageCreator implements PageCreator {
+public class ArtistPage implements Page {
+    private Artist owner;
     private LinkedHashMap<String, ArtistEvent> events;
     private LinkedHashMap<String, ArtistMerch> merches;
     private LinkedHashMap<String, Album> albums;
@@ -18,18 +21,27 @@ public class ArtistPageCreator implements PageCreator {
      * @param merches
      * @param albums
      */
-    public ArtistPageCreator(final LinkedHashMap<String, ArtistEvent> events,
+    public ArtistPage(final Artist owner, final LinkedHashMap<String, ArtistEvent> events,
                              final LinkedHashMap<String, ArtistMerch> merches,
                              final LinkedHashMap<String, Album> albums) {
+        this.owner = owner;
         this.events = events;
         this.merches = merches;
         this.albums = albums;
     }
 
+    public Type type() {
+        return Page.Type.OFARTIST;
+    }
+
+    public User owner() {
+        return this.owner;
+    }
+
     /**
      *
      */
-    public String createPage() {
+    public String strigify() {
         int i = 0;
         String page = "Albums:\n\t[";
         ArrayList<ArtistEvent> modifevents = new ArrayList<>(this.events.values());

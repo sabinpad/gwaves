@@ -5,9 +5,12 @@ import java.util.LinkedHashMap;
 
 import gwaves.sample.Episode;
 import gwaves.collection.Podcast;
+import gwaves.context.User;
+import gwaves.context.Host;
 import gwaves.misc.HostAnnouncement;
 
-public class HostPageCreator implements PageCreator {
+public class HostPage implements Page {
+    private Host owner;
     private LinkedHashMap<String, HostAnnouncement> announcements;
     private LinkedHashMap<String, Podcast> podcasts;
 
@@ -16,16 +19,25 @@ public class HostPageCreator implements PageCreator {
      * @param announcements
      * @param podcasts
      */
-    public HostPageCreator(final LinkedHashMap<String, HostAnnouncement> announcements,
+    public HostPage(final Host owner, final LinkedHashMap<String, HostAnnouncement> announcements,
                            final LinkedHashMap<String, Podcast> podcasts) {
+        this.owner = owner;
         this.announcements = announcements;
         this.podcasts = podcasts;
+    }
+
+    public Type type() {
+        return Page.Type.OFHOST;
+    }
+
+    public User owner() {
+        return this.owner;
     }
 
     /**
      *
      */
-    public String createPage() {
+    public String strigify() {
         int i = 0, j = 0;
         String page = "Podcasts:\n\t[";
         ArrayList<HostAnnouncement> announs = new ArrayList<>(this.announcements.values());

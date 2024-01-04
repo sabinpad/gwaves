@@ -212,7 +212,7 @@ public final class UserManager {
         }
 
         for (var normalUser : this.normalUsers) {
-            if (normalUser.getPageCreator() == artist.getPageCreator()) {
+            if (normalUser.getPage() == artist.getPage()) {
                 return false;
             }
         }
@@ -233,7 +233,7 @@ public final class UserManager {
         }
 
         for (var normalUser : this.normalUsers) {
-            if (host.getPageCreator() == normalUser.getPageCreator()) {
+            if (host.getPage() == normalUser.getPage()) {
                 return false;
             }
         }

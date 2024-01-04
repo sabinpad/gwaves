@@ -2,6 +2,7 @@ package gwaves.context;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.ListIterator;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,9 +18,9 @@ import gwaves.sample.Song;
 import gwaves.storage.DataBase;
 import gwaves.tools.Musicplayer;
 import gwaves.tools.Searchbar;
-import gwaves.ui.HomePageCreator;
-import gwaves.ui.LikedPageCreator;
-import gwaves.ui.PageCreator;
+import gwaves.ui.HomePage;
+import gwaves.ui.LikedPage;
+import gwaves.ui.Page;
 import gwaves.collection.AudioCollection;
 import gwaves.collection.Playlist;
 import gwaves.collection.Album;
@@ -36,10 +37,11 @@ public final class NormalUser extends User {
 
     private boolean active;
 
-    private PageCreator loadedCreator;
+    private HomePage homePage;
+    private LikedPage likedPage;
 
-    private HomePageCreator homeCreator;
-    private LikedPageCreator likedCreator;
+    private int pageIndex;
+    private ArrayList<Page> pageHistory;
 
     private LinkedHashMap<Artist, Integer> listenedArtists;
     private LinkedHashMap<String, Integer> listenedGenres;
@@ -54,17 +56,7 @@ public final class NormalUser extends User {
      */
     public NormalUser(final String username, final int age, final String city) {
         super(username, age, city);
-        this.personalPlaylists = new ArrayList<>();
-        this.followedPlaylists = new ArrayList<>();
-        this.likedSongs = new ArrayList<>();
-        this.searchbar = new Searchbar(this);
-        this.musicplayer = new Musicplayer(this);
-        this.commandMessage = null;
-        this.active = true;
-        this.homeCreator = new HomePageCreator(likedSongs, followedPlaylists);
-        this.likedCreator = new LikedPageCreator(likedSongs, followedPlaylists);
-        this.loadedCreator = this.homeCreator;
-        this.notifications = new ArrayList<>();
+        this.initHelper();
     }
 
     /**
@@ -72,6 +64,10 @@ public final class NormalUser extends User {
      */
     public NormalUser(final UserInput userInput) {
         super(userInput);
+        this.initHelper();
+    }
+
+    private void initHelper() {
         this.personalPlaylists = new ArrayList<>();
         this.followedPlaylists = new ArrayList<>();
         this.likedSongs = new ArrayList<>();
@@ -79,9 +75,16 @@ public final class NormalUser extends User {
         this.musicplayer = new Musicplayer(this);
         this.commandMessage = null;
         this.active = true;
-        this.homeCreator = new HomePageCreator(likedSongs, followedPlaylists);
-        this.likedCreator = new LikedPageCreator(likedSongs, followedPlaylists);
-        this.loadedCreator = this.homeCreator;
+        this.listenedArtists = new LinkedHashMap<>();
+        this.listenedAlbums = new LinkedHashMap<>();
+        this.listenedSongs = new LinkedHashMap<>();
+        this.listenedGenres = new LinkedHashMap<>();
+        this.listenedEpisodes = new LinkedHashMap<>();
+        this.homePage = new HomePage(this, likedSongs, followedPlaylists);
+        this.likedPage = new LikedPage(this, likedSongs, followedPlaylists);
+        this.pageIndex = 0;
+        this.pageHistory = new ArrayList<>();
+        this.pageHistory.add(this.homePage);
         this.notifications = new ArrayList<>();
     }
 
@@ -151,10 +154,12 @@ public final class NormalUser extends User {
 
         if (this.searchbar.searchedForArtists()) {
             this.commandMessage = "Successfully selected " + this.searchbar.getSelectedResultName() + "'s page.";
-            this.loadedCreator = this.searchbar.getSelectedArtist().getPageCreator();
+            this.pageHistory.add(this.searchbar.getSelectedArtist().getPage());
+            this.pageIndex++;
         } else if (this.searchbar.searchedForHosts()) {
             this.commandMessage = "Successfully selected " + this.searchbar.getSelectedResultName() + "'s page.";
-            this.loadedCreator = this.searchbar.getSelectedHost().getPageCreator();
+            this.pageHistory.add(this.searchbar.getSelectedHost().getPage());
+            this.pageIndex++;
         } else {
             this.commandMessage = "Successfully selected " + this.searchbar.getSelectedResultName() + ".";
         }
@@ -567,13 +572,22 @@ public final class NormalUser extends User {
 
         switch (page) {
             case "Home":
-                this.loadedCreator = this.homeCreator;
+                this.pageHistory.set(this.pageIndex, this.homePage);
                 break;
             case "LikedContent":
-                this.loadedCreator = this.likedCreator;
+                this.pageHistory.set(this.pageIndex, this.likedPage);
                 break;
             default:
                 break;
+        }
+
+        if (this.pageIndex + 1 != this.pageHistory.size()) {
+            ListIterator<Page> iter = this.pageHistory.listIterator(this.pageIndex);
+
+            while (iter.hasNext()) {
+                iter.remove();
+                iter.next();
+            }
         }
 
         this.commandMessage = this.getUsername() + " accessed " + page + " successfully.";
@@ -583,7 +597,7 @@ public final class NormalUser extends User {
      *
      */
     public String doGetPage() {
-        return this.loadedCreator.createPage();
+        return this.pageHistory.get(this.pageIndex).strigify();
     }
 
     public WrappedOutput doWrapped() {
@@ -708,8 +722,8 @@ public final class NormalUser extends User {
      *
      * @return
      */
-    public PageCreator getPageCreator() {
-        return this.loadedCreator;
+    public Page getPage() {
+        return this.pageHistory.get(this.pageIndex);
     }
 
     /**
