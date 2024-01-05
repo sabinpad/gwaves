@@ -10,6 +10,7 @@ import gwaves.context.NormalUser;
 import gwaves.context.Artist;
 import gwaves.context.Host;
 import gwaves.storage.DataBase;
+import net.sf.saxon.om.NoNamespaceName;
 
 public final class CommandExecuter {
     private CommandExecuter() {
@@ -148,6 +149,45 @@ public final class CommandExecuter {
                 break;
             case "getOnlineUsers":
                 CommandExecuter.execGetOnlineUsersName(commandInput, commandOutput);
+                break;
+            case "wrapped":
+                CommandExecuter.execWrapped(commandInput, commandOutput);
+                break;
+            case "buyMerch":
+                CommandExecuter.execBuyMerch(commandInput, commandOutput);
+                break;
+            case "seeMerch":
+                CommandExecuter.execSeeMerch(commandInput, commandOutput);
+                break;
+            case "buyPremium":
+                CommandExecuter.execBuyPremium(commandInput, commandOutput);
+                break;
+            case "cancelPremium":
+                CommandExecuter.execCancelPremium(commandInput, commandOutput);
+                break;
+            case "adBreak":
+                CommandExecuter.execAdBreak(commandInput, commandOutput);
+                break;
+            case "subscribe":
+                CommandExecuter.execSubscribe(commandInput, commandOutput);
+                break;
+            case "getNotifications":
+                CommandExecuter.execGetNotifications(commandInput, commandOutput);
+                break;
+            case "updateRecommendations":
+                CommandExecuter.execUpdateRecommendations(commandInput, commandOutput);
+                break;
+            case "loadRecommendations":
+                CommandExecuter.execLoadRecommendations(commandInput, commandOutput);
+                break;
+            case "previousPage":
+                CommandExecuter.execPreviousPage(commandInput, commandOutput);
+                break;
+            case "nextPage":
+                CommandExecuter.execNextPage(commandInput, commandOutput);
+                break;
+            case "endProgram":
+                CommandExecuter.execEndProgram(commandInput, commandOutput);
                 break;
             default:
                 break;
@@ -968,5 +1008,294 @@ public final class CommandExecuter {
     private static void execGetOnlineUsersName(final CommandInput commandInput,
                                                final CommandOutput commandOutput) {
         commandOutput.setResult(DataBase.getInstance().getOnlineUsersName());
+    }
+
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execWrapped(final CommandInput commandInput, 
+                                    final CommandOutput commandOutput) {
+        DataBase database = DataBase.getInstance();
+
+        if (database.queryUser(commandInput.getUsername()) == null) {
+            commandOutput.setMessage("No data to show for user " + commandInput.getUsername()
+                                        + ".");
+            return;
+        }
+
+        if (database.queryNormalUser(commandInput.getUsername()) != null) {
+            NormalUser normaluser = database.queryNormalUser(commandInput.getUsername());
+            commandOutput.setResult(normaluser.doWrapped());
+        } else if (database.queryArtist(commandInput.getUsername()) != null) {
+            Artist artist = database.queryArtist(commandInput.getUsername());
+            commandOutput.setResult(artist.doWrapped());
+        } else if (database.queryHost(commandInput.getUsername()) != null) {
+            Host host = database.queryHost(commandInput.getUsername());
+            commandOutput.setResult(host.doWrapped());
+        }
+    }
+
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execBuyMerch(final CommandInput commandInput,
+                                               final CommandOutput commandOutput) {
+                                                
+        NormalUser normalUser = null;
+        DataBase database = DataBase.getInstance();
+
+        normalUser = database.queryNormalUser(commandInput.getUsername());
+
+        if (normalUser == null) {
+            commandOutput.setMessage("The username " + commandInput.getUsername()
+                                        + " doesn't exist.");
+            return;
+        }
+
+        normalUser.doBuyMerch(commandInput.getName());
+
+        commandOutput.setMessage(normalUser.getLastCommandMessage());
+
+    }
+
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execSeeMerch(final CommandInput commandInput,
+                                               final CommandOutput commandOutput) {
+        NormalUser normalUser = null;
+        DataBase database = DataBase.getInstance();
+
+        normalUser = database.queryNormalUser(commandInput.getUsername());
+
+        if (normalUser == null) {
+            commandOutput.setMessage("The username " + commandInput.getUsername()
+                                        + " doesn't exist.");
+            return;
+        }
+
+        commandOutput.setResult(normalUser.doSeeMerch());
+    }
+
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execBuyPremium(final CommandInput commandInput,
+                                               final CommandOutput commandOutput) {
+        NormalUser normalUser = null;
+        DataBase database = DataBase.getInstance();
+
+        normalUser = database.queryNormalUser(commandInput.getUsername());
+
+        if (normalUser == null) {
+            commandOutput.setMessage("The username " + commandInput.getUsername()
+                                        + " doesn't exist.");
+            return;
+        }
+
+        normalUser.doBuyPremium();
+
+        commandOutput.setMessage(normalUser.getLastCommandMessage());
+    }
+
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execCancelPremium(final CommandInput commandInput,
+                                               final CommandOutput commandOutput) {
+        NormalUser normalUser = null;
+        DataBase database = DataBase.getInstance();
+
+        normalUser = database.queryNormalUser(commandInput.getUsername());
+
+        if (normalUser == null) {
+            commandOutput.setMessage("The username " + commandInput.getUsername()
+                                        + " doesn't exist.");
+            return;
+        }
+
+        normalUser.doCancelPremium();
+
+        commandOutput.setMessage(normalUser.getLastCommandMessage());
+    }
+
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execAdBreak(final CommandInput commandInput,
+                                               final CommandOutput commandOutput) {
+        NormalUser normalUser = null;
+        DataBase database = DataBase.getInstance();
+
+        normalUser = database.queryNormalUser(commandInput.getUsername());
+
+        if (normalUser == null) {
+            commandOutput.setMessage("The username " + commandInput.getUsername()
+                                        + " doesn't exist.");
+            return;
+        }
+
+        normalUser.doAdBreak(commandInput.getPrice());
+
+        commandOutput.setMessage(normalUser.getLastCommandMessage());
+    }
+
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execSubscribe(final CommandInput commandInput,
+                                               final CommandOutput commandOutput) {
+        NormalUser normalUser = null;
+        DataBase database = DataBase.getInstance();
+
+        normalUser = database.queryNormalUser(commandInput.getUsername());
+
+        if (normalUser == null) {
+            commandOutput.setMessage("The username " + commandInput.getUsername()
+                                        + " doesn't exist.");
+            return;
+        }
+
+        normalUser.doSubscribe();
+
+        commandOutput.setMessage(normalUser.getLastCommandMessage());                                   
+    }
+
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execGetNotifications(final CommandInput commandInput,
+                                               final CommandOutput commandOutput) {
+        
+        NormalUser normalUser = null;
+        DataBase database = DataBase.getInstance();
+
+        normalUser = database.queryNormalUser(commandInput.getUsername());
+
+        if (normalUser == null) {
+            commandOutput.setMessage("The username " + commandInput.getUsername()
+                                        + " doesn't exist.");
+            return;
+        }
+
+        commandOutput.setNotifications(normalUser.doGetNotifications());
+    }
+
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execUpdateRecommendations(final CommandInput commandInput,
+                                               final CommandOutput commandOutput) {
+        NormalUser normalUser = null;
+        DataBase database = DataBase.getInstance();
+
+        normalUser = database.queryNormalUser(commandInput.getUsername());
+
+        if (normalUser == null) {
+            commandOutput.setMessage("The username " + commandInput.getUsername()
+                                        + " doesn't exist.");
+            return;
+        }
+
+        normalUser.doUpdateRecommendations(commandInput.getRecommendationType());
+
+        commandOutput.setMessage(normalUser.getLastCommandMessage());
+    }
+
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execLoadRecommendations(final CommandInput commandInput,
+                                               final CommandOutput commandOutput) {
+        NormalUser normalUser = null;
+        DataBase database = DataBase.getInstance();
+
+        normalUser = database.queryNormalUser(commandInput.getUsername());
+
+        if (normalUser == null) {
+            commandOutput.setMessage("The username " + commandInput.getUsername()
+                                        + " doesn't exist.");
+            return;
+        }
+
+        normalUser.doLoadRecommendations();
+
+        commandOutput.setMessage(normalUser.getLastCommandMessage());
+    }
+
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execPreviousPage(final CommandInput commandInput,
+                                               final CommandOutput commandOutput) {
+        NormalUser normalUser = null;
+        DataBase database = DataBase.getInstance();
+
+        normalUser = database.queryNormalUser(commandInput.getUsername());
+
+        if (normalUser == null) {
+            commandOutput.setMessage("The username " + commandInput.getUsername()
+                                        + " doesn't exist.");
+            return;
+        }
+
+        normalUser.doPreviousPage();
+
+        commandOutput.setMessage(normalUser.getLastCommandMessage());
+    }
+
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execNextPage(final CommandInput commandInput,
+                                               final CommandOutput commandOutput) {
+        NormalUser normalUser = null;
+        DataBase database = DataBase.getInstance();
+
+        normalUser = database.queryNormalUser(commandInput.getUsername());
+
+        if (normalUser == null) {
+            commandOutput.setMessage("The username " + commandInput.getUsername()
+                                        + " doesn't exist.");
+            return;
+        }
+
+        normalUser.doNextPage();
+
+        commandOutput.setMessage(normalUser.getLastCommandMessage());
+    }
+
+    /**
+     *
+     * @param commandInput
+     * @param commandOutput
+     */
+    private static void execEndProgram(final CommandInput commandInput,
+                                               final CommandOutput commandOutput) {
+        // TODO
     }
 }

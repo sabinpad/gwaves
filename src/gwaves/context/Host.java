@@ -6,7 +6,7 @@ import java.util.LinkedHashMap;
 import fileio.input.FilterInput;
 import fileio.input.EpisodeInput;
 import fileio.output.PodcastOutput;
-
+import fileio.output.WrappedOutput;
 import gwaves.collection.Podcast;
 import gwaves.storage.DataBase;
 import gwaves.tools.UserManager;
@@ -163,6 +163,10 @@ public final class Host extends User implements Filterable {
      */
     public String doGetPage() {
         return this.page.strigify();
+    }
+
+    public WrappedOutput doWrapped() {
+        return null;
     }
 
     public void addListen(NormalUser normalUser) {

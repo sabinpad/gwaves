@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.ListIterator;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import fileio.input.UserInput;
@@ -25,6 +24,7 @@ import gwaves.collection.AudioCollection;
 import gwaves.collection.Playlist;
 import gwaves.collection.Album;
 import gwaves.sample.Episode;
+import gwaves.misc.UserNotification;
 
 public final class NormalUser extends User {
     @Getter
@@ -36,6 +36,7 @@ public final class NormalUser extends User {
     private Musicplayer musicplayer;
 
     private boolean active;
+    private boolean premium;
 
     private HomePage homePage;
     private LikedPage likedPage;
@@ -49,7 +50,7 @@ public final class NormalUser extends User {
     private LinkedHashMap<Album, Integer> listenedAlbums;
     private LinkedHashMap<Episode, Integer> listenedEpisodes;
 
-    private ArrayList<AppNotification> notifications;
+    private ArrayList<UserNotification> notifications;
 
     /**
      * Default Constructor
@@ -608,6 +609,62 @@ public final class NormalUser extends User {
         return wrOut;
     }
 
+    public void doBuyMerch(String merchName) {
+        // TODO
+
+        this.commandMessage = this.getUsername() + " has added new merch successfully.";
+    }
+
+    public ArrayList<String> doSeeMerch() {
+        // TODO
+
+        return null;
+    }
+
+    public void doBuyPremium() {
+        // TODO
+
+        this.commandMessage = this.getUsername() + " bought the subscription successfully.";
+    }
+
+    public void doCancelPremium() {
+        // TODO
+
+        this.commandMessage = this.getUsername() + " cancelled the subscription successfully.";
+    }
+
+    public void doAdBreak(int adPrice) {
+        // TODO
+
+        this.commandMessage = "Ad inserted successfully.";
+    }
+
+    public void doSubscribe() {
+        // TODO
+    }
+
+    public ArrayList<UserNotification> doGetNotifications() {
+        // TODO
+
+        return null;
+    }
+
+    public void doUpdateRecommendations(String recommendationType) {
+        // TODO
+    }
+
+    public void doLoadRecommendations() {
+        // TODO
+    }
+
+    public void doPreviousPage() {
+        // TODO
+    }
+
+    public void doNextPage() {
+        // TODO
+    }
+
     public void updateStatistics(Song song) {
         Integer val;
 
@@ -656,7 +713,7 @@ public final class NormalUser extends User {
     }
 
     public void addNotification(String name, String description) {
-        this.notifications.add(new AppNotification(name, description));
+        this.notifications.add(new UserNotification(name, description));
     }
 
     /**
@@ -732,10 +789,4 @@ public final class NormalUser extends User {
     public boolean isActive() {
         return this.active;
     }
-}
-
-@Getter @AllArgsConstructor
-class AppNotification {
-    private String name;
-    private String description;
 }

@@ -19,4 +19,5 @@ public final class CommandOutput extends CommandIO {
     private ArrayList<String> results;
     private MusicPlayerStatusOutput stats;
     private Object result;
+    private ArrayList<?> notifications;
 }

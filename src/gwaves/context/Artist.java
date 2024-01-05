@@ -9,6 +9,7 @@ import java.text.ParseException;
 import fileio.input.FilterInput;
 import fileio.input.SongInput;
 import fileio.output.AlbumOutput;
+import fileio.output.WrappedOutput;
 
 import gwaves.collection.Album;
 import gwaves.storage.DataBase;
@@ -221,6 +222,10 @@ public final class Artist extends User implements Filterable {
      */
     public String doGetPage() {
         return this.page.strigify();
+    }
+
+    public WrappedOutput doWrapped() {
+        return null;
     }
 
     public void addListen(NormalUser normalUser) {
