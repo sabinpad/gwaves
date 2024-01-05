@@ -28,6 +28,8 @@ public final class Artist extends User implements Filterable {
     private ArtistPage page;
 
     private LinkedHashMap<NormalUser, Integer> listeners;
+    private double songRevenue;
+    private int merchRevenue;
 
     private ArrayList<NormalUser> subscribers;
 
@@ -228,6 +230,10 @@ public final class Artist extends User implements Filterable {
         } else {
             this.listeners.put(normalUser, 1);
         }
+    }
+
+    public void pay(double amount) {
+        this.songRevenue += amount;
     }
 
     private void notifySubs(String name, String description) {

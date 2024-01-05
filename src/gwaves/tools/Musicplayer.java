@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,6 +18,7 @@ import gwaves.collection.Album;
 import gwaves.collection.AudioCollection;
 import gwaves.collection.Podcast;
 import gwaves.context.NormalUser;
+import gwaves.context.Artist;
 
 public final class Musicplayer {
     private static final Random RAND = new Random(0);
@@ -42,6 +42,11 @@ public final class Musicplayer {
     @Getter
     private AudioCollection<?> currentCollec;
 
+    private int adPrice;
+
+    private ArrayList<Song> adHistory;
+    private ArrayList<Song> premiumHistory;
+
     private int remainingTime;
 
     private boolean paused;
@@ -55,6 +60,9 @@ public final class Musicplayer {
     public Musicplayer(NormalUser ownerUser) {
         this.ownerUser = ownerUser;
         this.loadedType = Musicplayer.Type.NA;
+        this.adPrice = 0;
+        this.adHistory = new ArrayList<>();
+        this.premiumHistory = new ArrayList<>();
         this.paused = true;
         this.shuffledIndices = new ArrayList<>();
         this.watchedPodcasts = new HashMap<>();
@@ -87,6 +95,7 @@ public final class Musicplayer {
         this.currentCollec = null;
         this.loadedType = Musicplayer.Type.NA;
         this.currentIndex = 0;
+        this.adPrice = 0;
         this.remainingTime = 0;
         this.paused = true;
         this.repeat = 0;
@@ -169,6 +178,31 @@ public final class Musicplayer {
         this.updateStatistics();
     }
 
+    public void doAdBreak(final int price) {
+        this.adPrice = price;
+    }
+
+    private void adPay() {
+        int count;
+        Integer val;
+        HashMap<Artist, Integer> distrib = new HashMap<>();
+
+        for (var song : this.adHistory) {
+            if (distrib.containsKey(song.getArtist())) {
+                val = distrib.get(song.getArtist());
+                val++;
+            } else {
+                distrib.put(song.getArtist(), 1);
+            }
+        }
+
+        count = this.adHistory.size();
+
+        for (var entry : distrib.entrySet()) {
+            entry.getKey().pay(this.adPrice * (entry.getValue() / count));
+        }
+    }
+
     /**
      * Plays itself for {@code timeInterval} seconds. Basically changes the
      * state of the Musicplayer object in time, thus the current loaded audio
@@ -247,6 +281,14 @@ public final class Musicplayer {
         int index;
 
         if (!this.isLoaded()) {
+            return;
+        }
+
+        if (this.adPrice > 0) {
+            this.adPay();
+            this.adPrice = 0;
+            this.adHistory.clear();
+            this.remainingTime = 10;
             return;
         }
 
