@@ -1032,12 +1032,24 @@ public final class CommandExecuter {
         if (database.queryNormalUser(commandInput.getUsername()) != null) {
             NormalUser normaluser = database.queryNormalUser(commandInput.getUsername());
             commandOutput.setResult(normaluser.doWrapped());
+
+            if (commandOutput.getResult() == null) {
+                commandOutput.setMessage(normaluser.getLastCommandMessage());
+            }
         } else if (database.queryArtist(commandInput.getUsername()) != null) {
             Artist artist = database.queryArtist(commandInput.getUsername());
             commandOutput.setResult(artist.doWrapped());
+
+            if (commandOutput.getResult() == null) {
+                commandOutput.setMessage(artist.getLastCommandMessage());
+            }
         } else if (database.queryHost(commandInput.getUsername()) != null) {
             Host host = database.queryHost(commandInput.getUsername());
             commandOutput.setResult(host.doWrapped());
+
+            if (commandOutput.getResult() == null) {
+                commandOutput.setMessage(host.getLastCommandMessage());
+            }
         }
     }
 

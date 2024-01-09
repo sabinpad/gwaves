@@ -613,6 +613,15 @@ public final class NormalUser extends User {
     }
 
     public WrappedOutput doWrapped() {
+        if (this.listenedArtists.isEmpty()
+            && this.listenedAlbums.isEmpty()
+            && this.listenedSongs.isEmpty()
+            && this.listenedGenres.isEmpty()
+            && this.listenedEpisodes.isEmpty()) {
+            this.commandMessage = "No data to show for user " + this.getUsername() + ".";
+            return null;
+        }
+
         WrappedOutput wrappedOutput = new WrappedOutput();
         ObjectNode objNode;
 
@@ -797,22 +806,40 @@ public final class NormalUser extends User {
         }
 
 
-        if (this.commandMessage.equals(this.getUsername() + " subscribed to " + contentCreator.getUsername() + "successfully.")) {
-            if (currentPage.type() == Page.Type.OFARTIST) {
+        // if (this.commandMessage.equals(this.getUsername() + " subscribed to " + contentCreator.getUsername() + " successfully.")) {
+        //     if (currentPage.type() == Page.Type.OFARTIST) {
+        //         ((Artist)contentCreator).removeSubscriber(this);
+        //     } else if (currentPage.type() == Page.Type.OFHOST) {
+        //         ((Host)contentCreator).removeSubscriber(this);
+        //     }
+
+        //     this.commandMessage = this.getUsername() + " unsubscribed from " + contentCreator.getUsername() + " successfully.";
+        // } else {
+        //     if (currentPage.type() == Page.Type.OFARTIST) {
+        //         ((Artist)contentCreator).addSubscriber(this);
+        //     } else if (currentPage.type() == Page.Type.OFHOST) {
+        //         ((Host)contentCreator).addSubscriber(this);
+        //     }
+
+        //     this.commandMessage = this.getUsername() + " subscribed to " + contentCreator.getUsername() + " successfully.";
+        // }
+        
+        if (currentPage.type() == Page.Type.OFARTIST) {
+            if (((Artist)contentCreator).hasSubscriber(this)) {
                 ((Artist)contentCreator).removeSubscriber(this);
-            } else if (currentPage.type() == Page.Type.OFHOST) {
-                ((Host)contentCreator).removeSubscriber(this);
-            }
-
-            this.commandMessage = this.getUsername() + " unsubscribed from " + contentCreator.getUsername() + "successfully.";
-        } else {
-            if (currentPage.type() == Page.Type.OFARTIST) {
+                this.commandMessage = this.getUsername() + " unsubscribed from " + contentCreator.getUsername() + " successfully.";
+            } else {
                 ((Artist)contentCreator).addSubscriber(this);
-            } else if (currentPage.type() == Page.Type.OFHOST) {
-                ((Host)contentCreator).addSubscriber(this);
+                this.commandMessage = this.getUsername() + " subscribed to " + contentCreator.getUsername() + " successfully.";
             }
-
-            this.commandMessage = this.getUsername() + " subscribed to " + contentCreator.getUsername() + "successfully.";
+        } else {
+            if (((Host)contentCreator).hasSubscriber(this)) {
+                ((Host)contentCreator).removeSubscriber(this);
+                this.commandMessage = this.getUsername() + " unsubscribed from " + contentCreator.getUsername() + " successfully.";
+            } else {
+                ((Host)contentCreator).removeSubscriber(this);
+                this.commandMessage = this.getUsername() + " subscribed to " + contentCreator.getUsername() + " successfully.";
+            }
         }
     }
 

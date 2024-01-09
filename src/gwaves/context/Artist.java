@@ -101,7 +101,7 @@ public final class Artist extends User implements Filterable {
             database.addSong(song);
         }
 
-        this.notifySubs("New Album", "New Album from " + this.getUsername());
+        this.notifySubs("New Album", "New Album from " + this.getUsername() + ".");
 
         this.commandMessage = this.getUsername() + " has added new album successfully.";
     }
@@ -162,7 +162,7 @@ public final class Artist extends User implements Filterable {
 
         this.events.put(name, new ArtistEvent(name, description, date));
 
-        this.notifySubs("New Event", "New Event from " + this.getUsername());
+        this.notifySubs("New Event", "New Event from " + this.getUsername() + ".");
 
         this.commandMessage = this.getUsername() + " has added new event successfully.";
     }
@@ -202,7 +202,7 @@ public final class Artist extends User implements Filterable {
 
         this.merches.put(name, new ArtistMerch(name, description, price));
 
-        this.notifySubs("New Merch", "New Merch from " + this.getUsername());
+        this.notifySubs("New Merchandise", "New Merchandise from " + this.getUsername() + ".");
 
         this.commandMessage = this.getUsername() + " has added new merchandise successfully.";
     }
@@ -330,12 +330,16 @@ public final class Artist extends User implements Filterable {
     }
 
     public void addListen(NormalUser normalUser) {
+        Integer val;
+
         if (this.listeners.containsKey(normalUser)) {
-            Integer val = this.listeners.get(normalUser);
-            val++;
+            val = this.listeners.get(normalUser);
         } else {
-            this.listeners.put(normalUser, 1);
+            // this.listeners.put(normalUser, 1);
+            val = 0;
         }
+
+        this.listeners.put(normalUser, val + 1);
     }
 
     public void pay(double amount) {
@@ -457,6 +461,10 @@ public final class Artist extends User implements Filterable {
 
     public boolean hasBeenStreamed() {
         return !this.listeners.isEmpty();
+    }
+
+    public boolean hasSubscriber(NormalUser normalUser) {
+        return this.subscribers.contains(normalUser);
     }
 
     /**

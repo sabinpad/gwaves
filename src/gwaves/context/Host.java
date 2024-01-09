@@ -80,7 +80,7 @@ public final class Host extends User implements Filterable {
         this.podcasts.put(name, newPodcast);
         database.addPodcast(newPodcast);
 
-        this.notifySubs("New Podcast", "New Podcast from " + this.getUsername());
+        this.notifySubs("New Podcast", "New Podcast from " + this.getUsername() + ".");
 
         this.commandMessage = this.getUsername() + " has added new podcast successfully.";
     }
@@ -121,7 +121,7 @@ public final class Host extends User implements Filterable {
 
         this.announcements.put(name, new HostAnnouncement(name, description));
 
-        this.notifySubs("New Announcement", "New Announcement from " + this.getUsername());
+        this.notifySubs("New Announcement", "New Announcement from " + this.getUsername() + ".");
 
         this.commandMessage = this.getUsername()
                             + " has successfully added new announcement.";
@@ -263,6 +263,10 @@ public final class Host extends User implements Filterable {
      */
     public Page getPage() {
         return this.page;
+    }
+
+    public boolean hasSubscriber(NormalUser normalUser) {
+        return this.subscribers.contains(normalUser);
     }
 
     /**
