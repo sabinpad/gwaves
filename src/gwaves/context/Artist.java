@@ -463,6 +463,10 @@ public final class Artist extends User implements Filterable {
         return !this.listeners.isEmpty();
     }
 
+    public boolean hasRevenue() {
+        return this.songRevenue > 0 || this.merchRevenue > 0;
+    }
+
     public boolean hasSubscriber(NormalUser normalUser) {
         return this.subscribers.contains(normalUser);
     }

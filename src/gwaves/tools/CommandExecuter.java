@@ -1075,7 +1075,6 @@ public final class CommandExecuter {
         normalUser.doBuyMerch(commandInput.getName());
 
         commandOutput.setMessage(normalUser.getLastCommandMessage());
-
     }
 
     /**

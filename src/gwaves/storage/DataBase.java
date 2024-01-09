@@ -537,11 +537,11 @@ public final class DataBase {
         ObjectNode rankOutput, objNode = objMapper.createObjectNode();
 
         List<Artist> artistRanking = this.artists.values().stream()
-                                                          .sorted(Comparator.comparing(Artist::getTotalRevenue).thenComparing(Artist::getUsername))
+                                                          .sorted(Comparator.comparing(Artist::getTotalRevenue).reversed().thenComparing(Artist::getUsername))
                                                           .collect(Collectors.toList());
 
         for (var artist : artistRanking) {
-            if (artist.hasBeenStreamed()) {
+            if (artist.hasBeenStreamed() || artist.hasRevenue()) {
                 rank++;
 
                 rankOutput = objMapper.createObjectNode();

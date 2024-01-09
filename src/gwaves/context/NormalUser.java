@@ -742,13 +742,14 @@ public final class NormalUser extends User {
         }
 
         Artist artist = (Artist)currentPage.owner();
+        ArtistMerch merch = artist.buyMerch(merchName);
 
-        if (artist.buyMerch(merchName) == null) {
+        if (merch == null) {
             this.commandMessage = "The merch " + merchName + " doesn't exist.";
             return;
         }
 
-        this.boughtMerches.add(artist.buyMerch(merchName));
+        this.boughtMerches.add(merch);
 
         this.commandMessage = this.getUsername() + " has added new merch successfully.";
     }
