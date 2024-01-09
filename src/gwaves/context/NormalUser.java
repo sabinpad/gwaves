@@ -52,8 +52,10 @@ public final class NormalUser extends User {
 
     private LinkedHashMap<Artist, Integer> listenedArtists;
     private LinkedHashMap<String, Integer> listenedGenres;
-    private LinkedHashMap<Song, Integer> listenedSongs;
-    private LinkedHashMap<Album, Integer> listenedAlbums;
+    // private LinkedHashMap<Song, Integer> listenedSongs;
+    private LinkedHashMap<String, Integer> listenedSongs;
+    // private LinkedHashMap<Album, Integer> listenedAlbums;
+    private LinkedHashMap<String, Integer> listenedAlbums;
     private LinkedHashMap<Episode, Integer> listenedEpisodes;
 
     private ArrayList<ArtistMerch> boughtMerches;
@@ -652,23 +654,23 @@ public final class NormalUser extends User {
         }
         wrappedOutput.setTopGenres(objNode);
 
-        //
+        
         // System.out.println("--------");
-        // for (var song : this.listenedSongs.keySet()) {
-        //     System.out.println(song.getName() + " - " + this.listenedSongs.get(song));
+        // for (var songName : this.listenedSongs.keySet()) {
+        //     System.out.println(songName + " - " + this.listenedSongs.get(songName));
         // }
         // System.out.println("--------");
-        //
+        
 
         objNode = NormalUser.objMapper.createObjectNode();
-        List<Song> topSongs = this.listenedSongs.keySet().stream()
-                                            .sorted(new Comparator<Song>() {
-                                                public int compare(Song song1, Song song2) {
-                                                    if (listenedSongs.get(song2) == listenedSongs.get(song1)) {
-                                                        return song1.getName().compareTo(song2.getName());
+        List<String> topSongsName = this.listenedSongs.keySet().stream()
+                                            .sorted(new Comparator<String>() {
+                                                public int compare(String songName1, String songName2) {
+                                                    if (listenedSongs.get(songName2) == listenedSongs.get(songName1)) {
+                                                        return songName1.compareTo(songName2);
                                                     }
 
-                                                    return listenedSongs.get(song2) - listenedSongs.get(song1);
+                                                    return listenedSongs.get(songName2) - listenedSongs.get(songName1);
                                                 }
                                             })
                                             // .sorted(Comparator.comparing(song -> this.listenedSongs.get(song)))
@@ -676,27 +678,27 @@ public final class NormalUser extends User {
                                             .limit(5)
                                             .collect(Collectors.toList());
 
-        for (var song : topSongs) {
-            objNode.put(song.getName(), this.listenedSongs.get(song));
+        for (var songName : topSongsName) {
+            objNode.put(songName, this.listenedSongs.get(songName));
         }
         wrappedOutput.setTopSongs(objNode);
 
         objNode = NormalUser.objMapper.createObjectNode();
-        List<Album> topAlbums = this.listenedAlbums.keySet().stream()
-                                            .sorted(new Comparator<Album>() {
-                                                public int compare(Album album1, Album album2) {
-                                                    if (listenedAlbums.get(album2) == listenedAlbums.get(album1)) {
-                                                        return album1.getName().compareTo(album2.getName());
+        List<String> topAlbumsName = this.listenedAlbums.keySet().stream()
+                                            .sorted(new Comparator<String>() {
+                                                public int compare(String albumName1, String albumName2) {
+                                                    if (listenedAlbums.get(albumName2) == listenedAlbums.get(albumName1)) {
+                                                        return albumName1.compareTo(albumName2);
                                                     }
 
-                                                    return listenedAlbums.get(album2) - listenedAlbums.get(album1);
+                                                    return listenedAlbums.get(albumName2) - listenedAlbums.get(albumName1);
                                                 }
                                             })
                                             .limit(5)
                                             .collect(Collectors.toList());
 
-        for (var album : topAlbums) {
-            objNode.put(album.getName(), this.listenedAlbums.get(album));
+        for (var albumName : topAlbumsName) {
+            objNode.put(albumName, this.listenedAlbums.get(albumName));
         }
         wrappedOutput.setTopAlbums(objNode);
 
@@ -863,25 +865,21 @@ public final class NormalUser extends User {
         //     this.listenedSongs.put(song, 1);
         // }
 
-        if (this.listenedSongs.containsKey(song)) {
-            val = this.listenedSongs.get(song);
+        if (this.listenedSongs.containsKey(song.getName())) {
+            val = this.listenedSongs.get(song.getName());
         } else {
             val = 0;
         }
 
-        try {
-            this.listenedSongs.put(song, val + 1);
-        } catch (NullPointerException e) {
-            System.out.println(val);
-        }
+        this.listenedSongs.put(song.getName(), val + 1);
 
-        if (this.listenedAlbums.containsKey(song.getAlbum())) {
-            val = this.listenedAlbums.get(song.getAlbum());
+        if (this.listenedAlbums.containsKey(song.getAlbum().getName())) {
+            val = this.listenedAlbums.get(song.getAlbum().getName());
         } else {
             val = 0;
         }
 
-        this.listenedAlbums.put(song.getAlbum(), val + 1);
+        this.listenedAlbums.put(song.getAlbum().getName(), val + 1);
 
         if (this.listenedArtists.containsKey(song.getArtist())) {
             val = this.listenedArtists.get(song.getArtist());

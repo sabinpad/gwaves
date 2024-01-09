@@ -239,8 +239,10 @@ public final class Artist extends User implements Filterable {
 
     public WrappedOutput doWrapped() {
         WrappedOutput wrappedOutput = new WrappedOutput();
-        HashMap<Song, Integer> streamedSongs = new HashMap<>();
+        // HashMap<Song, Integer> streamedSongs = new HashMap<>();
+        HashMap<String, Integer> streamedSongs = new HashMap<>();
         HashMap<Album, Integer> streamedAlbums = new HashMap<>();
+        Integer val;
         ObjectNode objNode;
 
         for (var entry : this.albums.entrySet()) {
@@ -248,27 +250,30 @@ public final class Artist extends User implements Filterable {
 
             for (var song : album.getAudRecs()) {
                 if (song.getListenings() > 0) {
-                    if (streamedSongs.containsKey(song)) {
-                        Integer val = streamedSongs.get(song);
-                        val += song.getListenings();
+                    if (streamedSongs.containsKey(song.getName())) {
+                        val = streamedSongs.get(song.getName());
                     } else {
-                        streamedSongs.put(song, song.getListenings());
+                        val = 0;
                     }
+
+                    streamedSongs.put(song.getName(), val + song.getListenings());
                 }
             }
 
-            streamedAlbums.put(album, album.getListenings());
+            if (album.getListenings() > 0) {
+                streamedAlbums.put(album, album.getListenings());
+            }
         }
 
         objNode = NormalUser.objMapper.createObjectNode();
-        List<Song> topSongs = streamedSongs.keySet().stream()
-                                            .sorted(new Comparator<Song>() {
-                                                public int compare(Song song1, Song song2) {
-                                                    if (streamedSongs.get(song2) == streamedSongs.get(song1)) {
-                                                        return song1.getName().compareTo(song2.getName());
+        List<String> topSongsName = streamedSongs.keySet().stream()
+                                            .sorted(new Comparator<String>() {
+                                                public int compare(String songName1, String songName2) {
+                                                    if (streamedSongs.get(songName2) == streamedSongs.get(songName1)) {
+                                                        return songName1.compareTo(songName2);
                                                     }
 
-                                                    return streamedSongs.get(song2) - streamedSongs.get(song1);
+                                                    return streamedSongs.get(songName2) - streamedSongs.get(songName1);
                                                 }
                                             })
                                             // .sorted(Comparator.comparing(song -> streamedSongs.get(song)))
@@ -276,8 +281,8 @@ public final class Artist extends User implements Filterable {
                                             .limit(5)
                                             .collect(Collectors.toList());
 
-        for (var song : topSongs) {
-            objNode.put(song.getName(), streamedSongs.get(song));
+        for (var songName : topSongsName) {
+            objNode.put(songName, streamedSongs.get(songName));
         }
         wrappedOutput.setTopSongs(objNode);
 
