@@ -11,6 +11,7 @@ import lombok.Setter;
 import fileio.output.MusicPlayerStatusOutput;
 
 import gwaves.sample.Song;
+import gwaves.storage.DataBase;
 import gwaves.sample.AudioRec;
 import gwaves.sample.Episode;
 import gwaves.collection.Playlist;
@@ -43,6 +44,7 @@ public final class Musicplayer {
     private AudioCollection<?> currentCollec;
 
     private int adPrice;
+    private boolean premium;
 
     private ArrayList<Song> adHistory;
     private ArrayList<Song> premiumHistory;
@@ -61,6 +63,7 @@ public final class Musicplayer {
         this.ownerUser = ownerUser;
         this.loadedType = Musicplayer.Type.NA;
         this.adPrice = 0;
+        this.premium = false;
         this.adHistory = new ArrayList<>();
         this.premiumHistory = new ArrayList<>();
         this.paused = true;
@@ -178,29 +181,8 @@ public final class Musicplayer {
         this.updateStatistics();
     }
 
-    public void doAdBreak(final int price) {
+    public void loadAdBreak(final int price) {
         this.adPrice = price;
-    }
-
-    private void adPay() {
-        int count;
-        Integer val;
-        HashMap<Artist, Integer> distrib = new HashMap<>();
-
-        for (var song : this.adHistory) {
-            if (distrib.containsKey(song.getArtist())) {
-                val = distrib.get(song.getArtist());
-                val++;
-            } else {
-                distrib.put(song.getArtist(), 1);
-            }
-        }
-
-        count = this.adHistory.size();
-
-        for (var entry : distrib.entrySet()) {
-            entry.getKey().pay(this.adPrice * (entry.getValue() / count));
-        }
     }
 
     /**
@@ -285,7 +267,7 @@ public final class Musicplayer {
         }
 
         if (this.adPrice > 0) {
-            this.adPay();
+            this.payAd();
             this.adPrice = 0;
             this.adHistory.clear();
             this.remainingTime = 10;
@@ -346,6 +328,14 @@ public final class Musicplayer {
 
         this.currentRec = this.currentCollec.getAudRec(index);
         this.remainingTime = this.currentRec.getDuration();
+
+        if (this.loadedType != Musicplayer.Type.PODCAST) {
+            if (this.premium) {
+                this.premiumHistory.add((Song)this.currentRec);
+            } else {
+                this.adHistory.add((Song)this.currentRec);
+            }
+        }
 
         this.updateStatistics();
     }
@@ -443,23 +433,116 @@ public final class Musicplayer {
             Episode currentEpisode = (Episode)this.currentRec;
 
             currentEpisode.addListen();
-            // TODO sa adaug listen la host
+            
+            if (DataBase.getInstance().queryHost(((Podcast)currentCollec).getOwner()) != null) {
+                DataBase.getInstance().queryHost(((Podcast)currentCollec).getOwner()).addListen(this.ownerUser);
+            }
+
+            this.ownerUser.updateStatistics(currentEpisode);
         } else {
             Song currentSong = (Song)this.currentRec;
 
             currentSong.addListen();
+            currentSong.getAlbum().addListen();
             currentSong.getArtist().addListen(this.ownerUser);
 
             this.ownerUser.updateStatistics(currentSong);
 
-            if (this.loadedType == Musicplayer.Type.ALBUM) {
-                if (this.currentIndex == 0) {
-                    ((Album)this.currentCollec).addListen();
-                }
+            // if (this.loadedType == Musicplayer.Type.ALBUM) {
+            //     // if (this.currentIndex == 0) {
+            //     //     ((Album)this.currentCollec).addListen();
+            //     // }
 
-                this.ownerUser.updateStatistics((Album)currentCollec);
-            }
+            //     ((Album)this.currentCollec).addListen();
+            //     this.ownerUser.updateStatistics((Album)currentCollec);
+            // }
         }
+    }
+
+    private void payAd() {
+        int count;
+        Integer val;
+        HashMap<Artist, Integer> artistDistrib = new HashMap<>();
+        HashMap<Song, Integer> songDistrib = new HashMap<>();
+
+        for (var song : this.adHistory) {
+            if (songDistrib.containsKey(song)) {
+                val = songDistrib.get(song);
+            } else {
+                val = 0;
+            }
+
+            songDistrib.put(song, val + 1);
+
+            // if (artistDistrib.containsKey(song.getArtist())) {
+            //     val = artistDistrib.get(song.getArtist());
+            //     val++;
+            // } else {
+            //     artistDistrib.put(song.getArtist(), 1);
+            // }
+
+            if (artistDistrib.containsKey(song.getArtist())) {
+                val = artistDistrib.get(song.getArtist());
+            } else {
+                val = 0;
+            }
+
+            artistDistrib.put(song.getArtist(), val + 1);
+        }
+
+        count = this.adHistory.size();
+
+        for (var entry : songDistrib.entrySet()) {
+            entry.getKey().getArtist().paySong(this.adPrice * (entry.getValue() / count), entry.getKey());
+        }
+
+        for (var entry : artistDistrib.entrySet()) {
+            entry.getKey().pay(this.adPrice * (entry.getValue() / count));
+        }
+    }
+
+    private void payPremium() {
+        int count;
+        Integer val;
+        HashMap<Artist, Integer> artistDistrib = new HashMap<>();
+        HashMap<Song, Integer> songDistrib = new HashMap<>();
+
+        for (var song : this.premiumHistory) {
+            if (songDistrib.containsKey(song)) {
+                val = songDistrib.get(song);
+            } else {
+                val = 0;
+            }
+
+            songDistrib.put(song, val + 1);
+
+            if (artistDistrib.containsKey(song.getArtist())) {
+                val = artistDistrib.get(song.getArtist());
+            } else {
+                val = 0;
+            }
+
+            artistDistrib.put(song.getArtist(), val + 1);
+        }
+
+        count = this.premiumHistory.size();
+
+        for (var entry : songDistrib.entrySet()) {
+            entry.getKey().getArtist().paySong(1e6 * (entry.getValue() / count), entry.getKey());
+        }
+
+        for (var entry : artistDistrib.entrySet()) {
+            entry.getKey().pay(1e6 * (entry.getValue() / count));
+        }
+    }
+
+    public void upgrade() {
+        this.premium = true;
+    }
+
+    public void downgrade() {
+        this.payPremium();
+        this.premium = false;
     }
 
     /**
@@ -612,6 +695,10 @@ public final class Musicplayer {
      */
     public boolean isShuffled() {
         return this.shuffle;
+    }
+
+    public boolean isUpgraded() {
+        return this.premium;
     }
 }
 

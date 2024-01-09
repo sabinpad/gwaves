@@ -28,16 +28,19 @@ public final class Test {
         if (inputDir != null) {
             Arrays.sort(inputDir);
 
-            Scanner scanner = new Scanner(System.in);
-            String fileName = scanner.next();
+            // Scanner scanner = new Scanner(System.in);
+            // String fileName = scanner.next();
+            // String fileName = "test00_etapa3_wrapped_one_user_one_artist.json";
+            String fileName = "test01_etapa3_wrapped_one_user_n_artist.json";
             for (File file : inputDir) {
                 if (file.getName().equalsIgnoreCase(fileName)) {
-                    Main.action(file.getAbsolutePath(), CheckerConstants.OUT_FILE);
+                    // Main.action(file.getAbsolutePath(), CheckerConstants.OUT_FILE);
+                    Main.action(file.getName(), CheckerConstants.OUT_FILE);
                     break;
                 }
             }
 
-            scanner.close();
+            // scanner.close();
         }
     }
 }

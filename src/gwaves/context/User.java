@@ -2,10 +2,14 @@ package gwaves.context;
 
 import lombok.Getter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import fileio.input.UserInput;
 
 @Getter
 public abstract class User {
+    protected static ObjectMapper objMapper  = new ObjectMapper();
+
     private String username;
     private Integer age;
     private String city;

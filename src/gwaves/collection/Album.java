@@ -34,7 +34,10 @@ public final class Album extends AudioCollection<Song> implements Filterable {
         this.description = description;
 
         for (var songInput : songsInput) {
-            this.getAudRecs().add(new Song(songInput));
+            Song song = new Song(songInput);
+            song.setAlbum(this);
+            this.getAudRecs().add(song);
+            // this.getAudRecs().add(new Song(songInput));
         }
     }
 

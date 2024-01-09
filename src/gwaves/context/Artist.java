@@ -1,7 +1,13 @@
 package gwaves.context;
 
+import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.stream.Collectors;
+import java.util.Comparator;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
@@ -11,12 +17,14 @@ import fileio.input.SongInput;
 import fileio.output.AlbumOutput;
 import fileio.output.WrappedOutput;
 
+import gwaves.sample.Song;
 import gwaves.collection.Album;
 import gwaves.storage.DataBase;
 import gwaves.tools.UserManager;
 import gwaves.misc.ArtistEvent;
 import gwaves.misc.ArtistMerch;
 import gwaves.util.Filterable;
+import lombok.Getter;
 import gwaves.ui.Page;
 import gwaves.ui.ArtistPage;
 
@@ -29,8 +37,12 @@ public final class Artist extends User implements Filterable {
     private ArtistPage page;
 
     private LinkedHashMap<NormalUser, Integer> listeners;
+    @Getter
     private double songRevenue;
+    @Getter
     private int merchRevenue;
+
+    private HashMap<Song, Double> songsRevenue;
 
     private ArrayList<NormalUser> subscribers;
 
@@ -50,6 +62,7 @@ public final class Artist extends User implements Filterable {
         this.page = new ArtistPage(this, events, merches, albums);
         this.listeners = new LinkedHashMap<>();
         this.subscribers = new ArrayList<>();
+        this.songsRevenue = new HashMap<>();
     }
 
     /**
@@ -82,11 +95,11 @@ public final class Artist extends User implements Filterable {
 
         this.albums.put(name, newAlbum);
 
+        database.addAlbum(newAlbum);
+
         for (var song : newAlbum.getAudRecs()) {
             database.addSong(song);
         }
-
-        database.addAlbum(newAlbum);
 
         this.notifySubs("New Album", "New Album from " + this.getUsername());
 
@@ -225,7 +238,90 @@ public final class Artist extends User implements Filterable {
     }
 
     public WrappedOutput doWrapped() {
-        return null;
+        WrappedOutput wrappedOutput = new WrappedOutput();
+        HashMap<Song, Integer> streamedSongs = new HashMap<>();
+        HashMap<Album, Integer> streamedAlbums = new HashMap<>();
+        ObjectNode objNode;
+
+        for (var entry : this.albums.entrySet()) {
+            Album album = entry.getValue();
+
+            for (var song : album.getAudRecs()) {
+                if (song.getListenings() > 0) {
+                    if (streamedSongs.containsKey(song)) {
+                        Integer val = streamedSongs.get(song);
+                        val += song.getListenings();
+                    } else {
+                        streamedSongs.put(song, song.getListenings());
+                    }
+                }
+            }
+
+            streamedAlbums.put(album, album.getListenings());
+        }
+
+        objNode = NormalUser.objMapper.createObjectNode();
+        List<Song> topSongs = streamedSongs.keySet().stream()
+                                            .sorted(new Comparator<Song>() {
+                                                public int compare(Song song1, Song song2) {
+                                                    if (streamedSongs.get(song2) == streamedSongs.get(song1)) {
+                                                        return song1.getName().compareTo(song2.getName());
+                                                    }
+
+                                                    return streamedSongs.get(song2) - streamedSongs.get(song1);
+                                                }
+                                            })
+                                            // .sorted(Comparator.comparing(song -> streamedSongs.get(song)))
+                                            // .sorted(Comparator.comparing(Song::getName))
+                                            .limit(5)
+                                            .collect(Collectors.toList());
+
+        for (var song : topSongs) {
+            objNode.put(song.getName(), streamedSongs.get(song));
+        }
+        wrappedOutput.setTopSongs(objNode);
+
+        objNode = NormalUser.objMapper.createObjectNode();
+        List<Album> topAlbums = streamedAlbums.keySet().stream()
+                                            .sorted(new Comparator<Album>() {
+                                                public int compare(Album album1, Album album2) {
+                                                    if (streamedAlbums.get(album2) == streamedAlbums.get(album1)) {
+                                                        return album1.getName().compareTo(album2.getName());
+                                                    }
+
+                                                    return streamedAlbums.get(album2) - streamedAlbums.get(album1);
+                                                }
+                                            })
+                                            .limit(5)
+                                            .collect(Collectors.toList());
+
+        for (var album : topAlbums) {
+            objNode.put(album.getName(), streamedAlbums.get(album));
+        }
+        wrappedOutput.setTopAlbums(objNode);
+
+        ArrayList<String> fansName = new ArrayList<>();
+        List<NormalUser> topFans = this.listeners.keySet().stream()
+                                                        .sorted(new Comparator<NormalUser>() {
+                                                            public int compare(NormalUser normalUser1, NormalUser normalUser2) {
+                                                                if (listeners.get(normalUser2) == listeners.get(normalUser1)) {
+                                                                    return normalUser1.getUsername().compareTo(normalUser2.getUsername());
+                                                                }
+
+                                                                return listeners.get(normalUser2) - listeners.get(normalUser1);
+                                                            }
+                                                        })
+                                                        .limit(5)
+                                                        .collect(Collectors.toList());
+
+        for (var fan : topFans) {
+            fansName.add(fan.getUsername());
+        }
+        wrappedOutput.setTopFans(fansName);
+
+        wrappedOutput.setListeners(this.listeners.size());
+
+        return wrappedOutput;
     }
 
     public void addListen(NormalUser normalUser) {
@@ -240,6 +336,37 @@ public final class Artist extends User implements Filterable {
     public void pay(double amount) {
         this.songRevenue += amount;
     }
+
+    public void paySong(double amount, Song song) {
+        Double val;
+
+        if (this.songsRevenue.containsKey(song)) {
+            val = this.songsRevenue.get(song);
+        } else {
+            val = 0.0;
+        }
+
+        this.songsRevenue.put(song, val + amount);
+    }
+
+    public ArtistMerch buyMerch(String merchName) {
+        if (!this.merches.containsKey(merchName)) {
+            return null;
+        }
+
+        this.merchRevenue += this.merches.get(merchName).getPrice();
+
+        return this.merches.get(merchName);
+    }
+
+    public void addSubscriber(NormalUser normalUser) {
+        this.subscribers.add(normalUser);
+    }
+
+    public void removeSubscriber(NormalUser normalUser) {
+        this.subscribers.remove(normalUser);
+    }
+
 
     private void notifySubs(String name, String description) {
         for (var sub : this.subscribers) {
@@ -268,6 +395,14 @@ public final class Artist extends User implements Filterable {
      *
      * @return
      */
+    public ArrayList<Album> getAlbums() {
+        return new ArrayList<>(this.albums.values());
+    }
+
+    /**
+     *
+     * @return
+     */
     public int getNrOfLikes() {
         int sum = 0;
 
@@ -278,12 +413,33 @@ public final class Artist extends User implements Filterable {
         return sum;
     }
 
-    /**
-     *
-     * @return
-     */
-    public ArrayList<Album> getAlbums() {
-        return new ArrayList<>(this.albums.values());
+    public double getTotalRevenue() {
+        return this.songRevenue + this.merchRevenue;
+    }
+
+    public String getMostProfitableSongName() {
+        if (this.songRevenue == 0) {
+            return "N/A";
+        }
+
+        List<Song> profitableSongs = this.songsRevenue.keySet().stream()
+                                                               .sorted(new Comparator<Song>() {
+                                                                public int compare(Song song1, Song song2) {
+                                                                    if (songsRevenue.get(song2) == songsRevenue.get(song1)) {
+                                                                        return song1.getName().compareTo(song2.getName());
+                                                                    }
+                                                                    
+                                                                    if (songsRevenue.get(song1) < songsRevenue.get(song2)) {
+                                                                        return 1;
+                                                                    } else if (songsRevenue.get(song1) > songsRevenue.get(song2)) {
+                                                                        return -1;
+                                                                    }
+                                                                    return 0;
+                                                                }
+                                                                })
+                                                               .collect(Collectors.toList());
+
+        return profitableSongs.get(0).getName();
     }
 
     /**
@@ -292,6 +448,10 @@ public final class Artist extends User implements Filterable {
      */
     public Page getPage() {
         return this.page;
+    }
+
+    public boolean hasBeenStreamed() {
+        return !this.listeners.isEmpty();
     }
 
     /**

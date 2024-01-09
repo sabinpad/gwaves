@@ -10,7 +10,6 @@ import gwaves.context.NormalUser;
 import gwaves.context.Artist;
 import gwaves.context.Host;
 import gwaves.storage.DataBase;
-import net.sf.saxon.om.NoNamespaceName;
 
 public final class CommandExecuter {
     private CommandExecuter() {
@@ -24,6 +23,11 @@ public final class CommandExecuter {
      */
     public static CommandOutput run(final CommandInput commandInput) {
         CommandOutput commandOutput = new CommandOutput();
+
+        if (commandInput.getCommand() == null) {
+            CommandExecuter.execEndProgram(commandInput, commandOutput);
+            return commandOutput;
+        }
 
         commandOutput.setCommand(commandInput.getCommand());
         commandOutput.setUser(commandInput.getUsername());
@@ -186,9 +190,9 @@ public final class CommandExecuter {
             case "nextPage":
                 CommandExecuter.execNextPage(commandInput, commandOutput);
                 break;
-            case "endProgram":
-                CommandExecuter.execEndProgram(commandInput, commandOutput);
-                break;
+            // case "endProgram":
+            //     CommandExecuter.execEndProgram(commandInput, commandOutput);
+            //     break;
             default:
                 break;
         }
@@ -1296,6 +1300,7 @@ public final class CommandExecuter {
      */
     private static void execEndProgram(final CommandInput commandInput,
                                                final CommandOutput commandOutput) {
-        // TODO
+        commandOutput.setCommand("endProgram");
+        commandOutput.setResult(DataBase.getInstance().getArtistRanking());
     }
 }

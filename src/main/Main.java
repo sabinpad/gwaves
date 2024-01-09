@@ -104,6 +104,8 @@ public final class Main {
             commandOutputs.add(CommandExecuter.run(commandInput));
         }
 
+        commandOutputs.add(CommandExecuter.run(new CommandInput()));
+
         objectMapper.setSerializationInclusion(Include.NON_NULL);
         objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File(filePath2), commandOutputs);                                                       
     }

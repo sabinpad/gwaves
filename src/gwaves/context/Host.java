@@ -1,12 +1,20 @@
 package gwaves.context;
 
+import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Comparator;
+import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import fileio.input.FilterInput;
 import fileio.input.EpisodeInput;
 import fileio.output.PodcastOutput;
 import fileio.output.WrappedOutput;
+
+import gwaves.sample.Episode;
 import gwaves.collection.Podcast;
 import gwaves.storage.DataBase;
 import gwaves.tools.UserManager;
@@ -40,6 +48,7 @@ public final class Host extends User implements Filterable {
         this.podcasts = new LinkedHashMap<>();
         this.page = new HostPage(this, announcements, podcasts);
         this.subscribers = new ArrayList<>();
+        this.listeners = new LinkedHashMap<>();
     }
 
     /**
@@ -166,7 +175,40 @@ public final class Host extends User implements Filterable {
     }
 
     public WrappedOutput doWrapped() {
-        return null;
+        WrappedOutput wrappedOutput = new WrappedOutput();
+        HashMap<Episode, Integer> streamedEpisodes = new HashMap<>();
+        ObjectNode objNode;
+
+        for (var entry : this.podcasts.entrySet()) {
+            for (var episode : entry.getValue().getAudRecs()) {
+                if (episode.getListenings() > 0) {
+                    streamedEpisodes.put(episode, episode.getListenings());
+                }
+            }
+        }
+
+        objNode = NormalUser.objMapper.createObjectNode();
+        List<Episode> topEpisodes = streamedEpisodes.keySet().stream()
+                                            .sorted(new Comparator<Episode>() {
+                                                public int compare(Episode episode1, Episode episode2) {
+                                                    return streamedEpisodes.get(episode2) - streamedEpisodes.get(episode1);
+                                                }
+                                            })
+                                            .limit(5)
+                                            .collect(Collectors.toList());
+
+        for (var episode : topEpisodes) {
+            objNode.put(episode.getName(), streamedEpisodes.get(episode));
+        }
+        wrappedOutput.setTopEpisodes(objNode);
+
+        wrappedOutput.setListeners(this.listeners.size());
+
+        return wrappedOutput;
+    }
+
+    public void addGhostedPodcast(Podcast podcast) {
+        this.podcasts.put(podcast.getName(), podcast);
     }
 
     public void addListen(NormalUser normalUser) {
@@ -178,8 +220,12 @@ public final class Host extends User implements Filterable {
         }
     }
 
-    public void addGhostedPodcast(Podcast podcast) {
-        this.podcasts.put(podcast.getName(), podcast);
+    public void addSubscriber(NormalUser normalUser) {
+        this.subscribers.add(normalUser);
+    }
+
+    public void removeSubscriber(NormalUser normalUser) {
+        this.subscribers.remove(normalUser);
     }
 
     private void notifySubs(String name, String description) {

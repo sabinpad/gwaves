@@ -1,8 +1,13 @@
 package gwaves.context;
 
+import java.util.List;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.ListIterator;
+import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import lombok.Getter;
 
@@ -25,6 +30,7 @@ import gwaves.collection.Playlist;
 import gwaves.collection.Album;
 import gwaves.sample.Episode;
 import gwaves.misc.UserNotification;
+import gwaves.misc.ArtistMerch;
 
 public final class NormalUser extends User {
     @Getter
@@ -36,7 +42,7 @@ public final class NormalUser extends User {
     private Musicplayer musicplayer;
 
     private boolean active;
-    private boolean premium;
+    // private boolean premium;
 
     private HomePage homePage;
     private LikedPage likedPage;
@@ -49,6 +55,8 @@ public final class NormalUser extends User {
     private LinkedHashMap<Song, Integer> listenedSongs;
     private LinkedHashMap<Album, Integer> listenedAlbums;
     private LinkedHashMap<Episode, Integer> listenedEpisodes;
+
+    private ArrayList<ArtistMerch> boughtMerches;
 
     private ArrayList<UserNotification> notifications;
 
@@ -86,6 +94,7 @@ public final class NormalUser extends User {
         this.pageIndex = 0;
         this.pageHistory = new ArrayList<>();
         this.pageHistory.add(this.homePage);
+        this.boughtMerches = new ArrayList<>();
         this.notifications = new ArrayList<>();
     }
 
@@ -602,51 +611,213 @@ public final class NormalUser extends User {
     }
 
     public WrappedOutput doWrapped() {
-        WrappedOutput wrOut = new WrappedOutput();
+        WrappedOutput wrappedOutput = new WrappedOutput();
+        ObjectNode objNode;
 
-        // TODO
+        objNode = NormalUser.objMapper.createObjectNode();
+        List<Artist> topArtists = this.listenedArtists.keySet().stream()
+                                            .sorted(new Comparator<Artist>() {
+                                                public int compare(Artist artist1, Artist artist2) {
+                                                    if (listenedArtists.get(artist2) == listenedArtists.get(artist1)) {
+                                                        return artist1.getUsername().compareTo(artist2.getUsername());
+                                                    }
 
-        return wrOut;
+                                                    return listenedArtists.get(artist2) - listenedArtists.get(artist1);
+                                                }
+                                            })
+                                            .limit(5)
+                                            .collect(Collectors.toList());
+
+        for (var artist : topArtists) {
+            objNode.put(artist.getUsername(), this.listenedArtists.get(artist));
+        }
+        wrappedOutput.setTopArtists(objNode);
+
+        objNode = NormalUser.objMapper.createObjectNode();
+        List<String> topGenres = this.listenedGenres.keySet().stream()
+                                            .sorted(new Comparator<String>() {
+                                                public int compare(String genre1, String genre2) {
+                                                    if (listenedGenres.get(genre2) == listenedGenres.get(genre1)) {
+                                                        return genre1.compareTo(genre2);
+                                                    }
+
+                                                    return listenedGenres.get(genre2) - listenedGenres.get(genre1);
+                                                }
+                                            })
+                                            .limit(5)
+                                            .collect(Collectors.toList());
+
+        for (var genre : topGenres) {
+            objNode.put(genre, this.listenedGenres.get(genre));
+        }
+        wrappedOutput.setTopGenres(objNode);
+
+        //
+        // System.out.println("--------");
+        // for (var song : this.listenedSongs.keySet()) {
+        //     System.out.println(song.getName() + " - " + this.listenedSongs.get(song));
+        // }
+        // System.out.println("--------");
+        //
+
+        objNode = NormalUser.objMapper.createObjectNode();
+        List<Song> topSongs = this.listenedSongs.keySet().stream()
+                                            .sorted(new Comparator<Song>() {
+                                                public int compare(Song song1, Song song2) {
+                                                    if (listenedSongs.get(song2) == listenedSongs.get(song1)) {
+                                                        return song1.getName().compareTo(song2.getName());
+                                                    }
+
+                                                    return listenedSongs.get(song2) - listenedSongs.get(song1);
+                                                }
+                                            })
+                                            // .sorted(Comparator.comparing(song -> this.listenedSongs.get(song)))
+                                            // .sorted(Comparator.comparing(Song::getName))
+                                            .limit(5)
+                                            .collect(Collectors.toList());
+
+        for (var song : topSongs) {
+            objNode.put(song.getName(), this.listenedSongs.get(song));
+        }
+        wrappedOutput.setTopSongs(objNode);
+
+        objNode = NormalUser.objMapper.createObjectNode();
+        List<Album> topAlbums = this.listenedAlbums.keySet().stream()
+                                            .sorted(new Comparator<Album>() {
+                                                public int compare(Album album1, Album album2) {
+                                                    if (listenedAlbums.get(album2) == listenedAlbums.get(album1)) {
+                                                        return album1.getName().compareTo(album2.getName());
+                                                    }
+
+                                                    return listenedAlbums.get(album2) - listenedAlbums.get(album1);
+                                                }
+                                            })
+                                            .limit(5)
+                                            .collect(Collectors.toList());
+
+        for (var album : topAlbums) {
+            objNode.put(album.getName(), this.listenedAlbums.get(album));
+        }
+        wrappedOutput.setTopAlbums(objNode);
+
+        objNode = NormalUser.objMapper.createObjectNode();
+        List<Episode> topEpisodes = this.listenedEpisodes.keySet().stream()
+                                            .sorted(new Comparator<Episode>() {
+                                                public int compare(Episode episode1, Episode episode2) {
+                                                    if (listenedEpisodes.get(episode2) == listenedEpisodes.get(episode1)) {
+                                                        return episode1.getName().compareTo(episode2.getName());
+                                                    }
+
+                                                    return listenedEpisodes.get(episode2) - listenedEpisodes.get(episode1);
+                                                }
+                                            })
+                                            .limit(5)
+                                            .collect(Collectors.toList());
+
+        for (var episode : topEpisodes) {
+            objNode.put(episode.getName(), this.listenedEpisodes.get(episode));
+        }
+        wrappedOutput.setTopEpisodes(objNode);
+
+        return wrappedOutput;
     }
 
     public void doBuyMerch(String merchName) {
-        // TODO
+        Page currentPage = this.pageHistory.get(this.pageIndex);
+
+        if (currentPage.type() != Page.Type.OFARTIST) {
+            this.commandMessage = "Cannot buy merch from this page.";
+            return;
+        }
+
+        Artist artist = (Artist)currentPage.owner();
+
+        if (artist.buyMerch(merchName) == null) {
+            this.commandMessage = "The merch " + merchName + " doesn't exist.";
+            return;
+        }
+
+        this.boughtMerches.add(artist.buyMerch(merchName));
 
         this.commandMessage = this.getUsername() + " has added new merch successfully.";
     }
 
     public ArrayList<String> doSeeMerch() {
-        // TODO
+        ArrayList<String> merchesName = new ArrayList<>();
 
-        return null;
+        for (var merch : this.boughtMerches) {
+            merchesName.add(merch.getName());
+        }
+
+        return merchesName;
     }
 
     public void doBuyPremium() {
-        // TODO
+        if (this.musicplayer.isUpgraded()) {
+            this.commandMessage = this.getUsername() + " is already a premium user.";
+            return;
+        }
+
+        this.musicplayer.upgrade();
 
         this.commandMessage = this.getUsername() + " bought the subscription successfully.";
     }
 
     public void doCancelPremium() {
-        // TODO
+        if (!this.musicplayer.isUpgraded()) {
+            this.commandMessage = this.getUsername() + " is not a premium user.";
+            return;
+        }
+
+        this.musicplayer.downgrade();
 
         this.commandMessage = this.getUsername() + " cancelled the subscription successfully.";
     }
 
     public void doAdBreak(int adPrice) {
-        // TODO
+        if (this.musicplayer.isPaused()) {
+            this.commandMessage = this.getUsername() + " is not playing any music.";
+            return;
+        }
+
+        this.musicplayer.loadAdBreak(adPrice);
 
         this.commandMessage = "Ad inserted successfully.";
     }
 
     public void doSubscribe() {
-        // TODO
+        Page currentPage = this.pageHistory.get(this.pageIndex);
+        User contentCreator = currentPage.owner();
+
+        if (currentPage.type() == Page.Type.OFNUSER)  {
+            this.commandMessage = "To subscribe you need to be on the page of an artist or host.";
+            return;
+        }
+
+
+        if (this.commandMessage.equals(this.getUsername() + " subscribed to " + contentCreator.getUsername() + "successfully.")) {
+            if (currentPage.type() == Page.Type.OFARTIST) {
+                ((Artist)contentCreator).removeSubscriber(this);
+            } else if (currentPage.type() == Page.Type.OFHOST) {
+                ((Host)contentCreator).removeSubscriber(this);
+            }
+
+            this.commandMessage = this.getUsername() + " unsubscribed from " + contentCreator.getUsername() + "successfully.";
+        } else {
+            if (currentPage.type() == Page.Type.OFARTIST) {
+                ((Artist)contentCreator).addSubscriber(this);
+            } else if (currentPage.type() == Page.Type.OFHOST) {
+                ((Host)contentCreator).addSubscriber(this);
+            }
+
+            this.commandMessage = this.getUsername() + " subscribed to " + contentCreator.getUsername() + "successfully.";
+        }
     }
 
     public ArrayList<UserNotification> doGetNotifications() {
-        // TODO
-
-        return null;
+        ArrayList<UserNotification> currentNotifications = new ArrayList<>(this.notifications);
+        this.notifications.clear();
+        return currentNotifications;
     }
 
     public void doUpdateRecommendations(String recommendationType) {
@@ -658,36 +829,75 @@ public final class NormalUser extends User {
     }
 
     public void doPreviousPage() {
-        // TODO
+        if (this.pageIndex == 0) {
+            this.commandMessage = "There are no pages left to go back.";
+            return;
+        }
+
+        this.pageIndex--;
+
+        this.commandMessage = "The user " + this.getUsername() + " has navigated successfully to the previous page.";
     }
 
     public void doNextPage() {
-        // TODO
+        if (this.pageIndex == this.pageHistory.size() - 1) {
+            this.commandMessage = "There are no pages left to go forward.";
+            return;
+        }
+
+        this.pageIndex++;
+        
+        this.commandMessage = "The user " + this.getUsername() + " has navigated successfully to the next page.";
     }
 
     public void updateStatistics(Song song) {
         Integer val;
 
+        // if (this.listenedSongs.containsKey(song)) {
+        //     val = this.listenedSongs.get(song);
+        //     // val++;
+        //     // val = val + 1;
+        //     this.listenedSongs.put(song, val + 1);
+        //     System.out.println("song - " + song.getName() + ", listen - " + /*val*/this.listenedSongs.get(song));
+        // } else {
+        //     this.listenedSongs.put(song, 1);
+        // }
+
         if (this.listenedSongs.containsKey(song)) {
             val = this.listenedSongs.get(song);
-            val++;
         } else {
-            this.listenedSongs.put(song, 1);
+            val = 0;
         }
+
+        try {
+            this.listenedSongs.put(song, val + 1);
+        } catch (NullPointerException e) {
+            System.out.println(val);
+        }
+
+        if (this.listenedAlbums.containsKey(song.getAlbum())) {
+            val = this.listenedAlbums.get(song.getAlbum());
+        } else {
+            val = 0;
+        }
+
+        this.listenedAlbums.put(song.getAlbum(), val + 1);
 
         if (this.listenedArtists.containsKey(song.getArtist())) {
             val = this.listenedArtists.get(song.getArtist());
-            val++;
         } else {
-            this.listenedArtists.put(song.getArtist(), 1);
+            val = 0;
         }
+
+        this.listenedArtists.put(song.getArtist(), val + 1);
 
         if (this.listenedGenres.containsKey(song.getGenre())) {
             val = this.listenedGenres.get(song.getGenre());
-            val++;
         } else {
-            this.listenedGenres.put(song.getGenre(), 1);
+            val = 0;
         }
+
+        this.listenedGenres.put(song.getGenre(), val + 1);
     }
 
     public void updateStatistics(Episode episode) {
@@ -695,22 +905,24 @@ public final class NormalUser extends User {
 
         if (this.listenedEpisodes.containsKey(episode)) {
             val = this.listenedEpisodes.get(episode);
-            val++;
         } else {
-            this.listenedEpisodes.put(episode, 1);
+            val = 0;
         }
+
+        this.listenedEpisodes.put(episode, val + 1);
     }
 
-    public void updateStatistics(Album album) {
-        Integer val;
+    // public void updateStatistics(Album album) {
+    //     Integer val;
 
-        if (this.listenedAlbums.containsKey(album)) {
-            val = this.listenedAlbums.get(album);
-            val++;
-        } else {
-            this.listenedAlbums.put(album, 1);
-        }
-    }
+    //     if (this.listenedAlbums.containsKey(album)) {
+    //         val = this.listenedAlbums.get(album);
+    //     } else {
+    //         val = 0;
+    //     }
+
+    //     this.listenedAlbums.put(album, val + 1);
+    // }
 
     public void addNotification(String name, String description) {
         this.notifications.add(new UserNotification(name, description));

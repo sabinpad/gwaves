@@ -10,4 +10,6 @@ public class WrappedOutput {
     private Object topSongs;
     private Object topAlbums;
     private Object topEpisodes;
+    private Object topFans;
+    private Integer listeners;
 }

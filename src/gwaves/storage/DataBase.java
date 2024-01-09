@@ -1,10 +1,13 @@
 package gwaves.storage;
 
-import java.util.Comparator;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.Comparator;
+import java.util.stream.Collectors;
 
-import lombok.Getter;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import fileio.input.FilterInput;
 import fileio.input.LibraryInput;
@@ -26,7 +29,6 @@ public final class DataBase {
     private LinkedHashMap<String, Artist> artists;
     private LinkedHashMap<String, Host> hosts;
 
-    @Getter
     private Song add;
     private ArrayList<Song> library;
     private ArrayList<Playlist> playlists;
@@ -46,7 +48,7 @@ public final class DataBase {
 
         this.library = new ArrayList<>();
         this.playlists = new ArrayList<>();
-        this.albums = new ArrayList<>();
+        this.albums = new ArrayList<Album>();
         this.podcasts = new ArrayList<>();
     }
 
@@ -321,6 +323,13 @@ public final class DataBase {
      */
     public ArrayList<Album> queryAlbums(final FilterInput filter) {
         ArrayList<Album> result = new ArrayList<>();
+        ArrayList<String> helper = new ArrayList<>(this.artists.keySet());
+
+        this.albums.sort(new Comparator<Album>() {
+            public int compare(Album album1, Album album2) {
+                return helper.indexOf(album1.getOwner()) - helper.indexOf(album2.getOwner());
+            }
+        });
 
         for (var album : this.albums) {
             if (album.isMatchedByFilter(filter)) {
@@ -329,6 +338,16 @@ public final class DataBase {
         }
 
         return result;
+    }
+
+    public Album queryAlbum(final String name) {
+        for (var album : this.albums) {
+            if (album.getName().equals(name)) {
+                return album;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -510,5 +529,31 @@ public final class DataBase {
         }
 
         return result;
+    }
+
+    public ObjectNode getArtistRanking() {
+        int rank = 0;
+        ObjectMapper objMapper = new ObjectMapper();
+        ObjectNode rankOutput, objNode = objMapper.createObjectNode();
+
+        List<Artist> artistRanking = this.artists.values().stream()
+                                                          .sorted(Comparator.comparing(Artist::getTotalRevenue))
+                                                          .collect(Collectors.toList());
+
+        for (var artist : artistRanking) {
+            if (artist.hasBeenStreamed()) {
+                rank++;
+
+                rankOutput = objMapper.createObjectNode();
+                rankOutput.put("merchRevenue", (double)artist.getMerchRevenue());
+                rankOutput.put("songRevenue", artist.getSongRevenue());
+                rankOutput.put("ranking", rank);
+                rankOutput.put("mostProfitableSong", artist.getMostProfitableSongName());
+
+                objNode.set(artist.getUsername(), rankOutput);
+            }
+        }
+
+        return objNode;
     }
 }
