@@ -49,6 +49,7 @@ public final class Musicplayer {
     private ArrayList<Song> adHistory;
     private ArrayList<Song> premiumHistory;
 
+    @Getter
     private int remainingTime;
 
     private boolean paused;
@@ -583,8 +584,8 @@ public final class Musicplayer {
     /**
      * @return the remaining time
      */
-    public int getRemainingTime() {
-        return this.remainingTime;
+    public int getPlayedTime() {
+        return this.currentRec.getDuration() - this.remainingTime;
     }
 
     /**

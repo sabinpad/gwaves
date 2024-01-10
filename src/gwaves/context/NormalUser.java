@@ -3,6 +3,7 @@ package gwaves.context;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.ListIterator;
 import java.util.stream.Collectors;
@@ -58,6 +59,18 @@ public final class NormalUser extends User {
     private LinkedHashMap<String, Integer> listenedAlbums;
     private LinkedHashMap<Episode, Integer> listenedEpisodes;
 
+    public enum RecommendationType {
+        // NA,
+        SONG,
+        PLAYLIST,
+        FANSPLAYLIST
+    }
+
+    private RecommendationType lastRecommendation;
+    private Song recommendedSong;
+    private Playlist recommendedPlaylist;
+    private Playlist fansPlaylist;
+
     private ArrayList<ArtistMerch> boughtMerches;
 
     private ArrayList<UserNotification> notifications;
@@ -98,6 +111,7 @@ public final class NormalUser extends User {
         this.pageHistory.add(this.homePage);
         this.boughtMerches = new ArrayList<>();
         this.notifications = new ArrayList<>();
+        // this.lastRecommendation = RecommendationType.NA;
     }
 
     /**
@@ -851,11 +865,248 @@ public final class NormalUser extends User {
     }
 
     public void doUpdateRecommendations(String recommendationType) {
-        // TODO
+        Song newSong;
+        Playlist newPlaylist;
+
+        switch (recommendationType) {
+            case "random_song":
+                if (this.musicplayer.getPlayedTime() < 30) {
+                    break;
+                }
+
+                newSong = DataBase.getInstance().queryRandomSong(this.musicplayer.getLoadedSong().getGenre(),
+                                                                 this.musicplayer.getPlayedTime());
+
+                if (this.recommendedSong == null) {
+                    this.recommendedSong = newSong;
+                    this.lastRecommendation = RecommendationType.SONG;
+                    this.commandMessage = "The recommendations for user " + this.getUsername()
+                               + " have been updated successfully.";
+                    return;
+                } 
+
+                if (!this.recommendedSong.equals(newSong)) {
+                    this.recommendedSong = newSong;
+                    this.lastRecommendation = RecommendationType.SONG;
+                    this.commandMessage = "The recommendations for user " + this.getUsername()
+                               + " have been updated successfully.";
+                    return;
+                }
+                break;
+            case "random_playlist":
+                newPlaylist = this.createRecommendedPlaylist();
+
+                if (this.recommendedPlaylist == null) {
+                    this.recommendedPlaylist = newPlaylist;
+                    this.lastRecommendation = RecommendationType.PLAYLIST;
+                    this.commandMessage = "The recommendations for user " + this.getUsername()
+                            + " have been updated successfully.";
+                    return;
+                }
+
+                for (var song : newPlaylist.getAudRecs()) {
+                    if (!this.recommendedPlaylist.hasAudRec(song)) {
+                        this.recommendedPlaylist = newPlaylist;
+                        this.lastRecommendation = RecommendationType.PLAYLIST;
+                        this.commandMessage = "The recommendations for user " + this.getUsername()
+                               + " have been updated successfully.";
+                        return;
+                    }
+                }
+                break;
+            case "fans_playlist":
+                newPlaylist = this.createFansPlaylist();
+
+                if (this.fansPlaylist == null) {
+                    this.fansPlaylist = newPlaylist;
+                    this.lastRecommendation = RecommendationType.FANSPLAYLIST;
+                    this.commandMessage = "The recommendations for user " + this.getUsername()
+                            + " have been updated successfully.";
+                    return;
+                }
+
+                for (var song : newPlaylist.getAudRecs()) {
+                    if (!this.fansPlaylist.hasAudRec(song)) {
+                        this.fansPlaylist = newPlaylist;
+                        this.lastRecommendation = RecommendationType.FANSPLAYLIST;
+                        this.commandMessage = "The recommendations for user " + this.getUsername()
+                               + " have been updated successfully.";
+                        return;
+                    }
+                }
+                break;
+        }
+
+        this.commandMessage = "No new recommendations found";
+    }
+
+    private Playlist createRecommendedPlaylist() {
+        Playlist newPlaylist = new Playlist(this.getUsername() + "'s recommendations", this.getUsername());
+        List<String> topGenres = this.top3Genres();
+        List<Song> topSongsGenre;
+
+        if (topGenres == null) {
+            return null;
+        }
+
+        if (topGenres.size() >= 1) {
+            topSongsGenre = this.topSongsByGenre(5, topGenres.get(0));
+
+            for (var song : topSongsGenre) {
+                newPlaylist.addAudRec(song);
+            }
+        }
+
+        if (topGenres.size() >= 2) {
+            topSongsGenre = this.topSongsByGenre(3, topGenres.get(1));
+
+            for (var song : topSongsGenre) {
+                newPlaylist.addAudRec(song);
+            }
+        }
+
+        if (topGenres.size() >= 3) {
+            topSongsGenre = this.topSongsByGenre(2, topGenres.get(2));
+
+            for (var song : topSongsGenre) {
+                newPlaylist.addAudRec(song);
+            }
+        }
+
+        return newPlaylist;
+    }
+
+    private Playlist createFansPlaylist() {
+        Playlist newPlaylist = new Playlist(this.getUsername() + " Fan Club recommendations", 
+                                            this.getUsername());
+        List<NormalUser> fans = this.musicplayer.getLoadedSong().getArtist().gettop5Fans();
+
+        for (var fan : fans) {
+            for (var song : fan.getTop5LikedSongs()) {
+                newPlaylist.addAudRec(song);
+            }
+        }
+        
+        return newPlaylist;
+    }
+
+    private List<Song> topSongsByGenre(int limit, String genre) {
+        ArrayList<Song> songs = new ArrayList<>();
+
+        for (var song : this.likedSongs) {
+            if (song.getGenre().equals(genre)) {
+                songs.add(song);
+            }
+        }
+
+        for (var playlist : this.personalPlaylists) {
+            for (var song : playlist.getAudRecs()) {
+                if (song.getGenre().equals(genre)) {
+                    songs.add(song);
+                }
+            }
+        }
+
+        for (var playlist : this.followedPlaylists) {
+            for (var song : playlist.getAudRecs()) {
+                if (song.getGenre().equals(genre)) {
+                    songs.add(song);
+                }
+            }
+        }
+
+        // De verificat daca trebuie si dupa nume
+        return songs.stream()
+                    .sorted(Comparator.comparing(Song::getLikes))
+                    .limit(limit)
+                    .collect(Collectors.toList());
+    }
+
+    private List<String> top3Genres() {
+        Integer val;
+        HashMap<String, Integer> genreDistrib = new HashMap<>();
+
+        for (var song : this.likedSongs) {
+            if (genreDistrib.containsKey(song.getGenre())) {
+                val = genreDistrib.get(song.getGenre());
+            } else {
+                val = 0;
+            }
+
+            genreDistrib.put(song.getGenre(), val + 1);
+        }
+
+        for (var playlist : this.personalPlaylists) {
+            for (var song : playlist.getAudRecs()) {
+                if (genreDistrib.containsKey(song.getGenre())) {
+                    val = genreDistrib.get(song.getGenre());
+                } else {
+                    val = 0;
+                }
+    
+                genreDistrib.put(song.getGenre(), val + 1);
+            }
+        }
+
+        for (var playlist : this.followedPlaylists) {
+            for (var song : playlist.getAudRecs()) {
+                if (genreDistrib.containsKey(song.getGenre())) {
+                    val = genreDistrib.get(song.getGenre());
+                } else {
+                    val = 0;
+                }
+    
+                genreDistrib.put(song.getGenre(), val + 1);
+            }
+        }
+
+        if (genreDistrib.isEmpty()) {
+            return null;
+        }
+
+        // De verificat daca trebuie si dupa nume
+        return genreDistrib.keySet().stream()
+                                    .sorted(Comparator.comparing(genre -> genreDistrib.get(genre)))
+                                    .limit(3)
+                                    .collect(Collectors.toList());
     }
 
     public void doLoadRecommendations() {
-        // TODO
+        // if (this.lastRecommendation == RecommendationType.NA) {
+        //     this.commandMessage = "No recommendations available.";
+        //     return;
+        // }
+
+        switch (this.lastRecommendation) {
+            case SONG:
+                if (this.recommendedSong == null) {
+                    this.commandMessage = "No recommendations available.";
+                    return;
+                }
+
+                this.musicplayer.loadSong(this.recommendedSong);
+                break;
+            case PLAYLIST:
+                if (this.recommendedPlaylist == null) {
+                    this.commandMessage = "No recommendations available.";
+                    return;
+                }
+
+                this.musicplayer.loadPlaylist(this.recommendedPlaylist);
+                break;
+            case FANSPLAYLIST:
+                if (this.fansPlaylist == null) {
+                    this.commandMessage = "No recommendations available.";
+                    return;
+                }
+
+                this.musicplayer.loadPlaylist(this.fansPlaylist);
+                break;
+            default:
+                break;
+        }
+
+        this.commandMessage = "Playback loaded successfully.";
     }
 
     public void doPreviousPage() {
@@ -1011,6 +1262,13 @@ public final class NormalUser extends User {
 
     public AudioCollection<?> getListeningCollec() {
         return this.musicplayer.getCurrentCollec();
+    }
+
+    public List<Song> getTop5LikedSongs() {
+        // De verificat daca trebuie dupa nume
+        return this.likedSongs.stream()
+                              .sorted(Comparator.comparing(Song::getLikes))
+                              .collect(Collectors.toList());
     }
 
     /**

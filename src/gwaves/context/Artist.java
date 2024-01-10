@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.Comparator;
 
@@ -449,6 +450,13 @@ public final class Artist extends User implements Filterable {
                                                                .collect(Collectors.toList());
 
         return profitableSongs.get(0).getName();
+    }
+
+    public List<NormalUser> gettop5Fans() {
+        return this.listeners.keySet().stream()
+                                      .sorted(Comparator.comparing(normalUser -> listeners.get(normalUser)))
+                                      .limit(5)
+                                      .collect(Collectors.toList());
     }
 
     /**

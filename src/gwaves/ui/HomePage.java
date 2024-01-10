@@ -8,6 +8,12 @@ import gwaves.collection.Playlist;
 import gwaves.context.User;
 import gwaves.context.NormalUser;
 
+/**
+ * 
+ * DE FACUT RECOMANDARILE SA APARA PE PAGINA
+ * 
+ */
+
 public class HomePage implements Page {
     private NormalUser owner;
     private ArrayList<Song> songs;

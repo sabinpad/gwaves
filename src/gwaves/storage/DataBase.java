@@ -1,6 +1,7 @@
 package gwaves.storage;
 
 import java.util.List;
+import java.util.Random;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Comparator;
@@ -24,6 +25,7 @@ import gwaves.collection.Podcast;
 
 public final class DataBase {
     private static DataBase instance;
+    private static Random randGen;
 
     private LinkedHashMap<String, NormalUser> normalusers;
     private LinkedHashMap<String, Artist> artists;
@@ -39,6 +41,7 @@ public final class DataBase {
 
     static {
         instance = new DataBase();
+        randGen = new Random();
     }
 
     private DataBase() {
@@ -292,6 +295,20 @@ public final class DataBase {
         }
 
         return result;
+    }
+
+    public Song queryRandomSong(String genre, int seed) {
+        ArrayList<Song> genreSongs = new ArrayList<>();
+
+        for (var song : this.library) {
+            if (song.getGenre().equals(genre)) {
+                genreSongs.add(song);
+            }
+        }
+
+        randGen.setSeed(seed);
+        
+        return genreSongs.get(randGen.nextInt(genreSongs.size()));
     }
 
     /**
