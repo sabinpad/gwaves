@@ -3,28 +3,29 @@ package gwaves.ui;
 import java.util.Comparator;
 import java.util.ArrayList;
 
+import lombok.AllArgsConstructor;
+
 import gwaves.sample.Song;
 import gwaves.collection.Playlist;
 import gwaves.context.User;
 import gwaves.context.NormalUser;
 
-/**
- * 
- * DE FACUT RECOMANDARILE SA APARA PE PAGINA
- * 
- */
-
+@AllArgsConstructor
 public class HomePage implements Page {
     private NormalUser owner;
     private ArrayList<Song> songs;
     private ArrayList<Playlist> playlists;
+    private ArrayList<Song> recommendedSongs;
+    private ArrayList<Playlist> recommendedPlaylists;
+    private ArrayList<Playlist> fansPlaylists;
 
-    public HomePage(final NormalUser owner, final ArrayList<Song> songs,
-                    final ArrayList<Playlist> playlists) {
-        this.owner = owner;
-        this.songs = songs;
-        this.playlists = playlists;
-    }
+    // public HomePage(final NormalUser owner, final ArrayList<Song> songs,
+    //                 final ArrayList<Playlist> playlists,
+    //                 final ArrayList<Song> recommended) {
+    //     this.owner = owner;
+    //     this.songs = songs;
+    //     this.playlists = playlists;
+    // }
 
     public Type type() {
         return Page.Type.OFNUSER;
@@ -60,6 +61,41 @@ public class HomePage implements Page {
 
             i++;
             if (i != sortedPlaylists.size()) {
+                page += ", ";
+            }
+        }
+
+        page += "]\n\nSong recommendations:\n\t[";
+        i = 0;
+
+        for (var song : this.recommendedSongs) {
+            page += song.getName();
+
+            i++;
+            if (i != this.recommendedSongs.size()) {
+                page += ", ";
+            }
+        }
+
+        page += "]\n\nPlaylists recommendations:\n\t[";
+        i = 0;
+
+        for (var playlist : this.recommendedPlaylists) {
+            page += playlist.getName();
+
+            i++;
+            if (i != this.recommendedPlaylists.size()) {
+                page += ", ";
+            }
+        }
+
+        i = 0;
+
+        for (var playlist : this.fansPlaylists) {
+            page += playlist.getName();
+
+            i++;
+            if (i != this.fansPlaylists.size()) {
                 page += ", ";
             }
         }

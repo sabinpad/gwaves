@@ -35,7 +35,7 @@ public class LikedPage implements Page {
         String page = "Liked songs:\n\t[";
 
         for (var song : this.songs) {
-            page += (song.getName() + " - " + song.getArtist());
+            page += (song.getName() + " - " + song.getArtist().getUsername());
 
             i++;
             if (i != songs.size()) {

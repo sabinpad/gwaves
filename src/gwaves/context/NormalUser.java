@@ -60,16 +60,16 @@ public final class NormalUser extends User {
     private LinkedHashMap<Episode, Integer> listenedEpisodes;
 
     public enum RecommendationType {
-        // NA,
+        NA,
         SONG,
         PLAYLIST,
         FANSPLAYLIST
     }
 
     private RecommendationType lastRecommendation;
-    private Song recommendedSong;
-    private Playlist recommendedPlaylist;
-    private Playlist fansPlaylist;
+    private ArrayList<Song> recommendedSongs;
+    private ArrayList<Playlist> recommendedPlaylists;
+    private ArrayList<Playlist> fansPlaylists;
 
     private ArrayList<ArtistMerch> boughtMerches;
 
@@ -104,14 +104,23 @@ public final class NormalUser extends User {
         this.listenedSongs = new LinkedHashMap<>();
         this.listenedGenres = new LinkedHashMap<>();
         this.listenedEpisodes = new LinkedHashMap<>();
-        this.homePage = new HomePage(this, likedSongs, followedPlaylists);
-        this.likedPage = new LikedPage(this, likedSongs, followedPlaylists);
+        this.recommendedSongs = new ArrayList<>();
+        this.recommendedPlaylists = new ArrayList<>();
+        this.fansPlaylists = new ArrayList<>();
+        // this.homePage = new HomePage(this, likedSongs, followedPlaylists);
+        this.homePage = new HomePage(this, this.likedSongs,
+                                     this.followedPlaylists,
+                                     this.recommendedSongs,
+                                     this.recommendedPlaylists,
+                                     this.fansPlaylists);
+        this.likedPage = new LikedPage(this, this.likedSongs, this.followedPlaylists);
         this.pageIndex = 0;
         this.pageHistory = new ArrayList<>();
         this.pageHistory.add(this.homePage);
         this.boughtMerches = new ArrayList<>();
         this.notifications = new ArrayList<>();
         // this.lastRecommendation = RecommendationType.NA;
+        this.lastRecommendation = RecommendationType.NA;
     }
 
     /**
@@ -590,39 +599,61 @@ public final class NormalUser extends User {
      *
      * @param page
      */
-    public void doChangePage(final String page) {
-        if (!page.equals("Home") && !page.equals("LikedContent")) {
-            this.commandMessage = this.getUsername() + " is trying to access a non-existent page.";
-            return;
-        }
+    public void doChangePage(final String pageName) {
+        Page nextPage;
 
-        switch (page) {
+        // TODO de facut review la cast aici
+        switch (pageName) {
             case "Home":
-                this.pageHistory.set(this.pageIndex, this.homePage);
+                nextPage = this.homePage;
                 break;
             case "LikedContent":
-                this.pageHistory.set(this.pageIndex, this.likedPage);
+                nextPage = this.likedPage;
+                break;
+            case "Artist":
+                nextPage = this.musicplayer.getLoadedSong().getArtist().getPage();
+                break;
+            case "Host":
+                nextPage = DataBase.getInstance().queryHost(this.musicplayer.getLoadedPodcast().getOwner()).getPage();
                 break;
             default:
-                break;
+                this.commandMessage = this.getUsername() + " is trying to access a non-existent page.";
+                return;
         }
 
-        if (this.pageIndex + 1 != this.pageHistory.size()) {
-            ListIterator<Page> iter = this.pageHistory.listIterator(this.pageIndex);
+        // if (this.pageIndex + 1 != this.pageHistory.size()) {
+        //     ListIterator<Page> iter = this.pageHistory.listIterator(this.pageIndex);
 
-            while (iter.hasNext()) {
-                iter.remove();
-                iter.next();
-            }
+        //     while (iter.hasNext()) {
+        //         iter.remove();
+        //         iter.next();
+        //     }
+        // }
+        ListIterator<Page> iter = this.pageHistory.listIterator(this.pageIndex + 1);
+
+        while (iter.hasNext()) {
+            // System.out.println("am intrat");
+            iter.next();
+            iter.remove();
         }
 
-        this.commandMessage = this.getUsername() + " accessed " + page + " successfully.";
+        this.pageHistory.add(nextPage);
+        this.pageIndex++;
+
+        // System.out.println("---- " + this.pageIndex);
+        // for (var page : this.pageHistory) {
+        //     System.out.println(page.getClass() + " ");
+        // }
+
+        this.commandMessage = this.getUsername() + " accessed " + pageName + " successfully.";
     }
 
     /**
      *
      */
     public String doGetPage() {
+        // System.out.println("size - " + this.pageHistory.size());
+        // return null;
         return this.pageHistory.get(this.pageIndex).strigify();
     }
 
@@ -819,25 +850,6 @@ public final class NormalUser extends User {
             this.commandMessage = "To subscribe you need to be on the page of an artist or host.";
             return;
         }
-
-
-        // if (this.commandMessage.equals(this.getUsername() + " subscribed to " + contentCreator.getUsername() + " successfully.")) {
-        //     if (currentPage.type() == Page.Type.OFARTIST) {
-        //         ((Artist)contentCreator).removeSubscriber(this);
-        //     } else if (currentPage.type() == Page.Type.OFHOST) {
-        //         ((Host)contentCreator).removeSubscriber(this);
-        //     }
-
-        //     this.commandMessage = this.getUsername() + " unsubscribed from " + contentCreator.getUsername() + " successfully.";
-        // } else {
-        //     if (currentPage.type() == Page.Type.OFARTIST) {
-        //         ((Artist)contentCreator).addSubscriber(this);
-        //     } else if (currentPage.type() == Page.Type.OFHOST) {
-        //         ((Host)contentCreator).addSubscriber(this);
-        //     }
-
-        //     this.commandMessage = this.getUsername() + " subscribed to " + contentCreator.getUsername() + " successfully.";
-        // }
         
         if (currentPage.type() == Page.Type.OFARTIST) {
             if (((Artist)contentCreator).hasSubscriber(this)) {
@@ -870,74 +882,44 @@ public final class NormalUser extends User {
 
         switch (recommendationType) {
             case "random_song":
-                if (this.musicplayer.getPlayedTime() < 30) {
-                    break;
-                }
+                // TODO de verificat daca merge si cu
+                // if (this.musicplayer.getPlayedTime() < 30) {
+                //     break;
+                // }
 
                 newSong = DataBase.getInstance().queryRandomSong(this.musicplayer.getLoadedSong().getGenre(),
                                                                  this.musicplayer.getPlayedTime());
 
-                if (this.recommendedSong == null) {
-                    this.recommendedSong = newSong;
-                    this.lastRecommendation = RecommendationType.SONG;
-                    this.commandMessage = "The recommendations for user " + this.getUsername()
-                               + " have been updated successfully.";
-                    return;
-                } 
-
-                if (!this.recommendedSong.equals(newSong)) {
-                    this.recommendedSong = newSong;
-                    this.lastRecommendation = RecommendationType.SONG;
-                    this.commandMessage = "The recommendations for user " + this.getUsername()
-                               + " have been updated successfully.";
-                    return;
-                }
+                this.recommendedSongs.add(0, newSong);
+                this.lastRecommendation = RecommendationType.SONG;
                 break;
             case "random_playlist":
                 newPlaylist = this.createRecommendedPlaylist();
 
-                if (this.recommendedPlaylist == null) {
-                    this.recommendedPlaylist = newPlaylist;
-                    this.lastRecommendation = RecommendationType.PLAYLIST;
-                    this.commandMessage = "The recommendations for user " + this.getUsername()
-                            + " have been updated successfully.";
+                if (newPlaylist == null) {
+                    this.commandMessage = "No new recommendations found";
                     return;
                 }
 
-                for (var song : newPlaylist.getAudRecs()) {
-                    if (!this.recommendedPlaylist.hasAudRec(song)) {
-                        this.recommendedPlaylist = newPlaylist;
-                        this.lastRecommendation = RecommendationType.PLAYLIST;
-                        this.commandMessage = "The recommendations for user " + this.getUsername()
-                               + " have been updated successfully.";
-                        return;
-                    }
-                }
+                this.recommendedPlaylists.add(0, newPlaylist);
+                this.lastRecommendation = RecommendationType.PLAYLIST;
                 break;
             case "fans_playlist":
                 newPlaylist = this.createFansPlaylist();
 
-                if (this.fansPlaylist == null) {
-                    this.fansPlaylist = newPlaylist;
-                    this.lastRecommendation = RecommendationType.FANSPLAYLIST;
-                    this.commandMessage = "The recommendations for user " + this.getUsername()
-                            + " have been updated successfully.";
+                if (newPlaylist == null) {
+                    this.commandMessage = "No new recommendations found";
                     return;
                 }
 
-                for (var song : newPlaylist.getAudRecs()) {
-                    if (!this.fansPlaylist.hasAudRec(song)) {
-                        this.fansPlaylist = newPlaylist;
-                        this.lastRecommendation = RecommendationType.FANSPLAYLIST;
-                        this.commandMessage = "The recommendations for user " + this.getUsername()
-                               + " have been updated successfully.";
-                        return;
-                    }
-                }
+                this.fansPlaylists.add(0, newPlaylist);
+                this.lastRecommendation = RecommendationType.FANSPLAYLIST;
                 break;
         }
 
-        this.commandMessage = "No new recommendations found";
+        // this.commandMessage = "No new recommendations found";
+        this.commandMessage = "The recommendations for user " + this.getUsername()
+                               + " have been updated successfully.";
     }
 
     private Playlist createRecommendedPlaylist() {
@@ -977,7 +959,7 @@ public final class NormalUser extends User {
     }
 
     private Playlist createFansPlaylist() {
-        Playlist newPlaylist = new Playlist(this.getUsername() + " Fan Club recommendations", 
+        Playlist newPlaylist = new Playlist(this.musicplayer.getLoadedSong().getArtist().getUsername() + " Fan Club recommendations", 
                                             this.getUsername());
         List<NormalUser> fans = this.musicplayer.getLoadedSong().getArtist().gettop5Fans();
 
@@ -1072,35 +1054,33 @@ public final class NormalUser extends User {
     }
 
     public void doLoadRecommendations() {
-        // if (this.lastRecommendation == RecommendationType.NA) {
-        //     this.commandMessage = "No recommendations available.";
-        //     return;
-        // }
-
         switch (this.lastRecommendation) {
+            case NA:
+                this.commandMessage = "No recommendations available.";
+                return;
             case SONG:
-                if (this.recommendedSong == null) {
+                if (this.recommendedSongs.isEmpty()) {
                     this.commandMessage = "No recommendations available.";
                     return;
                 }
 
-                this.musicplayer.loadSong(this.recommendedSong);
+                this.musicplayer.loadSong(this.recommendedSongs.get(0));
                 break;
             case PLAYLIST:
-                if (this.recommendedPlaylist == null) {
+                if (this.recommendedPlaylists.isEmpty()) {
                     this.commandMessage = "No recommendations available.";
                     return;
                 }
 
-                this.musicplayer.loadPlaylist(this.recommendedPlaylist);
+                this.musicplayer.loadPlaylist(this.recommendedPlaylists.get(0));
                 break;
             case FANSPLAYLIST:
-                if (this.fansPlaylist == null) {
+                if (this.fansPlaylists.isEmpty()) {
                     this.commandMessage = "No recommendations available.";
                     return;
                 }
 
-                this.musicplayer.loadPlaylist(this.fansPlaylist);
+                this.musicplayer.loadPlaylist(this.fansPlaylists.get(0));
                 break;
             default:
                 break;
