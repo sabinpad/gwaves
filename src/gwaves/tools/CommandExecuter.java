@@ -1222,11 +1222,17 @@ public final class CommandExecuter {
         NormalUser normalUser = null;
         DataBase database = DataBase.getInstance();
 
+        if (database.queryUser(commandInput.getUsername()) == null) {
+            commandOutput.setMessage("The username " + commandInput.getUsername()
+                                        + " doesn't exist.");
+            return;
+        }
+
         normalUser = database.queryNormalUser(commandInput.getUsername());
 
         if (normalUser == null) {
-            commandOutput.setMessage("The username " + commandInput.getUsername()
-                                        + " doesn't exist.");
+            commandOutput.setMessage(commandInput.getUsername()
+                                        + " is not a normal user.");
             return;
         }
 
@@ -1247,9 +1253,8 @@ public final class CommandExecuter {
 
         normalUser = database.queryNormalUser(commandInput.getUsername());
 
-        if (normalUser == null) {
-            commandOutput.setMessage("The username " + commandInput.getUsername()
-                                        + " doesn't exist.");
+        if (!normalUser.isActive()) {
+            commandOutput.setMessage(commandInput.getUsername() + " is offline.");
             return;
         }
 
