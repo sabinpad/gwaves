@@ -658,10 +658,16 @@ public final class NormalUser extends User {
     }
 
     public WrappedOutput doWrapped() {
-        if (this.listenedArtists.isEmpty()
-            && this.listenedAlbums.isEmpty()
-            && this.listenedSongs.isEmpty()
-            && this.listenedGenres.isEmpty()
+        // if (this.listenedArtists.isEmpty()
+        //     && this.listenedAlbums.isEmpty()
+        //     && this.listenedSongs.isEmpty()
+        //     && this.listenedGenres.isEmpty()
+        //     && this.listenedEpisodes.isEmpty()) {
+        //     this.commandMessage = "No data to show for user " + this.getUsername() + ".";
+        //     return null;
+        // }
+
+        if (this.listenedSongs.isEmpty()
             && this.listenedEpisodes.isEmpty()) {
             this.commandMessage = "No data to show for user " + this.getUsername() + ".";
             return null;
@@ -1181,6 +1187,10 @@ public final class NormalUser extends User {
     //     this.listenedAlbums.put(album, val + 1);
     // }
 
+    public void payRemaining() {
+        this.musicplayer.downgrade();
+    }
+
     public void addNotification(String name, String description) {
         this.notifications.add(new UserNotification(name, description));
     }
@@ -1264,5 +1274,9 @@ public final class NormalUser extends User {
      */
     public boolean isActive() {
         return this.active;
+    }
+
+    public boolean isPremium() {
+        return this.musicplayer.isUpgraded();
     }
 }

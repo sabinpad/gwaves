@@ -179,6 +179,11 @@ public final class Host extends User implements Filterable {
         HashMap<Episode, Integer> streamedEpisodes = new HashMap<>();
         ObjectNode objNode;
 
+        if (this.listeners.isEmpty()) {
+            this.commandMessage = "No data to show for host " + this.getUsername() + ".";
+            return null;
+        }
+
         for (var entry : this.podcasts.entrySet()) {
             for (var episode : entry.getValue().getAudRecs()) {
                 if (episode.getListenings() > 0) {

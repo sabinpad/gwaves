@@ -1317,6 +1317,7 @@ public final class CommandExecuter {
     private static void execEndProgram(final CommandInput commandInput,
                                                final CommandOutput commandOutput) {
         commandOutput.setCommand("endProgram");
+        UserManager.getInstance().payRemainingAll();
         commandOutput.setResult(DataBase.getInstance().getArtistRanking());
     }
 }

@@ -246,6 +246,11 @@ public final class Artist extends User implements Filterable {
         Integer val;
         ObjectNode objNode;
 
+        if (this.listeners.isEmpty()) {
+            this.commandMessage = "No data to show for artist " + this.getUsername() + ".";
+            return null;
+        }
+
         for (var entry : this.albums.entrySet()) {
             Album album = entry.getValue();
 
@@ -357,6 +362,7 @@ public final class Artist extends User implements Filterable {
         }
 
         this.songsRevenue.put(song, val + amount);
+        this.songRevenue += amount;
     }
 
     public ArtistMerch buyMerch(String merchName) {

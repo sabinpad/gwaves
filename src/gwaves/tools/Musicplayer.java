@@ -475,13 +475,6 @@ public final class Musicplayer {
 
             songDistrib.put(song, val + 1);
 
-            // if (artistDistrib.containsKey(song.getArtist())) {
-            //     val = artistDistrib.get(song.getArtist());
-            //     val++;
-            // } else {
-            //     artistDistrib.put(song.getArtist(), 1);
-            // }
-
             if (artistDistrib.containsKey(song.getArtist())) {
                 val = artistDistrib.get(song.getArtist());
             } else {
@@ -494,11 +487,11 @@ public final class Musicplayer {
         count = this.adHistory.size();
 
         for (var entry : songDistrib.entrySet()) {
-            entry.getKey().getArtist().paySong(this.adPrice * (entry.getValue() / count), entry.getKey());
+            entry.getKey().getArtist().paySong(this.adPrice * ((double)entry.getValue() / count), entry.getKey());
         }
 
         for (var entry : artistDistrib.entrySet()) {
-            entry.getKey().pay(this.adPrice * (entry.getValue() / count));
+            entry.getKey().pay(this.adPrice * ((double)entry.getValue() / count));
         }
     }
 
@@ -528,12 +521,18 @@ public final class Musicplayer {
 
         count = this.premiumHistory.size();
 
+        // System.out.println(this.ownerUser.getUsername() + " - " + count);
+
+        // System.out.println("----songs");
         for (var entry : songDistrib.entrySet()) {
-            entry.getKey().getArtist().paySong(1e6 * (entry.getValue() / count), entry.getKey());
+            // System.out.println(entry.getKey().getName() + " - " + 1e6 * ((double)entry.getValue() / count));
+            entry.getKey().getArtist().paySong(1e6 * ((double)entry.getValue() / count), entry.getKey());
         }
 
+        // System.out.println("----artists");
         for (var entry : artistDistrib.entrySet()) {
-            entry.getKey().pay(1e6 * (entry.getValue() / count));
+            // System.out.println(entry.getKey().getUsername() + " - " + 1e6 * ((double)entry.getValue() / count));
+            entry.getKey().pay(1e6 * ((double)entry.getValue() / count));
         }
     }
 
@@ -543,6 +542,7 @@ public final class Musicplayer {
 
     public void downgrade() {
         this.payPremium();
+        this.premiumHistory.clear();
         this.premium = false;
     }
 

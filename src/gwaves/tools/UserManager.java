@@ -90,6 +90,14 @@ public final class UserManager {
         this.lastTimestamp = currentTimeStamp;
     }
 
+    public void payRemainingAll() {
+        for (var normalUser : this.normalUsers) {
+            if (normalUser.isPremium()) {
+                normalUser.payRemaining();
+            }
+        }
+    }
+
     /**
      *
      * @param song
