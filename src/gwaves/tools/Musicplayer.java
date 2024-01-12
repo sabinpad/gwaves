@@ -118,6 +118,7 @@ public final class Musicplayer {
         this.loadedType = Musicplayer.Type.SONG;
         this.paused = false;
 
+        this.updateHistory();
         this.updateStatistics();
     }
 
@@ -135,6 +136,7 @@ public final class Musicplayer {
         this.loadedType = Musicplayer.Type.PLAYLIST;
         this.paused = false;
 
+        this.updateHistory();
         this.updateStatistics();
     }
 
@@ -152,6 +154,7 @@ public final class Musicplayer {
         this.loadedType = Musicplayer.Type.ALBUM;
         this.paused = false;
 
+        this.updateHistory();
         this.updateStatistics();
     }
 
@@ -179,6 +182,7 @@ public final class Musicplayer {
         this.loadedType = Musicplayer.Type.PODCAST;
         this.paused = false;
 
+        this.updateHistory();
         this.updateStatistics();
     }
 
@@ -330,14 +334,15 @@ public final class Musicplayer {
         this.currentRec = this.currentCollec.getAudRec(index);
         this.remainingTime = this.currentRec.getDuration();
 
-        if (this.loadedType != Musicplayer.Type.PODCAST) {
-            if (this.premium) {
-                this.premiumHistory.add((Song)this.currentRec);
-            } else {
-                this.adHistory.add((Song)this.currentRec);
-            }
-        }
+        // if (this.loadedType != Musicplayer.Type.PODCAST) {
+        //     if (this.premium) {
+        //         this.premiumHistory.add((Song)this.currentRec);
+        //     } else {
+        //         this.adHistory.add((Song)this.currentRec);
+        //     }
+        // }
 
+        this.updateHistory();
         this.updateStatistics();
     }
 
@@ -425,6 +430,22 @@ public final class Musicplayer {
         }
     }
 
+    private void updateHistory() {
+        if (this.loadedType != Musicplayer.Type.PODCAST) {
+            if (this.premium) {
+                this.premiumHistory.add((Song)this.currentRec);
+            } else {
+                this.adHistory.add((Song)this.currentRec);
+            }
+
+            // if (((Song)this.currentRec).getArtist().getUsername().equals("Madonna")) {
+            //     System.out.println(this.ownerUser.getUsername() + " - "
+            //                         + this.currentRec.getName()
+            //                         + " - " + ((Song)this.currentRec).getLyrics());
+            // }
+        }
+    }
+
     private void updateStatistics() {
         if (this.currentRec == null) {
             return;
@@ -501,6 +522,7 @@ public final class Musicplayer {
         HashMap<Artist, Integer> artistDistrib = new HashMap<>();
         HashMap<Song, Integer> songDistrib = new HashMap<>();
 
+        // System.out.println("----history(" + this.ownerUser.getUsername() + ")");
         for (var song : this.premiumHistory) {
             if (songDistrib.containsKey(song)) {
                 val = songDistrib.get(song);
@@ -517,6 +539,8 @@ public final class Musicplayer {
             }
 
             artistDistrib.put(song.getArtist(), val + 1);
+
+            // System.out.println(song.getName());
         }
 
         count = this.premiumHistory.size();
@@ -525,13 +549,13 @@ public final class Musicplayer {
 
         // System.out.println("----songs");
         for (var entry : songDistrib.entrySet()) {
-            // System.out.println(entry.getKey().getName() + " - " + 1e6 * ((double)entry.getValue() / count));
+            // System.out.println(entry.getKey().getName() + " - " + entry.getValue());
             entry.getKey().getArtist().paySong(1e6 * ((double)entry.getValue() / count), entry.getKey());
         }
 
         // System.out.println("----artists");
         for (var entry : artistDistrib.entrySet()) {
-            // System.out.println(entry.getKey().getUsername() + " - " + 1e6 * ((double)entry.getValue() / count));
+            // System.out.println(entry.getKey().getUsername() + " - " + entry.getValue());
             entry.getKey().pay(1e6 * ((double)entry.getValue() / count));
         }
     }

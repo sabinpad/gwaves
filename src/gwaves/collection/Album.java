@@ -3,6 +3,7 @@ package gwaves.collection;
 import java.util.ArrayList;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import fileio.input.SongInput;
 import fileio.input.FilterInput;
@@ -14,6 +15,7 @@ import gwaves.util.Filterable;
 public final class Album extends AudioCollection<Song> implements Filterable {
     private int releaseYear;
     private String description;
+    @Setter
     private int listenings;
 
     /**

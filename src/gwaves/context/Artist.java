@@ -43,7 +43,8 @@ public final class Artist extends User implements Filterable {
     @Getter
     private int merchRevenue;
 
-    private HashMap<Song, Double> songsRevenue;
+    // private HashMap<Song, Double> songsRevenue;
+    private HashMap<String, Double> songsRevenue;
 
     private ArrayList<NormalUser> subscribers;
 
@@ -128,8 +129,12 @@ public final class Artist extends User implements Filterable {
         DataBase database = DataBase.getInstance();
 
         for (var song : this.albums.get(name).getAudRecs()) {
+            // if (this.albums.get(name).getName().equals("Confessions on a Dance Floor")) {
+            //     System.out.println(song.getName() + " - " + song.getListenings());
+            // }
             database.removeSong(song);
         }
+        // System.out.println(this.albums.get(name).getName() + " - " + this.albums.get(name).getListenings());
 
         database.removeAlbum(this.albums.get(name));
 
@@ -242,7 +247,8 @@ public final class Artist extends User implements Filterable {
         WrappedOutput wrappedOutput = new WrappedOutput();
         // HashMap<Song, Integer> streamedSongs = new HashMap<>();
         HashMap<String, Integer> streamedSongs = new HashMap<>();
-        HashMap<Album, Integer> streamedAlbums = new HashMap<>();
+        // HashMap<Album, Integer> streamedAlbums = new HashMap<>();
+        HashMap<String, Integer> streamedAlbums = new HashMap<>();
         Integer val;
         ObjectNode objNode;
 
@@ -254,8 +260,16 @@ public final class Artist extends User implements Filterable {
         for (var entry : this.albums.entrySet()) {
             Album album = entry.getValue();
 
+            // if (this.getUsername().equals("Madonna")) {
+            //     System.out.println(album.getName() + " - " + album.getListenings());
+            // }
+
             for (var song : album.getAudRecs()) {
                 if (song.getListenings() > 0) {
+                    // if (this.getUsername().equals("Madonna")) {
+                    //     System.out.println(song.getName() + " - " + song.getListenings());
+                    // }
+
                     if (streamedSongs.containsKey(song.getName())) {
                         val = streamedSongs.get(song.getName());
                     } else {
@@ -267,7 +281,15 @@ public final class Artist extends User implements Filterable {
             }
 
             if (album.getListenings() > 0) {
-                streamedAlbums.put(album, album.getListenings());
+                // streamedAlbums.put(album, album.getListenings());
+
+                if (streamedAlbums.containsKey(album.getName())) {
+                    val = streamedAlbums.get(album.getName());
+                } else {
+                    val = 0;
+                }
+
+                streamedAlbums.put(album.getName(), val + album.getListenings());
             }
         }
 
@@ -292,22 +314,41 @@ public final class Artist extends User implements Filterable {
         }
         wrappedOutput.setTopSongs(objNode);
 
+        // objNode = NormalUser.objMapper.createObjectNode();
+        // List<Album> topAlbums = streamedAlbums.keySet().stream()
+        //                                     .sorted(new Comparator<Album>() {
+        //                                         public int compare(Album album1, Album album2) {
+        //                                             if (streamedAlbums.get(album2) == streamedAlbums.get(album1)) {
+        //                                                 return album1.getName().compareTo(album2.getName());
+        //                                             }
+
+        //                                             return streamedAlbums.get(album2) - streamedAlbums.get(album1);
+        //                                         }
+        //                                     })
+        //                                     .limit(5)
+        //                                     .collect(Collectors.toList());
+
+        // for (var album : topAlbums) {
+        //     objNode.put(album.getName(), streamedAlbums.get(album));
+        // }
+        // wrappedOutput.setTopAlbums(objNode);
+
         objNode = NormalUser.objMapper.createObjectNode();
-        List<Album> topAlbums = streamedAlbums.keySet().stream()
-                                            .sorted(new Comparator<Album>() {
-                                                public int compare(Album album1, Album album2) {
-                                                    if (streamedAlbums.get(album2) == streamedAlbums.get(album1)) {
-                                                        return album1.getName().compareTo(album2.getName());
+        List<String> topAlbumsName = streamedAlbums.keySet().stream()
+                                            .sorted(new Comparator<String>() {
+                                                public int compare(String albumName1, String albumName2) {
+                                                    if (streamedAlbums.get(albumName2) == streamedAlbums.get(albumName1)) {
+                                                        return albumName1.compareTo(albumName2);
                                                     }
 
-                                                    return streamedAlbums.get(album2) - streamedAlbums.get(album1);
+                                                    return streamedAlbums.get(albumName2) - streamedAlbums.get(albumName1);
                                                 }
                                             })
                                             .limit(5)
                                             .collect(Collectors.toList());
 
-        for (var album : topAlbums) {
-            objNode.put(album.getName(), streamedAlbums.get(album));
+        for (var albumName : topAlbumsName) {
+            objNode.put(albumName, streamedAlbums.get(albumName));
         }
         wrappedOutput.setTopAlbums(objNode);
 
@@ -353,16 +394,25 @@ public final class Artist extends User implements Filterable {
     }
 
     public void paySong(double amount, Song song) {
+        // Double val;
+
+        // if (this.songsRevenue.containsKey(song)) {
+        //     val = this.songsRevenue.get(song);
+        // } else {
+        //     val = 0.0;
+        // }
+
+        // this.songsRevenue.put(song, val + amount);
+
         Double val;
 
-        if (this.songsRevenue.containsKey(song)) {
-            val = this.songsRevenue.get(song);
+        if (this.songsRevenue.containsKey(song.getName())) {
+            val = this.songsRevenue.get(song.getName());
         } else {
             val = 0.0;
         }
 
-        this.songsRevenue.put(song, val + amount);
-        this.songRevenue += amount;
+        this.songsRevenue.put(song.getName(), val + amount);
     }
 
     public ArtistMerch buyMerch(String merchName) {
@@ -438,24 +488,60 @@ public final class Artist extends User implements Filterable {
             return "N/A";
         }
 
-        List<Song> profitableSongs = this.songsRevenue.keySet().stream()
-                                                               .sorted(new Comparator<Song>() {
-                                                                public int compare(Song song1, Song song2) {
-                                                                    if (songsRevenue.get(song2) == songsRevenue.get(song1)) {
-                                                                        return song1.getName().compareTo(song2.getName());
+        // List<Song> profitableSongs = this.songsRevenue.keySet().stream()
+        //                                                        .sorted(new Comparator<Song>() {
+        //                                                             public int compare(Song song1, Song song2) {
+        //                                                                 if (songsRevenue.get(song2).equals(songsRevenue.get(song1))) {
+        //                                                                     // return song1.getName().toLowerCase().compareTo(song2.getName().toLowerCase());
+        //                                                                     return song1.getName().compareTo(song2.getName());
+        //                                                                 }
+                                                                        
+        //                                                                 if (songsRevenue.get(song1) < songsRevenue.get(song2)) {
+        //                                                                     return 1;
+        //                                                                 } else if (songsRevenue.get(song1) > songsRevenue.get(song2)) {
+        //                                                                     return -1;
+        //                                                                 }
+        //                                                                 return 0;
+        //                                                             }
+        //                                                         })
+        //                                                         // .sorted(Comparator.comparing(song -> songsRevenue.get(song)).reversed().thenComparing(Song::getName))
+        //                                                        .collect(Collectors.toList());
+
+        List<String> profitableSongsName = this.songsRevenue.keySet().stream()
+                                                               .sorted(new Comparator<String>() {
+                                                                    public int compare(String songName1, String songName2) {
+                                                                        if (songsRevenue.get(songName2).equals(songsRevenue.get(songName1))) {
+                                                                            // return song1.getName().toLowerCase().compareTo(song2.getName().toLowerCase());
+                                                                            return songName1.compareTo(songName2);
+                                                                        }
+                                                                        
+                                                                        if (songsRevenue.get(songName1) < songsRevenue.get(songName2)) {
+                                                                            return 1;
+                                                                        } else if (songsRevenue.get(songName1) > songsRevenue.get(songName2)) {
+                                                                            return -1;
+                                                                        }
+                                                                        return 0;
                                                                     }
-                                                                    
-                                                                    if (songsRevenue.get(song1) < songsRevenue.get(song2)) {
-                                                                        return 1;
-                                                                    } else if (songsRevenue.get(song1) > songsRevenue.get(song2)) {
-                                                                        return -1;
-                                                                    }
-                                                                    return 0;
-                                                                }
                                                                 })
+                                                                // .sorted(Comparator.comparing(song -> songsRevenue.get(song)).reversed().thenComparing(Song::getName))
                                                                .collect(Collectors.toList());
 
-        return profitableSongs.get(0).getName();
+        // System.out.println("");
+        // System.out.println("");
+        // System.out.println("----profitable");
+        // for (var song : profitableSongs) {
+        //     System.out.println(song.getName() + " " + this.songsRevenue.get(song));
+        // }
+
+        // System.out.println("");
+        // System.out.println("");
+        // System.out.println("----profitable");
+        // for (var songName : profitableSongsName) {
+        //     System.out.println(songName + " " + this.songsRevenue.get(songName));
+        // }
+
+        // System.out.println(profitableSongs.get(0).getName() + " - " + profitableSongs.get(0).getListenings());
+        return profitableSongsName.get(0);
     }
 
     public List<NormalUser> gettop5Fans() {

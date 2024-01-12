@@ -3,6 +3,7 @@ package gwaves.storage;
 import java.util.List;
 import java.util.Random;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Comparator;
 import java.util.stream.Collectors;
@@ -37,6 +38,8 @@ public final class DataBase {
     private ArrayList<Album> albums;
     private ArrayList<Podcast> podcasts;
 
+    private HashMap<String, Integer> listeningsRecord;
+
     private static final int COUNT = 5;
 
     static {
@@ -53,6 +56,8 @@ public final class DataBase {
         this.playlists = new ArrayList<>();
         this.albums = new ArrayList<Album>();
         this.podcasts = new ArrayList<>();
+
+        this.listeningsRecord = new HashMap<>();
     }
 
     /**
@@ -139,6 +144,11 @@ public final class DataBase {
      */
     public void addSong(final Song song) {
         this.library.add(song);
+
+        if (this.listeningsRecord.containsKey(song.getName())) {
+            song.setListenings(this.listeningsRecord.get(song.getName()));
+            this.listeningsRecord.remove(song.getName());
+        }
     }
 
     /**
@@ -146,6 +156,16 @@ public final class DataBase {
      */
     public void removeSong(final Song song) {
         this.library.remove(song);
+
+        Integer val;
+
+        if (this.listeningsRecord.containsKey(song.getName())) {
+            val = this.listeningsRecord.get(song.getName());
+        } else {
+            val = 0;
+        }
+
+        this.listeningsRecord.put(song.getName(), val + song.getListenings());
     }
 
     /**
@@ -167,6 +187,12 @@ public final class DataBase {
      */
     public void addAlbum(final Album album) {
         this.albums.add(album);
+
+        // TODO de facut totusi listening la un album sa fie suma listening la songuri
+        if (this.listeningsRecord.containsKey(album.getName())) {
+            album.setListenings(this.listeningsRecord.get(album.getName()));
+            this.listeningsRecord.remove(album.getName());
+        }
     }
 
     /**
@@ -174,6 +200,16 @@ public final class DataBase {
      */
     public void removeAlbum(final Album album) {
         this.albums.remove(album);
+
+        Integer val;
+
+        if (this.listeningsRecord.containsKey(album.getName())) {
+            val = this.listeningsRecord.get(album.getName());
+        } else {
+            val = 0;
+        }
+
+        this.listeningsRecord.put(album.getName(), val + album.getListenings());
     }
 
     /**
@@ -563,7 +599,7 @@ public final class DataBase {
 
                 rankOutput = objMapper.createObjectNode();
                 rankOutput.put("merchRevenue", (double)artist.getMerchRevenue());
-                rankOutput.put("songRevenue", artist.getSongRevenue());
+                rankOutput.put("songRevenue", (double)Math.round(artist.getSongRevenue() * 100) / 100);
                 rankOutput.put("ranking", rank);
                 rankOutput.put("mostProfitableSong", artist.getMostProfitableSongName());
 

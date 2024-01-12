@@ -25,6 +25,7 @@ public final class Song extends AudioRec implements Filterable {
     private Integer releaseYear;
     private Artist artist;
     private int likes;
+    @Setter
     private int listenings;
 
     public Song(final SongInput songInput) {

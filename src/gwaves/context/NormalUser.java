@@ -903,7 +903,7 @@ public final class NormalUser extends User {
                 newPlaylist = this.createRecommendedPlaylist();
 
                 if (newPlaylist == null) {
-                    this.commandMessage = "No new recommendations found";
+                    this.commandMessage = "No new recommendations were found";
                     return;
                 }
 
@@ -914,7 +914,7 @@ public final class NormalUser extends User {
                 newPlaylist = this.createFansPlaylist();
 
                 if (newPlaylist == null) {
-                    this.commandMessage = "No new recommendations found";
+                    this.commandMessage = "No new recommendations were found";
                     return;
                 }
 
@@ -973,6 +973,11 @@ public final class NormalUser extends User {
             for (var song : fan.getTop5LikedSongs()) {
                 newPlaylist.addAudRec(song);
             }
+        }
+
+        // TODO de verificat
+        if (newPlaylist.getAudRecs().isEmpty()) {
+            return null;
         }
         
         return newPlaylist;
