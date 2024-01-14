@@ -19,6 +19,7 @@ import gwaves.collection.Album;
 import gwaves.collection.AudioCollection;
 import gwaves.collection.Podcast;
 import gwaves.context.NormalUser;
+import gwaves.misc.PodcastSavedInfo;
 import gwaves.context.Artist;
 
 public final class Musicplayer {
@@ -724,24 +725,5 @@ public final class Musicplayer {
 
     public boolean isUpgraded() {
         return this.premium;
-    }
-}
-
-@Getter @Setter
-class PodcastSavedInfo {
-    private int lastEpisodePlayedIndex;
-    private int lastEpisodePlayedRemainingTime;
-
-    PodcastSavedInfo() {
-
-    }
-
-    /**
-     * @param lastEpisodePlayedIndex
-     * @param remainedTime
-     */
-    PodcastSavedInfo(final int lastEpisodePlayedIndex, final int remainedTime) {
-        this.lastEpisodePlayedIndex = lastEpisodePlayedIndex;
-        this.lastEpisodePlayedRemainingTime = remainedTime;
     }
 }
