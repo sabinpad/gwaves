@@ -43,7 +43,6 @@ public final class NormalUser extends User {
     private Musicplayer musicplayer;
 
     private boolean active;
-    // private boolean premium;
 
     private HomePage homePage;
     private LikedPage likedPage;
@@ -53,9 +52,7 @@ public final class NormalUser extends User {
 
     private LinkedHashMap<Artist, Integer> listenedArtists;
     private LinkedHashMap<String, Integer> listenedGenres;
-    // private LinkedHashMap<Song, Integer> listenedSongs;
     private LinkedHashMap<String, Integer> listenedSongs;
-    // private LinkedHashMap<Album, Integer> listenedAlbums;
     private LinkedHashMap<String, Integer> listenedAlbums;
     private LinkedHashMap<Episode, Integer> listenedEpisodes;
 
@@ -107,7 +104,6 @@ public final class NormalUser extends User {
         this.recommendedSongs = new ArrayList<>();
         this.recommendedPlaylists = new ArrayList<>();
         this.fansPlaylists = new ArrayList<>();
-        // this.homePage = new HomePage(this, likedSongs, followedPlaylists);
         this.homePage = new HomePage(this, this.likedSongs,
                                      this.followedPlaylists,
                                      this.recommendedSongs,
@@ -119,7 +115,6 @@ public final class NormalUser extends User {
         this.pageHistory.add(this.homePage);
         this.boughtMerches = new ArrayList<>();
         this.notifications = new ArrayList<>();
-        // this.lastRecommendation = RecommendationType.NA;
         this.lastRecommendation = RecommendationType.NA;
     }
 
@@ -602,7 +597,6 @@ public final class NormalUser extends User {
     public void doChangePage(final String pageName) {
         Page nextPage;
 
-        // TODO de facut review la cast aici
         switch (pageName) {
             case "Home":
                 nextPage = this.homePage;
@@ -621,29 +615,15 @@ public final class NormalUser extends User {
                 return;
         }
 
-        // if (this.pageIndex + 1 != this.pageHistory.size()) {
-        //     ListIterator<Page> iter = this.pageHistory.listIterator(this.pageIndex);
-
-        //     while (iter.hasNext()) {
-        //         iter.remove();
-        //         iter.next();
-        //     }
-        // }
         ListIterator<Page> iter = this.pageHistory.listIterator(this.pageIndex + 1);
 
         while (iter.hasNext()) {
-            // System.out.println("am intrat");
             iter.next();
             iter.remove();
         }
 
         this.pageHistory.add(nextPage);
         this.pageIndex++;
-
-        // System.out.println("---- " + this.pageIndex);
-        // for (var page : this.pageHistory) {
-        //     System.out.println(page.getClass() + " ");
-        // }
 
         this.commandMessage = this.getUsername() + " accessed " + pageName + " successfully.";
     }
@@ -652,21 +632,10 @@ public final class NormalUser extends User {
      *
      */
     public String doGetPage() {
-        // System.out.println("size - " + this.pageHistory.size());
-        // return null;
         return this.pageHistory.get(this.pageIndex).strigify();
     }
 
     public WrappedOutput doWrapped() {
-        // if (this.listenedArtists.isEmpty()
-        //     && this.listenedAlbums.isEmpty()
-        //     && this.listenedSongs.isEmpty()
-        //     && this.listenedGenres.isEmpty()
-        //     && this.listenedEpisodes.isEmpty()) {
-        //     this.commandMessage = "No data to show for user " + this.getUsername() + ".";
-        //     return null;
-        // }
-
         if (this.listenedSongs.isEmpty()
             && this.listenedEpisodes.isEmpty()) {
             this.commandMessage = "No data to show for user " + this.getUsername() + ".";
@@ -715,13 +684,6 @@ public final class NormalUser extends User {
         wrappedOutput.setTopGenres(objNode);
 
         
-        // System.out.println("--------");
-        // for (var songName : this.listenedSongs.keySet()) {
-        //     System.out.println(songName + " - " + this.listenedSongs.get(songName));
-        // }
-        // System.out.println("--------");
-        
-
         objNode = NormalUser.objMapper.createObjectNode();
         List<String> topSongsName = this.listenedSongs.keySet().stream()
                                             .sorted(new Comparator<String>() {
@@ -733,8 +695,6 @@ public final class NormalUser extends User {
                                                     return listenedSongs.get(songName2) - listenedSongs.get(songName1);
                                                 }
                                             })
-                                            // .sorted(Comparator.comparing(song -> this.listenedSongs.get(song)))
-                                            // .sorted(Comparator.comparing(Song::getName))
                                             .limit(5)
                                             .collect(Collectors.toList());
 
@@ -888,11 +848,6 @@ public final class NormalUser extends User {
 
         switch (recommendationType) {
             case "random_song":
-                // TODO de verificat daca merge si cu
-                // if (this.musicplayer.getPlayedTime() < 30) {
-                //     break;
-                // }
-
                 newSong = DataBase.getInstance().queryRandomSong(this.musicplayer.getLoadedSong().getGenre(),
                                                                  this.musicplayer.getPlayedTime());
 
@@ -923,7 +878,6 @@ public final class NormalUser extends User {
                 break;
         }
 
-        // this.commandMessage = "No new recommendations found";
         this.commandMessage = "The recommendations for user " + this.getUsername()
                                + " have been updated successfully.";
     }
@@ -975,7 +929,6 @@ public final class NormalUser extends User {
             }
         }
 
-        // TODO de verificat
         if (newPlaylist.getAudRecs().isEmpty()) {
             return null;
         }
@@ -1008,7 +961,6 @@ public final class NormalUser extends User {
             }
         }
 
-        // De verificat daca trebuie si dupa nume
         return songs.stream()
                     .sorted(Comparator.comparing(Song::getLikes))
                     .limit(limit)
@@ -1057,7 +1009,6 @@ public final class NormalUser extends User {
             return null;
         }
 
-        // De verificat daca trebuie si dupa nume
         return genreDistrib.keySet().stream()
                                     .sorted(Comparator.comparing(genre -> genreDistrib.get(genre)))
                                     .limit(3)
@@ -1125,16 +1076,6 @@ public final class NormalUser extends User {
     public void updateStatistics(Song song) {
         Integer val;
 
-        // if (this.listenedSongs.containsKey(song)) {
-        //     val = this.listenedSongs.get(song);
-        //     // val++;
-        //     // val = val + 1;
-        //     this.listenedSongs.put(song, val + 1);
-        //     System.out.println("song - " + song.getName() + ", listen - " + /*val*/this.listenedSongs.get(song));
-        // } else {
-        //     this.listenedSongs.put(song, 1);
-        // }
-
         if (this.listenedSongs.containsKey(song.getName())) {
             val = this.listenedSongs.get(song.getName());
         } else {
@@ -1179,18 +1120,6 @@ public final class NormalUser extends User {
 
         this.listenedEpisodes.put(episode, val + 1);
     }
-
-    // public void updateStatistics(Album album) {
-    //     Integer val;
-
-    //     if (this.listenedAlbums.containsKey(album)) {
-    //         val = this.listenedAlbums.get(album);
-    //     } else {
-    //         val = 0;
-    //     }
-
-    //     this.listenedAlbums.put(album, val + 1);
-    // }
 
     public void payRemaining() {
         this.musicplayer.downgrade();
@@ -1260,7 +1189,6 @@ public final class NormalUser extends User {
     }
 
     public List<Song> getTop5LikedSongs() {
-        // De verificat daca trebuie dupa nume
         return this.likedSongs.stream()
                               .sorted(Comparator.comparing(Song::getLikes))
                               .collect(Collectors.toList());

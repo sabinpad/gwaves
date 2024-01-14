@@ -188,7 +188,6 @@ public final class DataBase {
     public void addAlbum(final Album album) {
         this.albums.add(album);
 
-        // TODO de facut totusi listening la un album sa fie suma listening la songuri
         if (this.listeningsRecord.containsKey(album.getName())) {
             album.setListenings(this.listeningsRecord.get(album.getName()));
             this.listeningsRecord.remove(album.getName());

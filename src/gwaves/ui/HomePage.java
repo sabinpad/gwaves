@@ -19,14 +19,6 @@ public class HomePage implements Page {
     private ArrayList<Playlist> recommendedPlaylists;
     private ArrayList<Playlist> fansPlaylists;
 
-    // public HomePage(final NormalUser owner, final ArrayList<Song> songs,
-    //                 final ArrayList<Playlist> playlists,
-    //                 final ArrayList<Song> recommended) {
-    //     this.owner = owner;
-    //     this.songs = songs;
-    //     this.playlists = playlists;
-    // }
-
     public Type type() {
         return Page.Type.OFNUSER;
     }

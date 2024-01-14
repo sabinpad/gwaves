@@ -16,7 +16,6 @@ import gwaves.util.Filterable;
 
 @Getter
 public final class Song extends AudioRec implements Filterable {
-    // private String album;
     @Setter
     private Album album;
     private ArrayList<String> tags;
@@ -31,8 +30,6 @@ public final class Song extends AudioRec implements Filterable {
     public Song(final SongInput songInput) {
         super(songInput.getName(), songInput.getDuration());
         
-        // TODO sa nu uit aici
-        // this.album = songInput.getAlbum();
         this.tags = songInput.getTags();
         this.lyrics = songInput.getLyrics();
         this.genre = songInput.getGenre();
@@ -70,20 +67,10 @@ public final class Song extends AudioRec implements Filterable {
         String fmtReleaseYear;
 
         if (filter.getName() != null) {
-            // if (!this.getName().startsWith(filter.getName())) {
-            //     return false;
-            // }
             if (!this.getName().toLowerCase().startsWith(filter.getName().toLowerCase())) {
                 return false;
             }
         }
-
-        // TODO de verificat
-        // if (filter.getAlbum() != null) {
-        //     if (!this.album.equals(filter.getAlbum())) {
-        //         return false;
-        //     }
-        // }
 
         if (filter.getAlbum() != null) {
             if (!this.album.getName().equals(filter.getAlbum())) {
@@ -124,13 +111,6 @@ public final class Song extends AudioRec implements Filterable {
             }
         }
 
-        // TODO de verificat
-        // if (filter.getArtist() != null) {
-        //     if (!this.artist.equals(filter.getArtist())) {
-        //         return false;
-        //     }
-        // }
-
         if (filter.getArtist() != null) {
             if (!this.artist.getUsername().equals(filter.getArtist())) {
                 return false;
@@ -139,25 +119,4 @@ public final class Song extends AudioRec implements Filterable {
 
         return true;
     }
-
-    // TODO de incercat Override la metoda equals doar pentru comparare intre songuri
-
-    // @Override
-    // public boolean equals(Object obj) {
-    //     if (obj == this)
-    //         return true;
-
-    //     if (obj == null || (obj.getClass() != this.getClass()))
-    //         return false;
-
-    //     return ((Song)obj).getName().toLowerCase().equals(this.getName().toLowerCase());
-
-    //     // if (obj.getClass() == this.getClass()) {
-    //     //     return ((Song)obj).getName() == this.getName()
-    //     //             && ((Song)obj).getArtist() == this.getArtist();
-    //     // }
-
-    //     // return super.equals(obj);
-    //     // return this.hashCode() == ((Song)obj).hashCode();
-    // }
 }

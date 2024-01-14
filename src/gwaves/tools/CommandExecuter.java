@@ -190,9 +190,6 @@ public final class CommandExecuter {
             case "nextPage":
                 CommandExecuter.execNextPage(commandInput, commandOutput);
                 break;
-            // case "endProgram":
-            //     CommandExecuter.execEndProgram(commandInput, commandOutput);
-            //     break;
             default:
                 break;
         }
