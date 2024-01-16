@@ -237,6 +237,10 @@ public final class Artist extends User implements Filterable {
         return this.page.strigify();
     }
 
+    /**
+     * Wrapped of artist
+     * @return wrapped
+     */
     public WrappedOutput doWrapped() {
         WrappedOutput wrappedOutput = new WrappedOutput();
         HashMap<String, Integer> streamedSongs = new HashMap<>();
@@ -337,6 +341,10 @@ public final class Artist extends User implements Filterable {
         return wrappedOutput;
     }
 
+    /**
+     * Adds listen to the given user
+     * @param normalUser
+     */
     public void addListen(final NormalUser normalUser) {
         Integer val;
 
@@ -349,10 +357,19 @@ public final class Artist extends User implements Filterable {
         this.listeners.put(normalUser, val + 1);
     }
 
+    /**
+     * Pay artist with given amount
+     * @param amount
+     */
     public void pay(final double amount) {
         this.songRevenue += amount;
     }
 
+    /**
+     * Pay artist for given song with given amount
+     * @param amount
+     * @param song
+     */
     public void paySong(final double amount, final Song song) {
         Double val;
 
@@ -365,6 +382,11 @@ public final class Artist extends User implements Filterable {
         this.songsRevenue.put(song.getName(), val + amount);
     }
 
+    /**
+     * Buy merch from artist
+     * @param merchName
+     * @return merch bought
+     */
     public ArtistMerch buyMerch(final String merchName) {
         if (!this.merches.containsKey(merchName)) {
             return null;
@@ -375,14 +397,21 @@ public final class Artist extends User implements Filterable {
         return this.merches.get(merchName);
     }
 
+    /**
+     * Adds subscriber; subscriber will be notified of every action
+     * @param normalUser
+     */
     public void addSubscriber(final NormalUser normalUser) {
         this.subscribers.add(normalUser);
     }
 
+    /**
+     * Removes given user
+     * @param normalUser
+     */
     public void removeSubscriber(final NormalUser normalUser) {
         this.subscribers.remove(normalUser);
     }
-
 
     private void notifySubs(final String name, final String description) {
         for (var sub : this.subscribers) {
@@ -391,7 +420,7 @@ public final class Artist extends User implements Filterable {
     }
 
     /**
-     *
+     * Erase all internal history
      */
     public void clearAll() {
         DataBase database = DataBase.getInstance();
@@ -429,10 +458,16 @@ public final class Artist extends User implements Filterable {
         return sum;
     }
 
+    /**
+     * @return total of profit/revenue
+     */
     public double getTotalRevenue() {
         return this.songRevenue + this.merchRevenue;
     }
 
+    /**
+     * @return most profitable song of artist
+     */
     public String getMostProfitableSongName() {
         if (this.songRevenue == 0) {
             return "N/A";
@@ -458,7 +493,10 @@ public final class Artist extends User implements Filterable {
         return profitableSongsName.get(0);
     }
 
-    public List<NormalUser> gettop5Fans() {
+    /**
+     * @return list of topf fans of artist by listenings
+     */
+    public List<NormalUser> getTop5Fans() {
         return this.listeners.keySet().stream()
                                       .sorted(Comparator.comparing(normalUser ->
                                                                    listeners.get(normalUser)))
@@ -467,21 +505,29 @@ public final class Artist extends User implements Filterable {
     }
 
     /**
-     *
-     * @return
+     * @return page of the artist
      */
     public Page getPage() {
         return this.page;
     }
 
+    /**
+     * @return true if any user has listened at least of the songs false otherwise
+     */
     public boolean hasBeenStreamed() {
         return !this.listeners.isEmpty();
     }
 
+    /**
+     * @return true if artist has made profit false otherwise
+     */
     public boolean hasRevenue() {
         return this.songRevenue > 0 || this.merchRevenue > 0;
     }
 
+    /**
+     * @return true if given user is subscribes false otherwise
+     */
     public boolean hasSubscriber(final NormalUser normalUser) {
         return this.subscribers.contains(normalUser);
     }

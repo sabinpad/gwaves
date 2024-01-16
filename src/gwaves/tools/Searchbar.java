@@ -15,6 +15,8 @@ import gwaves.context.Artist;
 import gwaves.context.Host;
 
 public final class Searchbar {
+    private static final int MAXNUMBER = 5;
+
     private NormalUser ownerUser;
 
     private ArrayList<Song> resultsSong;
@@ -53,7 +55,8 @@ public final class Searchbar {
         this.clearResults();
         this.resultsSong = DataBase.getInstance().querySongs(filter);
 
-        this.resultsNumber = ((this.resultsSong.size() > 5) ? 5 : this.resultsSong.size());
+        this.resultsNumber = ((this.resultsSong.size() > MAXNUMBER)
+                               ? MAXNUMBER : this.resultsSong.size());
         this.resultsSong.retainAll(this.resultsSong.subList(0, this.resultsNumber));
 
         for (var song : this.resultsSong) {
@@ -77,7 +80,8 @@ public final class Searchbar {
         this.resultsPlaylist = DataBase.getInstance().queryVisiblePlaylistsAndOwnedBy(filter,
                 this.ownerUser.getUsername());
 
-        this.resultsNumber = ((this.resultsPlaylist.size() > 5) ? 5 : this.resultsPlaylist.size());
+        this.resultsNumber = ((this.resultsPlaylist.size() > MAXNUMBER)
+                               ? MAXNUMBER : this.resultsPlaylist.size());
         this.resultsPlaylist.retainAll(this.resultsPlaylist.subList(0, this.resultsNumber));
 
         for (var playlist : this.resultsPlaylist) {
@@ -100,7 +104,8 @@ public final class Searchbar {
         this.clearResults();
         this.resultsAlbum = DataBase.getInstance().queryAlbums(filter);
 
-        this.resultsNumber = ((this.resultsAlbum.size() > 5) ? 5 : this.resultsAlbum.size());
+        this.resultsNumber = ((this.resultsAlbum.size() > MAXNUMBER)
+                               ? MAXNUMBER : this.resultsAlbum.size());
         this.resultsAlbum.retainAll(this.resultsAlbum.subList(0, this.resultsNumber));
 
         for (var album : this.resultsAlbum) {
@@ -123,7 +128,8 @@ public final class Searchbar {
         this.clearResults();
         this.resultsPodcast = DataBase.getInstance().queryPodcasts(filter);
 
-        this.resultsNumber = ((this.resultsPodcast.size() > 5) ? 5 : this.resultsPodcast.size());
+        this.resultsNumber = ((this.resultsPodcast.size() > MAXNUMBER)
+                               ? MAXNUMBER : this.resultsPodcast.size());
         this.resultsPodcast.retainAll(this.resultsPodcast.subList(0, this.resultsNumber));
 
         for (var podcast : this.resultsPodcast) {
@@ -146,7 +152,8 @@ public final class Searchbar {
         this.clearResults();
         this.resultsArtist = DataBase.getInstance().queryArtistsWithFilter(filter);
 
-        this.resultsNumber = ((this.resultsArtist.size() > 5) ? 5 : this.resultsArtist.size());
+        this.resultsNumber = ((this.resultsArtist.size() > MAXNUMBER)
+                               ? MAXNUMBER : this.resultsArtist.size());
         this.resultsArtist.retainAll(this.resultsArtist.subList(0, this.resultsNumber));
 
         for (var artist : this.resultsArtist) {
@@ -169,7 +176,8 @@ public final class Searchbar {
         this.clearResults();
         this.resultsHost = DataBase.getInstance().queryHostsWithFilter(filter);
 
-        this.resultsNumber = ((this.resultsHost.size() > 5) ? 5 : this.resultsHost.size());
+        this.resultsNumber = ((this.resultsHost.size() > MAXNUMBER)
+                               ? MAXNUMBER : this.resultsHost.size());
         this.resultsHost.retainAll(this.resultsHost.subList(0, this.resultsNumber));
 
         for (var host : this.resultsHost) {

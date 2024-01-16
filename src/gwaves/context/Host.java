@@ -174,6 +174,9 @@ public final class Host extends User implements Filterable {
         return this.page.strigify();
     }
 
+    /**
+     * @return wrapped of host
+     */
     public WrappedOutput doWrapped() {
         WrappedOutput wrappedOutput = new WrappedOutput();
         HashMap<Episode, Integer> streamedEpisodes = new HashMap<>();
@@ -212,10 +215,18 @@ public final class Host extends User implements Filterable {
         return wrappedOutput;
     }
 
+    /**
+     * Adds ghosted podcast to the host
+     * @param podcast GHOSTED
+     */
     public void addGhostedPodcast(final Podcast podcast) {
         this.podcasts.put(podcast.getName(), podcast);
     }
 
+    /**
+     * Adds a listen to the given user
+     * @param normalUser to add listen to
+     */
     public void addListen(final NormalUser normalUser) {
         if (this.listeners.containsKey(normalUser)) {
             Integer val = this.listeners.get(normalUser);
@@ -225,10 +236,18 @@ public final class Host extends User implements Filterable {
         }
     }
 
+    /**
+     * Adds subscriber; subscriber will be notified of every action
+     * @param normalUser
+     */
     public void addSubscriber(final NormalUser normalUser) {
         this.subscribers.add(normalUser);
     }
 
+    /**
+     * Removes given user
+     * @param normalUser
+     */
     public void removeSubscriber(final NormalUser normalUser) {
         this.subscribers.remove(normalUser);
     }
@@ -240,7 +259,7 @@ public final class Host extends User implements Filterable {
     }
 
     /**
-     *
+     * Erase all internal history
      */
     public void clearAll() {
         DataBase database = DataBase.getInstance();
@@ -263,13 +282,16 @@ public final class Host extends User implements Filterable {
     }
 
     /**
-     *
-     * @return
+     * @return page of the host
      */
     public Page getPage() {
         return this.page;
     }
 
+    /**
+     * @param normalUser
+     * @return true if given user is subscribed false otherwise
+     */
     public boolean hasSubscriber(final NormalUser normalUser) {
         return this.subscribers.contains(normalUser);
     }

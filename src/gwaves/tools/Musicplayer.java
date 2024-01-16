@@ -186,6 +186,10 @@ public final class Musicplayer {
         this.updateStatistics();
     }
 
+    /**
+     * Loads a random ad into the player with given price
+     * @param price of loaded add
+     */
     public void loadAdBreak(final int price) {
         this.adPrice = price;
     }
@@ -264,6 +268,9 @@ public final class Musicplayer {
         }
     }
 
+    /**
+     * Skips to the next track
+     */
     public void next() {
         int index;
 
@@ -338,6 +345,9 @@ public final class Musicplayer {
         this.updateStatistics();
     }
 
+    /**
+     * Skips to the previous track
+     */
     public void prev() {
         int index;
 
@@ -422,6 +432,9 @@ public final class Musicplayer {
         }
     }
 
+    /**
+     * Updates listening history of user
+     */
     private void updateHistory() {
         if (this.loadedType != Musicplayer.Type.PODCAST) {
             if (this.premium) {
@@ -433,6 +446,9 @@ public final class Musicplayer {
         }
     }
 
+    /**
+     * Updates statistics of user
+     */
     private void updateStatistics() {
         if (this.currentRec == null) {
             return;
@@ -460,6 +476,9 @@ public final class Musicplayer {
         }
     }
 
+    /**
+     * Pays artists of songs that have been played with computed amount
+     */
     private void payAd() {
         int count;
         Integer val;
@@ -496,6 +515,9 @@ public final class Musicplayer {
         }
     }
 
+    /**
+     * Pays artists of songs that have been played with computed amount
+     */
     private void payPremium() {
         int count;
         Integer val;
@@ -533,10 +555,16 @@ public final class Musicplayer {
         }
     }
 
+    /**
+     * Upgrades musicplayer to premium mode
+     */
     public void upgrade() {
         this.premium = true;
     }
 
+    /**
+     * Downgrades player from premium mode
+     */
     public void downgrade() {
         this.payPremium();
         this.premiumHistory.clear();
@@ -695,6 +723,9 @@ public final class Musicplayer {
         return this.shuffle;
     }
 
+    /**
+     * @return true if player is upgraded to premium mode false otherwise
+     */
     public boolean isUpgraded() {
         return this.premium;
     }

@@ -31,6 +31,9 @@ public abstract class User {
         this.city = userInput.getCity();
     }
 
+    /**
+     * Cleans all internal history of the user
+     */
     public abstract void clearAll();
 
     /**

@@ -15,11 +15,16 @@ import fileio.input.FilterInput;
 import fileio.input.LibraryInput;
 
 import gwaves.context.User;
+import gwaves.misc.TopAlbumsStats;
+import gwaves.misc.TopArtistsStats;
+import gwaves.misc.TopPlaylistsStat;
+import gwaves.misc.TopSongsStats;
 import gwaves.context.NormalUser;
 import gwaves.context.Artist;
 import gwaves.context.Host;
 
 import gwaves.sample.Song;
+import gwaves.util.Statistics;
 import gwaves.collection.Playlist;
 import gwaves.collection.Album;
 import gwaves.collection.Podcast;
@@ -430,128 +435,32 @@ public final class DataBase {
     /**
      * @return ArrayList containing the names of the top 5 most liked songs
      */
-    public ArrayList<String> getTop5SongsName() {
-        int resultsNumber;
-        ArrayList<Song> topSongsList = new ArrayList<>(this.library);
-        ArrayList<String> result = new ArrayList<>();
-
-        topSongsList.sort(new Comparator<Song>() {
-            @Override
-            public int compare(final Song song1, final Song song2) {
-                if (song1.getLikes() < song2.getLikes()) {
-                    return 1;
-                } else if (song1.getLikes() > song2.getLikes()) {
-                    return -1;
-                } else {
-                    return 0;
-                }
-            }
-        });
-
-        resultsNumber = ((topSongsList.size() > COUNT) ? COUNT : topSongsList.size());
-        topSongsList.retainAll(topSongsList.subList(0, resultsNumber));
-
-        for (var song : topSongsList) {
-            result.add(song.getName());
-        }
-
-        return result;
+    public Statistics top5SongsStatistics() {
+        return new TopSongsStats(this.library);
     }
 
     /**
      * @return ArrayList containing the names of the top 5 most followed
      *         playlists
      */
-    public ArrayList<String> getTop5PlaylistsName() {
-        int resultsNumber;
-        ArrayList<Playlist> topPlaylistsList = new ArrayList<>(this.playlists);
-        ArrayList<String> result = new ArrayList<>();
-
-        topPlaylistsList.sort(new Comparator<Playlist>() {
-            @Override
-            public int compare(final Playlist playlist1, final Playlist playlist2) {
-                if (playlist1.getNrOfFollowers() < playlist2.getNrOfFollowers()) {
-                    return 1;
-                } else if (playlist1.getNrOfFollowers() > playlist2.getNrOfFollowers()) {
-                    return -1;
-                } else {
-                    return 0;
-                }
-            }
-        });
-
-        resultsNumber = ((topPlaylistsList.size() > COUNT) ? COUNT : topPlaylistsList.size());
-        topPlaylistsList.retainAll(topPlaylistsList.subList(0, resultsNumber));
-
-        for (var playlist : topPlaylistsList) {
-            result.add(playlist.getName());
-        }
-
-        return result;
+    public Statistics top5PlaylistsStatistics() {
+        return new TopPlaylistsStat(this.playlists);
     }
 
     /**
      * Computes top 5 albums by nr of likes
      * @return list of names of artists
      */
-    public ArrayList<String> getTop5AlbumsName() {
-        int resultsNumber;
-        ArrayList<Album> topAlbumsList = new ArrayList<>(this.albums);
-        ArrayList<String> result = new ArrayList<>();
-
-        topAlbumsList.sort(new Comparator<Album>() {
-            @Override
-            public int compare(final Album album1, final Album album2) {
-                if (album1.getNrOfLikes() < album2.getNrOfLikes()) {
-                    return 1;
-                } else if (album1.getNrOfLikes() > album2.getNrOfLikes()) {
-                    return -1;
-                } else {
-                    return album1.getName().compareTo(album2.getName());
-                }
-            }
-        });
-
-        resultsNumber = ((topAlbumsList.size() > COUNT) ? COUNT : topAlbumsList.size());
-        topAlbumsList.retainAll(topAlbumsList.subList(0, resultsNumber));
-
-        for (var album : topAlbumsList) {
-            result.add(album.getName());
-        }
-
-        return result;
+    public Statistics top5AlbumsStatistics() {
+        return new TopAlbumsStats(this.albums);
     }
 
     /**
      * Computes top 5 artists by nr of likes
      * @return list of names of artists
      */
-    public ArrayList<String> getTop5ArtistsName() {
-        int resultsNumber;
-        ArrayList<Artist> topArtistsList = new ArrayList<>(this.artists.values());
-        ArrayList<String> result = new ArrayList<>();
-
-        topArtistsList.sort(new Comparator<Artist>() {
-            @Override
-            public int compare(final Artist album1, final Artist album2) {
-                if (album1.getNrOfLikes() < album2.getNrOfLikes()) {
-                    return 1;
-                } else if (album1.getNrOfLikes() > album2.getNrOfLikes()) {
-                    return -1;
-                } else {
-                    return 0;
-                }
-            }
-        });
-
-        resultsNumber = ((topArtistsList.size() > COUNT) ? COUNT : topArtistsList.size());
-        topArtistsList.retainAll(topArtistsList.subList(0, resultsNumber));
-
-        for (var artist : topArtistsList) {
-            result.add(artist.getUsername());
-        }
-
-        return result;
+    public Statistics top5ArtistsStatistics() {
+        return new TopArtistsStats(this.artists.values());
     }
 
     /**

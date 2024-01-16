@@ -10,6 +10,7 @@ import gwaves.context.NormalUser;
 import gwaves.context.Artist;
 import gwaves.context.Host;
 import gwaves.storage.DataBase;
+import gwaves.util.Statistics;
 
 public final class CommandExecuter {
     private CommandExecuter() {
@@ -519,7 +520,8 @@ public final class CommandExecuter {
      */
     private static void execGetTop5Songs(final CommandInput commandInput,
                                          final CommandOutput commandOutput) {
-        commandOutput.setResult(DataBase.getInstance().getTop5SongsName());
+        Statistics songsStatistics = DataBase.getInstance().top5SongsStatistics();
+        commandOutput.setResult(songsStatistics.results());
     }
 
     /**
@@ -529,7 +531,8 @@ public final class CommandExecuter {
      */
     private static void execGetTop5Playlists(final CommandInput commandInput,
                                              final CommandOutput commandOutput) {
-        commandOutput.setResult(DataBase.getInstance().getTop5PlaylistsName());
+        Statistics playlistsStatistics = DataBase.getInstance().top5PlaylistsStatistics();
+        commandOutput.setResult(playlistsStatistics.results());
     }
 
     /**
@@ -978,7 +981,8 @@ public final class CommandExecuter {
      */
     private static void execGetTop5AlbumsName(final CommandInput commandInput,
                                               final CommandOutput commandOutput) {
-        commandOutput.setResult(DataBase.getInstance().getTop5AlbumsName());
+        Statistics albumsStatistics = DataBase.getInstance().top5AlbumsStatistics();
+        commandOutput.setResult(albumsStatistics.results());
     }
 
     /**
@@ -988,7 +992,8 @@ public final class CommandExecuter {
      */
     private static void execGetTop5ArtistsName(final CommandInput commandInput,
                                                final CommandOutput commandOutput) {
-        commandOutput.setResult(DataBase.getInstance().getTop5ArtistsName());
+        Statistics artistsStatistics = DataBase.getInstance().top5ArtistsStatistics();
+        commandOutput.setResult(artistsStatistics.results());
     }
 
     /**
@@ -1056,7 +1061,7 @@ public final class CommandExecuter {
      * @param commandOutput
      */
     private static void execBuyMerch(final CommandInput commandInput,
-                                               final CommandOutput commandOutput) {                 
+                                               final CommandOutput commandOutput) {
         NormalUser normalUser = null;
         DataBase database = DataBase.getInstance();
 

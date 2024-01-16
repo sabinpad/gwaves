@@ -596,7 +596,6 @@ public final class NormalUser extends User {
     }
 
     /**
-     *
      * @param page
      */
     public void doChangePage(final String pageName) {
@@ -642,6 +641,10 @@ public final class NormalUser extends User {
         return this.pageHistory.get(this.pageIndex).strigify();
     }
 
+    /**
+     * Wrapped of user
+     * @return wrapped
+     */
     public WrappedOutput doWrapped() {
         if (this.listenedSongs.isEmpty()
             && this.listenedEpisodes.isEmpty()) {
@@ -751,6 +754,10 @@ public final class NormalUser extends User {
         return wrappedOutput;
     }
 
+    /**
+     * Buys merch with given name from the current page
+     * @param merchName name of the merch
+     */
     public void doBuyMerch(final String merchName) {
         Page currentPage = this.pageHistory.get(this.pageIndex);
 
@@ -772,6 +779,9 @@ public final class NormalUser extends User {
         this.commandMessage = this.getUsername() + " has added new merch successfully.";
     }
 
+    /**
+     * @return list of names of merches
+     */
     public ArrayList<String> doSeeMerch() {
         ArrayList<String> merchesName = new ArrayList<>();
 
@@ -782,6 +792,9 @@ public final class NormalUser extends User {
         return merchesName;
     }
 
+    /**
+     * Enables premium option for the user
+     */
     public void doBuyPremium() {
         if (this.musicplayer.isUpgraded()) {
             this.commandMessage = this.getUsername() + " is already a premium user.";
@@ -793,6 +806,9 @@ public final class NormalUser extends User {
         this.commandMessage = this.getUsername() + " bought the subscription successfully.";
     }
 
+    /**
+     * Cancels premium option of the user
+     */
     public void doCancelPremium() {
         if (!this.musicplayer.isUpgraded()) {
             this.commandMessage = this.getUsername() + " is not a premium user.";
@@ -804,6 +820,10 @@ public final class NormalUser extends User {
         this.commandMessage = this.getUsername() + " cancelled the subscription successfully.";
     }
 
+    /**
+     * Loads random add in user's musicplayer
+     * @param adPrice price of add
+     */
     public void doAdBreak(final int adPrice) {
         if (this.musicplayer.isPaused()) {
             this.commandMessage = this.getUsername() + " is not playing any music.";
@@ -815,6 +835,9 @@ public final class NormalUser extends User {
         this.commandMessage = "Ad inserted successfully.";
     }
 
+    /**
+     * Subscribes to the artist/host on the current page
+     */
     public void doSubscribe() {
         Page currentPage = this.pageHistory.get(this.pageIndex);
         User contentCreator = currentPage.owner();
@@ -847,12 +870,20 @@ public final class NormalUser extends User {
         }
     }
 
+    /**
+     * @return list of notifications
+     */
     public ArrayList<UserNotification> doGetNotifications() {
         ArrayList<UserNotification> currentNotifications = new ArrayList<>(this.notifications);
         this.notifications.clear();
         return currentNotifications;
     }
 
+    /**
+     * Updates the recommendations of the user
+     * @param recommendationType type of recommendation; can be random_song, random_playlist or
+     * fans_playlist
+     */
     public void doUpdateRecommendations(final String recommendationType) {
         Song newSong;
         Playlist newPlaylist;
@@ -895,6 +926,7 @@ public final class NormalUser extends User {
                                + " have been updated successfully.";
     }
 
+
     private Playlist createRecommendedPlaylist() {
         Playlist newPlaylist = new Playlist(this.getUsername() + "'s recommendations",
                                this.getUsername());
@@ -936,7 +968,7 @@ public final class NormalUser extends User {
         Playlist newPlaylist = new Playlist(this.musicplayer.getLoadedSong().getArtist()
                                    .getUsername() + " Fan Club recommendations",
                                             this.getUsername());
-        List<NormalUser> fans = this.musicplayer.getLoadedSong().getArtist().gettop5Fans();
+        List<NormalUser> fans = this.musicplayer.getLoadedSong().getArtist().getTop5Fans();
 
         for (var fan : fans) {
             for (var song : fan.getTop5LikedSongs()) {
@@ -1030,6 +1062,9 @@ public final class NormalUser extends User {
                                     .collect(Collectors.toList());
     }
 
+    /**
+     * Loads current recommendations of the user into the musicplayer
+     */
     public void doLoadRecommendations() {
         switch (this.lastRecommendation) {
             case NA:
@@ -1066,6 +1101,9 @@ public final class NormalUser extends User {
         this.commandMessage = "Playback loaded successfully.";
     }
 
+    /**
+     * Moves back to the previous page
+     */
     public void doPreviousPage() {
         if (this.pageIndex == 0) {
             this.commandMessage = "There are no pages left to go back.";
@@ -1078,6 +1116,9 @@ public final class NormalUser extends User {
                               + "the previous page.";
     }
 
+    /**
+     * Moves over to the next page
+     */
     public void doNextPage() {
         if (this.pageIndex == this.pageHistory.size() - 1) {
             this.commandMessage = "There are no pages left to go forward.";
@@ -1090,6 +1131,10 @@ public final class NormalUser extends User {
                               + "successfully to the next page.";
     }
 
+    /**
+     * Update internal statistics for the given song
+     * @param song
+     */
     public void updateStatistics(final Song song) {
         Integer val;
 
@@ -1126,6 +1171,10 @@ public final class NormalUser extends User {
         this.listenedGenres.put(song.getGenre(), val + 1);
     }
 
+    /**
+     * Update internal statistics for the given episode
+     * @param episode
+     */
     public void updateStatistics(final Episode episode) {
         Integer val;
 
@@ -1138,16 +1187,24 @@ public final class NormalUser extends User {
         this.listenedEpisodes.put(episode, val + 1);
     }
 
+    /**
+     * Pays remaining currency to the artists of the listened songs
+     */
     public void payRemaining() {
         this.musicplayer.downgrade();
     }
 
+    /**
+     * Adds notification to the notifications queue
+     * @param name of notification
+     * @param description of notification
+     */
     public void addNotification(final String name, final String description) {
         this.notifications.add(new UserNotification(name, description));
     }
 
     /**
-     *
+     * Erase all internal history
      */
     public void clearAll() {
         DataBase database = DataBase.getInstance();
@@ -1188,7 +1245,6 @@ public final class NormalUser extends User {
     }
 
     /**
-     *
      * @param playlist
      */
     public void checkRemovePlaylist(final Playlist playlist) {
@@ -1197,14 +1253,23 @@ public final class NormalUser extends User {
         }
     }
 
+    /**
+     * @return current listening recording
+     */
     public AudioRec getListeningAudRec() {
         return this.musicplayer.getCurrentRec();
     }
 
+    /**
+     * @return current listening audio collection
+     */
     public AudioCollection<?> getListeningCollec() {
         return this.musicplayer.getCurrentCollec();
     }
 
+    /**
+     * @return list of most liked songs by number of likes
+     */
     public List<Song> getTop5LikedSongs() {
         return this.likedSongs.stream()
                               .sorted(Comparator.comparing(Song::getLikes))
@@ -1220,12 +1285,15 @@ public final class NormalUser extends User {
     }
 
     /**
-     *
+     * @return true if user is active false otherwise
      */
     public boolean isActive() {
         return this.active;
     }
 
+    /**
+     * @return true if user is premium false otherwise
+     */
     public boolean isPremium() {
         return this.musicplayer.isUpgraded();
     }
