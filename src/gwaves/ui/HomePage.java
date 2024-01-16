@@ -11,7 +11,9 @@ import gwaves.context.User;
 import gwaves.context.NormalUser;
 
 @AllArgsConstructor
-public class HomePage implements Page {
+public final class HomePage implements Page {
+    private static final int MAXRESULTS = 5;
+
     private NormalUser owner;
     private ArrayList<Song> songs;
     private ArrayList<Playlist> playlists;
@@ -19,16 +21,22 @@ public class HomePage implements Page {
     private ArrayList<Playlist> recommendedPlaylists;
     private ArrayList<Playlist> fansPlaylists;
 
+    /**
+     * @return type of page (useful for casting owner)
+     */
     public Type type() {
         return Page.Type.OFNUSER;
     }
 
+    /**
+     * @return owner user of the page
+     */
     public User owner() {
         return this.owner;
     }
 
     /**
-     *
+     * @return the contens of the page in String format
      */
     public String strigify() {
         int i = 0;
@@ -114,7 +122,7 @@ public class HomePage implements Page {
             }
         });
 
-        resultsNumber = ((sorted.size() > 5) ? 5 : sorted.size());
+        resultsNumber = ((sorted.size() > MAXRESULTS) ? MAXRESULTS : sorted.size());
         sorted.retainAll(sorted.subList(0, resultsNumber));
 
         return sorted;
@@ -137,7 +145,7 @@ public class HomePage implements Page {
             }
         });
 
-        resultsNumber = ((sorted.size() > 5) ? 5 : sorted.size());
+        resultsNumber = ((sorted.size() > MAXRESULTS) ? MAXRESULTS : sorted.size());
         sorted.retainAll(sorted.subList(0, resultsNumber));
 
         return sorted;

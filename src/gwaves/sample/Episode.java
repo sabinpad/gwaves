@@ -14,6 +14,9 @@ public final class Episode extends AudioRec {
         this.description = episodeInput.getDescription();
     }
 
+    /**
+     * Adds listening to the song
+     */
     public void addListen() {
         this.listenings++;
     }

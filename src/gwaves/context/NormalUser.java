@@ -28,7 +28,6 @@ import gwaves.ui.LikedPage;
 import gwaves.ui.Page;
 import gwaves.collection.AudioCollection;
 import gwaves.collection.Playlist;
-import gwaves.collection.Album;
 import gwaves.sample.Episode;
 import gwaves.misc.UserNotification;
 import gwaves.misc.ArtistMerch;
@@ -183,15 +182,18 @@ public final class NormalUser extends User {
         this.searchbar.selectResult(itemNumber - 1);
 
         if (this.searchbar.searchedForArtists()) {
-            this.commandMessage = "Successfully selected " + this.searchbar.getSelectedResultName() + "'s page.";
+            this.commandMessage = "Successfully selected "
+                                  + this.searchbar.getSelectedResultName() + "'s page.";
             this.pageHistory.add(this.searchbar.getSelectedArtist().getPage());
             this.pageIndex++;
         } else if (this.searchbar.searchedForHosts()) {
-            this.commandMessage = "Successfully selected " + this.searchbar.getSelectedResultName() + "'s page.";
+            this.commandMessage = "Successfully selected "
+                                  + this.searchbar.getSelectedResultName() + "'s page.";
             this.pageHistory.add(this.searchbar.getSelectedHost().getPage());
             this.pageIndex++;
         } else {
-            this.commandMessage = "Successfully selected " + this.searchbar.getSelectedResultName() + ".";
+            this.commandMessage = "Successfully selected "
+                                  + this.searchbar.getSelectedResultName() + ".";
         }
     }
 
@@ -222,7 +224,8 @@ public final class NormalUser extends User {
      */
     public void doPlayPause() {
         if (!this.musicplayer.isLoaded()) {
-            this.commandMessage = "Please load a source before attempting to pause or resume playback.";
+            this.commandMessage = "Please load a source before"
+                                  + "attempting to pause or resume playback.";
             return;
         }
 
@@ -246,7 +249,8 @@ public final class NormalUser extends User {
 
         this.musicplayer.switchRepeat();
 
-        this.commandMessage = "Repeat mode changed to " + this.musicplayer.getRepeatModeName() + ".";
+        this.commandMessage = "Repeat mode changed to " + this.musicplayer.getRepeatModeName()
+                              + ".";
     }
 
     /**
@@ -352,7 +356,7 @@ public final class NormalUser extends User {
         this.musicplayer.next();
 
         if (this.musicplayer.isLoaded()) {
-            this.commandMessage = "Skipped to next track successfully. The current track is " 
+            this.commandMessage = "Skipped to next track successfully. The current track is "
                                   + this.musicplayer.getCurrentRec().getName() + ".";
         } else {
             this.commandMessage = "Please load a source before skipping to the next track.";
@@ -384,7 +388,8 @@ public final class NormalUser extends User {
         Playlist selectedPlaylist;
 
         if (!this.musicplayer.isLoaded()) {
-            this.commandMessage = "Please load a source before adding to or removing from the playlist.";
+            this.commandMessage = "Please load a source before "
+                                  + "adding to or removing from the playlist.";
             return;
         }
 
@@ -608,10 +613,12 @@ public final class NormalUser extends User {
                 nextPage = this.musicplayer.getLoadedSong().getArtist().getPage();
                 break;
             case "Host":
-                nextPage = DataBase.getInstance().queryHost(this.musicplayer.getLoadedPodcast().getOwner()).getPage();
+                nextPage = DataBase.getInstance().queryHost(this.musicplayer.getLoadedPodcast()
+                                                 .getOwner()).getPage();
                 break;
             default:
-                this.commandMessage = this.getUsername() + " is trying to access a non-existent page.";
+                this.commandMessage = this.getUsername() + " is trying to access "
+                                                         + "a non-existent page.";
                 return;
         }
 
@@ -647,17 +654,17 @@ public final class NormalUser extends User {
 
         objNode = NormalUser.objMapper.createObjectNode();
         List<Artist> topArtists = this.listenedArtists.keySet().stream()
-                                            .sorted(new Comparator<Artist>() {
-                                                public int compare(Artist artist1, Artist artist2) {
-                                                    if (listenedArtists.get(artist2) == listenedArtists.get(artist1)) {
-                                                        return artist1.getUsername().compareTo(artist2.getUsername());
-                                                    }
+                        .sorted(new Comparator<Artist>() {
+                            public int compare(final Artist artist1, final Artist artist2) {
+                                if (listenedArtists.get(artist2) == listenedArtists.get(artist1)) {
+                                    return artist1.getUsername().compareTo(artist2.getUsername());
+                                }
 
-                                                    return listenedArtists.get(artist2) - listenedArtists.get(artist1);
-                                                }
-                                            })
-                                            .limit(5)
-                                            .collect(Collectors.toList());
+                                return listenedArtists.get(artist2) - listenedArtists.get(artist1);
+                            }
+                        })
+                        .limit(5)
+                        .collect(Collectors.toList());
 
         for (var artist : topArtists) {
             objNode.put(artist.getUsername(), this.listenedArtists.get(artist));
@@ -666,37 +673,37 @@ public final class NormalUser extends User {
 
         objNode = NormalUser.objMapper.createObjectNode();
         List<String> topGenres = this.listenedGenres.keySet().stream()
-                                            .sorted(new Comparator<String>() {
-                                                public int compare(String genre1, String genre2) {
-                                                    if (listenedGenres.get(genre2) == listenedGenres.get(genre1)) {
-                                                        return genre1.compareTo(genre2);
-                                                    }
+                            .sorted(new Comparator<String>() {
+                                public int compare(final String genre1, final String genre2) {
+                                    if (listenedGenres.get(genre2) == listenedGenres.get(genre1)) {
+                                        return genre1.compareTo(genre2);
+                                    }
 
-                                                    return listenedGenres.get(genre2) - listenedGenres.get(genre1);
-                                                }
-                                            })
-                                            .limit(5)
-                                            .collect(Collectors.toList());
+                                    return listenedGenres.get(genre2) - listenedGenres.get(genre1);
+                                }
+                            })
+                            .limit(5)
+                            .collect(Collectors.toList());
 
         for (var genre : topGenres) {
             objNode.put(genre, this.listenedGenres.get(genre));
         }
         wrappedOutput.setTopGenres(objNode);
 
-        
+
         objNode = NormalUser.objMapper.createObjectNode();
         List<String> topSongsName = this.listenedSongs.keySet().stream()
-                                            .sorted(new Comparator<String>() {
-                                                public int compare(String songName1, String songName2) {
-                                                    if (listenedSongs.get(songName2) == listenedSongs.get(songName1)) {
-                                                        return songName1.compareTo(songName2);
-                                                    }
+                        .sorted(new Comparator<String>() {
+                            public int compare(final String songName1, final String songName2) {
+                                if (listenedSongs.get(songName2) == listenedSongs.get(songName1)) {
+                                    return songName1.compareTo(songName2);
+                                }
 
-                                                    return listenedSongs.get(songName2) - listenedSongs.get(songName1);
-                                                }
-                                            })
-                                            .limit(5)
-                                            .collect(Collectors.toList());
+                                return listenedSongs.get(songName2) - listenedSongs.get(songName1);
+                            }
+                        })
+                        .limit(5)
+                        .collect(Collectors.toList());
 
         for (var songName : topSongsName) {
             objNode.put(songName, this.listenedSongs.get(songName));
@@ -705,17 +712,17 @@ public final class NormalUser extends User {
 
         objNode = NormalUser.objMapper.createObjectNode();
         List<String> topAlbumsName = this.listenedAlbums.keySet().stream()
-                                            .sorted(new Comparator<String>() {
-                                                public int compare(String albumName1, String albumName2) {
-                                                    if (listenedAlbums.get(albumName2) == listenedAlbums.get(albumName1)) {
-                                                        return albumName1.compareTo(albumName2);
-                                                    }
+                    .sorted(new Comparator<String>() {
+                        public int compare(final String albumName1, final String albumName2) {
+                            if (listenedAlbums.get(albumName2) == listenedAlbums.get(albumName1)) {
+                                return albumName1.compareTo(albumName2);
+                            }
 
-                                                    return listenedAlbums.get(albumName2) - listenedAlbums.get(albumName1);
-                                                }
-                                            })
-                                            .limit(5)
-                                            .collect(Collectors.toList());
+                            return listenedAlbums.get(albumName2) - listenedAlbums.get(albumName1);
+                        }
+                    })
+                    .limit(5)
+                    .collect(Collectors.toList());
 
         for (var albumName : topAlbumsName) {
             objNode.put(albumName, this.listenedAlbums.get(albumName));
@@ -724,17 +731,17 @@ public final class NormalUser extends User {
 
         objNode = NormalUser.objMapper.createObjectNode();
         List<Episode> topEpisodes = this.listenedEpisodes.keySet().stream()
-                                            .sorted(new Comparator<Episode>() {
-                                                public int compare(Episode episode1, Episode episode2) {
-                                                    if (listenedEpisodes.get(episode2) == listenedEpisodes.get(episode1)) {
-                                                        return episode1.getName().compareTo(episode2.getName());
-                                                    }
+                    .sorted(new Comparator<Episode>() {
+                        public int compare(final Episode episode1, final Episode episode2) {
+                            if (listenedEpisodes.get(episode2) == listenedEpisodes.get(episode1)) {
+                                return episode1.getName().compareTo(episode2.getName());
+                            }
 
-                                                    return listenedEpisodes.get(episode2) - listenedEpisodes.get(episode1);
-                                                }
-                                            })
-                                            .limit(5)
-                                            .collect(Collectors.toList());
+                            return listenedEpisodes.get(episode2) - listenedEpisodes.get(episode1);
+                        }
+                    })
+                    .limit(5)
+                    .collect(Collectors.toList());
 
         for (var episode : topEpisodes) {
             objNode.put(episode.getName(), this.listenedEpisodes.get(episode));
@@ -744,7 +751,7 @@ public final class NormalUser extends User {
         return wrappedOutput;
     }
 
-    public void doBuyMerch(String merchName) {
+    public void doBuyMerch(final String merchName) {
         Page currentPage = this.pageHistory.get(this.pageIndex);
 
         if (currentPage.type() != Page.Type.OFARTIST) {
@@ -752,7 +759,7 @@ public final class NormalUser extends User {
             return;
         }
 
-        Artist artist = (Artist)currentPage.owner();
+        Artist artist = (Artist) currentPage.owner();
         ArtistMerch merch = artist.buyMerch(merchName);
 
         if (merch == null) {
@@ -797,7 +804,7 @@ public final class NormalUser extends User {
         this.commandMessage = this.getUsername() + " cancelled the subscription successfully.";
     }
 
-    public void doAdBreak(int adPrice) {
+    public void doAdBreak(final int adPrice) {
         if (this.musicplayer.isPaused()) {
             this.commandMessage = this.getUsername() + " is not playing any music.";
             return;
@@ -816,22 +823,26 @@ public final class NormalUser extends User {
             this.commandMessage = "To subscribe you need to be on the page of an artist or host.";
             return;
         }
-        
+
         if (currentPage.type() == Page.Type.OFARTIST) {
-            if (((Artist)contentCreator).hasSubscriber(this)) {
-                ((Artist)contentCreator).removeSubscriber(this);
-                this.commandMessage = this.getUsername() + " unsubscribed from " + contentCreator.getUsername() + " successfully.";
+            if (((Artist) contentCreator).hasSubscriber(this)) {
+                ((Artist) contentCreator).removeSubscriber(this);
+                this.commandMessage = this.getUsername() + " unsubscribed from "
+                                      + contentCreator.getUsername() + " successfully.";
             } else {
-                ((Artist)contentCreator).addSubscriber(this);
-                this.commandMessage = this.getUsername() + " subscribed to " + contentCreator.getUsername() + " successfully.";
+                ((Artist) contentCreator).addSubscriber(this);
+                this.commandMessage = this.getUsername() + " subscribed to "
+                                      + contentCreator.getUsername() + " successfully.";
             }
         } else {
-            if (((Host)contentCreator).hasSubscriber(this)) {
-                ((Host)contentCreator).removeSubscriber(this);
-                this.commandMessage = this.getUsername() + " unsubscribed from " + contentCreator.getUsername() + " successfully.";
+            if (((Host) contentCreator).hasSubscriber(this)) {
+                ((Host) contentCreator).removeSubscriber(this);
+                this.commandMessage = this.getUsername() + " unsubscribed from "
+                                      + contentCreator.getUsername() + " successfully.";
             } else {
-                ((Host)contentCreator).removeSubscriber(this);
-                this.commandMessage = this.getUsername() + " subscribed to " + contentCreator.getUsername() + " successfully.";
+                ((Host) contentCreator).removeSubscriber(this);
+                this.commandMessage = this.getUsername() + " subscribed to "
+                                      + contentCreator.getUsername() + " successfully.";
             }
         }
     }
@@ -842,14 +853,14 @@ public final class NormalUser extends User {
         return currentNotifications;
     }
 
-    public void doUpdateRecommendations(String recommendationType) {
+    public void doUpdateRecommendations(final String recommendationType) {
         Song newSong;
         Playlist newPlaylist;
 
         switch (recommendationType) {
             case "random_song":
-                newSong = DataBase.getInstance().queryRandomSong(this.musicplayer.getLoadedSong().getGenre(),
-                                                                 this.musicplayer.getPlayedTime());
+                newSong = DataBase.getInstance().queryRandomSong(this.musicplayer.getLoadedSong().
+                                                 getGenre(), this.musicplayer.getPlayedTime());
 
                 this.recommendedSongs.add(0, newSong);
                 this.lastRecommendation = RecommendationType.SONG;
@@ -876,6 +887,8 @@ public final class NormalUser extends User {
                 this.fansPlaylists.add(0, newPlaylist);
                 this.lastRecommendation = RecommendationType.FANSPLAYLIST;
                 break;
+            default:
+                break;
         }
 
         this.commandMessage = "The recommendations for user " + this.getUsername()
@@ -883,7 +896,8 @@ public final class NormalUser extends User {
     }
 
     private Playlist createRecommendedPlaylist() {
-        Playlist newPlaylist = new Playlist(this.getUsername() + "'s recommendations", this.getUsername());
+        Playlist newPlaylist = new Playlist(this.getUsername() + "'s recommendations",
+                               this.getUsername());
         List<String> topGenres = this.top3Genres();
         List<Song> topSongsGenre;
 
@@ -919,7 +933,8 @@ public final class NormalUser extends User {
     }
 
     private Playlist createFansPlaylist() {
-        Playlist newPlaylist = new Playlist(this.musicplayer.getLoadedSong().getArtist().getUsername() + " Fan Club recommendations", 
+        Playlist newPlaylist = new Playlist(this.musicplayer.getLoadedSong().getArtist()
+                                   .getUsername() + " Fan Club recommendations",
                                             this.getUsername());
         List<NormalUser> fans = this.musicplayer.getLoadedSong().getArtist().gettop5Fans();
 
@@ -932,11 +947,11 @@ public final class NormalUser extends User {
         if (newPlaylist.getAudRecs().isEmpty()) {
             return null;
         }
-        
+
         return newPlaylist;
     }
 
-    private List<Song> topSongsByGenre(int limit, String genre) {
+    private List<Song> topSongsByGenre(final int limit, final String genre) {
         ArrayList<Song> songs = new ArrayList<>();
 
         for (var song : this.likedSongs) {
@@ -988,7 +1003,7 @@ public final class NormalUser extends User {
                 } else {
                     val = 0;
                 }
-    
+
                 genreDistrib.put(song.getGenre(), val + 1);
             }
         }
@@ -1000,7 +1015,7 @@ public final class NormalUser extends User {
                 } else {
                     val = 0;
                 }
-    
+
                 genreDistrib.put(song.getGenre(), val + 1);
             }
         }
@@ -1059,7 +1074,8 @@ public final class NormalUser extends User {
 
         this.pageIndex--;
 
-        this.commandMessage = "The user " + this.getUsername() + " has navigated successfully to the previous page.";
+        this.commandMessage = "The user " + this.getUsername() + " has navigated successfully to "
+                              + "the previous page.";
     }
 
     public void doNextPage() {
@@ -1069,11 +1085,12 @@ public final class NormalUser extends User {
         }
 
         this.pageIndex++;
-        
-        this.commandMessage = "The user " + this.getUsername() + " has navigated successfully to the next page.";
+
+        this.commandMessage = "The user " + this.getUsername() + " has navigated "
+                              + "successfully to the next page.";
     }
 
-    public void updateStatistics(Song song) {
+    public void updateStatistics(final Song song) {
         Integer val;
 
         if (this.listenedSongs.containsKey(song.getName())) {
@@ -1109,7 +1126,7 @@ public final class NormalUser extends User {
         this.listenedGenres.put(song.getGenre(), val + 1);
     }
 
-    public void updateStatistics(Episode episode) {
+    public void updateStatistics(final Episode episode) {
         Integer val;
 
         if (this.listenedEpisodes.containsKey(episode)) {
@@ -1125,7 +1142,7 @@ public final class NormalUser extends User {
         this.musicplayer.downgrade();
     }
 
-    public void addNotification(String name, String description) {
+    public void addNotification(final String name, final String description) {
         this.notifications.add(new UserNotification(name, description));
     }
 

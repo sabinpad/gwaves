@@ -90,6 +90,9 @@ public final class UserManager {
         this.lastTimestamp = currentTimeStamp;
     }
 
+    /**
+     * Executes pay method on all premium users
+     */
     public void payRemainingAll() {
         for (var normalUser : this.normalUsers) {
             if (normalUser.isPremium()) {

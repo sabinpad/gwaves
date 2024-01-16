@@ -10,5 +10,5 @@ public abstract class AudioRec {
     public AudioRec(final String name, final Integer duration) {
         this.name = name;
         this.duration = duration;
-    } 
+    }
 }

@@ -17,7 +17,6 @@ public abstract class User {
     protected String commandMessage;
 
     public User() {
-        
     }
 
     public User(final String username, final int age, final String city) {

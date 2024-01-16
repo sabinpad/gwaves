@@ -7,7 +7,7 @@ import gwaves.collection.Playlist;
 import gwaves.context.User;
 import gwaves.context.NormalUser;
 
-public class LikedPage implements Page {
+public final class LikedPage implements Page {
     private NormalUser owner;
     private ArrayList<Song> songs;
     private ArrayList<Playlist> playlists;
@@ -19,16 +19,22 @@ public class LikedPage implements Page {
         this.playlists = playlists;
     }
 
+    /**
+     * @return type of page (useful for casting owner)
+     */
     public Type type() {
         return Page.Type.OFNUSER;
     }
 
+    /**
+     * @return owner user of the page
+     */
     public User owner() {
         return this.owner;
     }
 
     /**
-     *
+     * @return the contens of the page in String format
      */
     public String strigify() {
         int i = 0;

@@ -42,13 +42,15 @@ public final class Album extends AudioCollection<Song> implements Filterable {
         }
     }
 
+    /**
+     * Add listening to album
+     */
     public void addListen() {
         this.listenings++;
     }
 
     /**
-     *
-     * @return
+     * @return number of listenings
      */
     public int getNrOfLikes() {
         int sum = 0;

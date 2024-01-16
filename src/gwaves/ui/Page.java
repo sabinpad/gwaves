@@ -3,7 +3,7 @@ package gwaves.ui;
 import gwaves.context.User;
 
 public interface Page {
-    public static enum Type {
+    enum Type {
         OFNUSER,
         OFARTIST,
         OFHOST
@@ -11,19 +11,19 @@ public interface Page {
 
     /**
      * Method that returns the type of the page
-     * @return type of page
+     * @return type of page (useful for casting owner)
      */
     Type type();
 
     /**
      * Method that returns the user that the page belongs to
-     * @return user that owns the page
+     * @return owner user of the page
      */
     User owner();
 
     /**
      * Method that strigifies the page
-     * @return the page
+     * @return the contens of the page in String format
      */
     String strigify();
 }

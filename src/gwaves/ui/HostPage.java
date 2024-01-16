@@ -9,7 +9,7 @@ import gwaves.context.User;
 import gwaves.context.Host;
 import gwaves.misc.HostAnnouncement;
 
-public class HostPage implements Page {
+public final class HostPage implements Page {
     private Host owner;
     private LinkedHashMap<String, HostAnnouncement> announcements;
     private LinkedHashMap<String, Podcast> podcasts;
@@ -26,16 +26,22 @@ public class HostPage implements Page {
         this.podcasts = podcasts;
     }
 
+    /**
+     * @return type of page (useful for casting owner)
+     */
     public Type type() {
         return Page.Type.OFHOST;
     }
 
+    /**
+     * @return owner user of the page
+     */
     public User owner() {
         return this.owner;
     }
 
     /**
-     *
+     * @return the contens of the page in String format
      */
     public String strigify() {
         int i = 0, j = 0;

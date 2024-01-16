@@ -85,7 +85,7 @@ public final class DataBase {
         for (var songInput : libInput.getSongs()) {
             this.add = new Song(songInput);
         }
-        
+
         for (var podcastInput : libInput.getPodcasts()) {
             this.podcasts.add(new Podcast(podcastInput, true));
         }
@@ -246,9 +246,8 @@ public final class DataBase {
     }
 
     /**
-     *
-     * @param username
-     * @return
+     * @param username name of normal user
+     * @return queried normal user
      */
     public NormalUser queryNormalUser(final String username) {
         return this.normalusers.get(username);
@@ -303,8 +302,7 @@ public final class DataBase {
     }
 
     /**
-     *
-     * @return
+     * @return list of all normal users
      */
     public ArrayList<NormalUser> queryAllNormalUsers() {
         ArrayList<NormalUser> list = new ArrayList<>();
@@ -332,7 +330,13 @@ public final class DataBase {
         return result;
     }
 
-    public Song queryRandomSong(String genre, int seed) {
+    /**
+     * Returns random song from given genre from the database using given seed
+     * @param genre
+     * @param seed
+     * @return random song
+     */
+    public Song queryRandomSong(final String genre, final int seed) {
         ArrayList<Song> genreSongs = new ArrayList<>();
 
         for (var song : this.library) {
@@ -342,7 +346,7 @@ public final class DataBase {
         }
 
         randGen.setSeed(seed);
-        
+
         return genreSongs.get(randGen.nextInt(genreSongs.size()));
     }
 
@@ -354,7 +358,8 @@ public final class DataBase {
      * @param owner  name of playlist owner
      * @return ArrayList of matched playlists
      */
-    public ArrayList<Playlist> queryVisiblePlaylistsAndOwnedBy(final FilterInput filter, final String owner) {
+    public ArrayList<Playlist> queryVisiblePlaylistsAndOwnedBy(final FilterInput filter,
+                                                               final String owner) {
         ArrayList<Playlist> result = new ArrayList<>();
 
         for (var playlist : this.playlists) {
@@ -378,7 +383,7 @@ public final class DataBase {
         ArrayList<String> helper = new ArrayList<>(this.artists.keySet());
 
         this.albums.sort(new Comparator<Album>() {
-            public int compare(Album album1, Album album2) {
+            public int compare(final Album album1, final Album album2) {
                 return helper.indexOf(album1.getOwner()) - helper.indexOf(album2.getOwner());
             }
         });
@@ -392,6 +397,10 @@ public final class DataBase {
         return result;
     }
 
+    /**
+     * @param name of album
+     * @return queried album of null otherwise
+     */
     public Album queryAlbum(final String name) {
         for (var album : this.albums) {
             if (album.getName().equals(name)) {
@@ -482,8 +491,8 @@ public final class DataBase {
     }
 
     /**
-     *
-     * @return
+     * Computes top 5 albums by nr of likes
+     * @return list of names of artists
      */
     public ArrayList<String> getTop5AlbumsName() {
         int resultsNumber;
@@ -514,8 +523,8 @@ public final class DataBase {
     }
 
     /**
-     *
-     * @return
+     * Computes top 5 artists by nr of likes
+     * @return list of names of artists
      */
     public ArrayList<String> getTop5ArtistsName() {
         int resultsNumber;
@@ -546,8 +555,7 @@ public final class DataBase {
     }
 
     /**
-     *
-     * @return
+     * @return list of all users name
      */
     public ArrayList<String> getAllUsersName() {
         ArrayList<String> result = new ArrayList<>();
@@ -568,8 +576,7 @@ public final class DataBase {
     }
 
     /**
-     *
-     * @return
+     * @return list of names of online users
      */
     public ArrayList<String> getOnlineUsersName() {
         ArrayList<String> result = new ArrayList<>();
@@ -583,22 +590,28 @@ public final class DataBase {
         return result;
     }
 
+    /**
+     * Computes ranking of existing artists
+     * @return ObjectNode containing the ranking
+     */
     public ObjectNode getArtistRanking() {
         int rank = 0;
         ObjectMapper objMapper = new ObjectMapper();
         ObjectNode rankOutput, objNode = objMapper.createObjectNode();
 
         List<Artist> artistRanking = this.artists.values().stream()
-                                                          .sorted(Comparator.comparing(Artist::getTotalRevenue).reversed().thenComparing(Artist::getUsername))
-                                                          .collect(Collectors.toList());
+                                    .sorted(Comparator.comparing(Artist::getTotalRevenue).reversed()
+                                    .thenComparing(Artist::getUsername))
+                                    .collect(Collectors.toList());
 
         for (var artist : artistRanking) {
             if (artist.hasBeenStreamed() || artist.hasRevenue()) {
                 rank++;
 
                 rankOutput = objMapper.createObjectNode();
-                rankOutput.put("merchRevenue", (double)artist.getMerchRevenue());
-                rankOutput.put("songRevenue", (double)Math.round(artist.getSongRevenue() * 100) / 100);
+                rankOutput.put("merchRevenue", (double) artist.getMerchRevenue());
+                rankOutput.put("songRevenue", (double) Math.round(
+                                                        artist.getSongRevenue() * 100) / 100);
                 rankOutput.put("ranking", rank);
                 rankOutput.put("mostProfitableSong", artist.getMostProfitableSongName());
 

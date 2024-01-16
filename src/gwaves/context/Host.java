@@ -194,13 +194,13 @@ public final class Host extends User implements Filterable {
 
         objNode = NormalUser.objMapper.createObjectNode();
         List<Episode> topEpisodes = streamedEpisodes.keySet().stream()
-                                            .sorted(new Comparator<Episode>() {
-                                                public int compare(Episode episode1, Episode episode2) {
-                                                    return streamedEpisodes.get(episode2) - streamedEpisodes.get(episode1);
-                                                }
-                                            })
-                                            .limit(5)
-                                            .collect(Collectors.toList());
+                    .sorted(new Comparator<Episode>() {
+                        public int compare(final Episode episode1, final Episode episode2) {
+                            return streamedEpisodes.get(episode2) - streamedEpisodes.get(episode1);
+                        }
+                    })
+                    .limit(5)
+                    .collect(Collectors.toList());
 
         for (var episode : topEpisodes) {
             objNode.put(episode.getName(), streamedEpisodes.get(episode));
@@ -212,11 +212,11 @@ public final class Host extends User implements Filterable {
         return wrappedOutput;
     }
 
-    public void addGhostedPodcast(Podcast podcast) {
+    public void addGhostedPodcast(final Podcast podcast) {
         this.podcasts.put(podcast.getName(), podcast);
     }
 
-    public void addListen(NormalUser normalUser) {
+    public void addListen(final NormalUser normalUser) {
         if (this.listeners.containsKey(normalUser)) {
             Integer val = this.listeners.get(normalUser);
             val++;
@@ -225,15 +225,15 @@ public final class Host extends User implements Filterable {
         }
     }
 
-    public void addSubscriber(NormalUser normalUser) {
+    public void addSubscriber(final NormalUser normalUser) {
         this.subscribers.add(normalUser);
     }
 
-    public void removeSubscriber(NormalUser normalUser) {
+    public void removeSubscriber(final NormalUser normalUser) {
         this.subscribers.remove(normalUser);
     }
 
-    private void notifySubs(String name, String description) {
+    private void notifySubs(final String name, final String description) {
         for (var sub : this.subscribers) {
             sub.addNotification(name, description);
         }
@@ -270,7 +270,7 @@ public final class Host extends User implements Filterable {
         return this.page;
     }
 
-    public boolean hasSubscriber(NormalUser normalUser) {
+    public boolean hasSubscriber(final NormalUser normalUser) {
         return this.subscribers.contains(normalUser);
     }
 

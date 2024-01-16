@@ -1,7 +1,6 @@
 package gwaves.sample;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -29,7 +28,7 @@ public final class Song extends AudioRec implements Filterable {
 
     public Song(final SongInput songInput) {
         super(songInput.getName(), songInput.getDuration());
-        
+
         this.tags = songInput.getTags();
         this.lyrics = songInput.getLyrics();
         this.genre = songInput.getGenre();
@@ -54,6 +53,9 @@ public final class Song extends AudioRec implements Filterable {
         }
     }
 
+    /**
+     * Adds listening to the song
+     */
     public void addListen() {
         this.listenings++;
     }

@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Random;
 
 import lombok.Getter;
-import lombok.Setter;
 
 import fileio.output.MusicPlayerStatusOutput;
 
@@ -61,7 +60,7 @@ public final class Musicplayer {
 
     private HashMap<Podcast, PodcastSavedInfo> watchedPodcasts;
 
-    public Musicplayer(NormalUser ownerUser) {
+    public Musicplayer(final NormalUser ownerUser) {
         this.ownerUser = ownerUser;
         this.loadedType = Musicplayer.Type.NA;
         this.adPrice = 0;
@@ -84,7 +83,7 @@ public final class Musicplayer {
         PodcastSavedInfo podcastSavedInfo;
 
         if (this.loadedType == Musicplayer.Type.PODCAST) {
-            podcastSavedInfo = watchedPodcasts.get((Podcast)this.currentCollec);
+            podcastSavedInfo = watchedPodcasts.get((Podcast) this.currentCollec);
 
             if (this.currentIndex == this.currentCollec.getNrOfAudRecs()) {
                 this.currentRec = this.currentCollec.getAudRec(0);
@@ -426,9 +425,9 @@ public final class Musicplayer {
     private void updateHistory() {
         if (this.loadedType != Musicplayer.Type.PODCAST) {
             if (this.premium) {
-                this.premiumHistory.add((Song)this.currentRec);
+                this.premiumHistory.add((Song) this.currentRec);
             } else {
-                this.adHistory.add((Song)this.currentRec);
+                this.adHistory.add((Song) this.currentRec);
             }
 
         }
@@ -440,17 +439,18 @@ public final class Musicplayer {
         }
 
         if (this.loadedType == Musicplayer.Type.PODCAST) {
-            Episode currentEpisode = (Episode)this.currentRec;
+            Episode currentEpisode = (Episode) this.currentRec;
 
             currentEpisode.addListen();
-            
-            if (DataBase.getInstance().queryHost(((Podcast)currentCollec).getOwner()) != null) {
-                DataBase.getInstance().queryHost(((Podcast)currentCollec).getOwner()).addListen(this.ownerUser);
+
+            if (DataBase.getInstance().queryHost(((Podcast) currentCollec).getOwner()) != null) {
+                DataBase.getInstance().queryHost(((Podcast) currentCollec).getOwner())
+                                                                        .addListen(this.ownerUser);
             }
 
             this.ownerUser.updateStatistics(currentEpisode);
         } else {
-            Song currentSong = (Song)this.currentRec;
+            Song currentSong = (Song) this.currentRec;
 
             currentSong.addListen();
             currentSong.getAlbum().addListen();
@@ -487,11 +487,12 @@ public final class Musicplayer {
         count = this.adHistory.size();
 
         for (var entry : songDistrib.entrySet()) {
-            entry.getKey().getArtist().paySong(this.adPrice * ((double)entry.getValue() / count), entry.getKey());
+            entry.getKey().getArtist().paySong(this.adPrice * ((double) entry.getValue() / count),
+                                               entry.getKey());
         }
 
         for (var entry : artistDistrib.entrySet()) {
-            entry.getKey().pay(this.adPrice * ((double)entry.getValue() / count));
+            entry.getKey().pay(this.adPrice * ((double) entry.getValue() / count));
         }
     }
 
@@ -523,11 +524,12 @@ public final class Musicplayer {
         count = this.premiumHistory.size();
 
         for (var entry : songDistrib.entrySet()) {
-            entry.getKey().getArtist().paySong(1e6 * ((double)entry.getValue() / count), entry.getKey());
+            entry.getKey().getArtist().paySong(1e6 * ((double) entry.getValue() / count),
+                                                      entry.getKey());
         }
 
         for (var entry : artistDistrib.entrySet()) {
-            entry.getKey().pay(1e6 * ((double)entry.getValue() / count));
+            entry.getKey().pay(1e6 * ((double) entry.getValue() / count));
         }
     }
 
@@ -545,35 +547,35 @@ public final class Musicplayer {
      * @return current loaded song
      */
     public Song getLoadedSong() {
-        return (Song)this.currentRec;
+        return (Song) this.currentRec;
     }
 
     /**
      * @return current loaded playlist
      */
     public Playlist getLoadedPlaylist() {
-        return (Playlist)this.currentCollec;
+        return (Playlist) this.currentCollec;
     }
 
     /**
      * @return current loaded playlist
      */
     public Album getLoadedAlbum() {
-        return (Album)this.currentCollec;
+        return (Album) this.currentCollec;
     }
 
     /**
      * @return current loaded episode
      */
     public Episode getLoadedEpisode() {
-        return (Episode)this.currentRec;
+        return (Episode) this.currentRec;
     }
 
     /**
      * @return current loaded podcast
      */
     public Podcast getLoadedPodcast() {
-        return (Podcast)this.currentCollec;
+        return (Podcast) this.currentCollec;
     }
 
     /**

@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.Comparator;
 
@@ -74,8 +73,8 @@ public final class Artist extends User implements Filterable {
      * @param description
      * @param songsInput
      */
-    public void doAddAlbum(final String name, final String owner, final Integer releaseYear, final String description,
-            final ArrayList<SongInput> songsInput) {
+    public void doAddAlbum(final String name, final String owner, final Integer releaseYear,
+                           final String description, final ArrayList<SongInput> songsInput) {
         if (this.albums.containsKey(name)) {
             this.commandMessage = this.getUsername() + " has another album with the same name.";
             return;
@@ -130,7 +129,7 @@ public final class Artist extends User implements Filterable {
         for (var song : this.albums.get(name).getAudRecs()) {
             database.removeSong(song);
         }
-        
+
         database.removeAlbum(this.albums.get(name));
 
         this.albums.remove(name);
@@ -278,17 +277,17 @@ public final class Artist extends User implements Filterable {
 
         objNode = NormalUser.objMapper.createObjectNode();
         List<String> topSongsName = streamedSongs.keySet().stream()
-                                            .sorted(new Comparator<String>() {
-                                                public int compare(String songName1, String songName2) {
-                                                    if (streamedSongs.get(songName2) == streamedSongs.get(songName1)) {
-                                                        return songName1.compareTo(songName2);
-                                                    }
+                        .sorted(new Comparator<String>() {
+                            public int compare(final String songName1, final String songName2) {
+                                if (streamedSongs.get(songName2) == streamedSongs.get(songName1)) {
+                                    return songName1.compareTo(songName2);
+                                }
 
-                                                    return streamedSongs.get(songName2) - streamedSongs.get(songName1);
-                                                }
-                                            })
-                                            .limit(5)
-                                            .collect(Collectors.toList());
+                                return streamedSongs.get(songName2) - streamedSongs.get(songName1);
+                            }
+                        })
+                        .limit(5)
+                        .collect(Collectors.toList());
 
         for (var songName : topSongsName) {
             objNode.put(songName, streamedSongs.get(songName));
@@ -297,17 +296,17 @@ public final class Artist extends User implements Filterable {
 
         objNode = NormalUser.objMapper.createObjectNode();
         List<String> topAlbumsName = streamedAlbums.keySet().stream()
-                                            .sorted(new Comparator<String>() {
-                                                public int compare(String albumName1, String albumName2) {
-                                                    if (streamedAlbums.get(albumName2) == streamedAlbums.get(albumName1)) {
-                                                        return albumName1.compareTo(albumName2);
-                                                    }
+                    .sorted(new Comparator<String>() {
+                        public int compare(final String albumName1, final String albumName2) {
+                            if (streamedAlbums.get(albumName2) == streamedAlbums.get(albumName1)) {
+                                return albumName1.compareTo(albumName2);
+                            }
 
-                                                    return streamedAlbums.get(albumName2) - streamedAlbums.get(albumName1);
-                                                }
-                                            })
-                                            .limit(5)
-                                            .collect(Collectors.toList());
+                            return streamedAlbums.get(albumName2) - streamedAlbums.get(albumName1);
+                        }
+                    })
+                    .limit(5)
+                    .collect(Collectors.toList());
 
         for (var albumName : topAlbumsName) {
             objNode.put(albumName, streamedAlbums.get(albumName));
@@ -316,17 +315,17 @@ public final class Artist extends User implements Filterable {
 
         ArrayList<String> fansName = new ArrayList<>();
         List<NormalUser> topFans = this.listeners.keySet().stream()
-                                                        .sorted(new Comparator<NormalUser>() {
-                                                            public int compare(NormalUser normalUser1, NormalUser normalUser2) {
-                                                                if (listeners.get(normalUser2) == listeners.get(normalUser1)) {
-                                                                    return normalUser1.getUsername().compareTo(normalUser2.getUsername());
-                                                                }
+                .sorted(new Comparator<NormalUser>() {
+                    public int compare(final NormalUser normalUser1, final NormalUser normalUser2) {
+                        if (listeners.get(normalUser2) == listeners.get(normalUser1)) {
+                            return normalUser1.getUsername().compareTo(normalUser2.getUsername());
+                        }
 
-                                                                return listeners.get(normalUser2) - listeners.get(normalUser1);
-                                                            }
-                                                        })
-                                                        .limit(5)
-                                                        .collect(Collectors.toList());
+                        return listeners.get(normalUser2) - listeners.get(normalUser1);
+                    }
+                })
+                .limit(5)
+                .collect(Collectors.toList());
 
         for (var fan : topFans) {
             fansName.add(fan.getUsername());
@@ -338,7 +337,7 @@ public final class Artist extends User implements Filterable {
         return wrappedOutput;
     }
 
-    public void addListen(NormalUser normalUser) {
+    public void addListen(final NormalUser normalUser) {
         Integer val;
 
         if (this.listeners.containsKey(normalUser)) {
@@ -350,11 +349,11 @@ public final class Artist extends User implements Filterable {
         this.listeners.put(normalUser, val + 1);
     }
 
-    public void pay(double amount) {
+    public void pay(final double amount) {
         this.songRevenue += amount;
     }
 
-    public void paySong(double amount, Song song) {
+    public void paySong(final double amount, final Song song) {
         Double val;
 
         if (this.songsRevenue.containsKey(song.getName())) {
@@ -366,7 +365,7 @@ public final class Artist extends User implements Filterable {
         this.songsRevenue.put(song.getName(), val + amount);
     }
 
-    public ArtistMerch buyMerch(String merchName) {
+    public ArtistMerch buyMerch(final String merchName) {
         if (!this.merches.containsKey(merchName)) {
             return null;
         }
@@ -376,16 +375,16 @@ public final class Artist extends User implements Filterable {
         return this.merches.get(merchName);
     }
 
-    public void addSubscriber(NormalUser normalUser) {
+    public void addSubscriber(final NormalUser normalUser) {
         this.subscribers.add(normalUser);
     }
 
-    public void removeSubscriber(NormalUser normalUser) {
+    public void removeSubscriber(final NormalUser normalUser) {
         this.subscribers.remove(normalUser);
     }
 
 
-    private void notifySubs(String name, String description) {
+    private void notifySubs(final String name, final String description) {
         for (var sub : this.subscribers) {
             sub.addNotification(name, description);
         }
@@ -440,28 +439,29 @@ public final class Artist extends User implements Filterable {
         }
 
         List<String> profitableSongsName = this.songsRevenue.keySet().stream()
-                                                               .sorted(new Comparator<String>() {
-                                                                    public int compare(String songName1, String songName2) {
-                                                                        if (songsRevenue.get(songName2).equals(songsRevenue.get(songName1))) {
-                                                                            return songName1.compareTo(songName2);
-                                                                        }
-                                                                        
-                                                                        if (songsRevenue.get(songName1) < songsRevenue.get(songName2)) {
-                                                                            return 1;
-                                                                        } else if (songsRevenue.get(songName1) > songsRevenue.get(songName2)) {
-                                                                            return -1;
-                                                                        }
-                                                                        return 0;
-                                                                    }
-                                                                })
-                                                               .collect(Collectors.toList());
+                    .sorted(new Comparator<String>() {
+                        public int compare(final String songName1, final String songName2) {
+                            if (songsRevenue.get(songName2).equals(songsRevenue.get(songName1))) {
+                                return songName1.compareTo(songName2);
+                            }
+
+                            if (songsRevenue.get(songName1) < songsRevenue.get(songName2)) {
+                                return 1;
+                            } else if (songsRevenue.get(songName1) > songsRevenue.get(songName2)) {
+                                return -1;
+                            }
+                            return 0;
+                        }
+                    })
+                    .collect(Collectors.toList());
 
         return profitableSongsName.get(0);
     }
 
     public List<NormalUser> gettop5Fans() {
         return this.listeners.keySet().stream()
-                                      .sorted(Comparator.comparing(normalUser -> listeners.get(normalUser)))
+                                      .sorted(Comparator.comparing(normalUser ->
+                                                                   listeners.get(normalUser)))
                                       .limit(5)
                                       .collect(Collectors.toList());
     }
@@ -482,7 +482,7 @@ public final class Artist extends User implements Filterable {
         return this.songRevenue > 0 || this.merchRevenue > 0;
     }
 
-    public boolean hasSubscriber(NormalUser normalUser) {
+    public boolean hasSubscriber(final NormalUser normalUser) {
         return this.subscribers.contains(normalUser);
     }
 

@@ -1016,7 +1016,7 @@ public final class CommandExecuter {
      * @param commandInput
      * @param commandOutput
      */
-    private static void execWrapped(final CommandInput commandInput, 
+    private static void execWrapped(final CommandInput commandInput,
                                     final CommandOutput commandOutput) {
         DataBase database = DataBase.getInstance();
 
@@ -1056,8 +1056,7 @@ public final class CommandExecuter {
      * @param commandOutput
      */
     private static void execBuyMerch(final CommandInput commandInput,
-                                               final CommandOutput commandOutput) {
-                                                
+                                               final CommandOutput commandOutput) {                 
         NormalUser normalUser = null;
         DataBase database = DataBase.getInstance();
 
@@ -1184,7 +1183,7 @@ public final class CommandExecuter {
 
         normalUser.doSubscribe();
 
-        commandOutput.setMessage(normalUser.getLastCommandMessage());                                   
+        commandOutput.setMessage(normalUser.getLastCommandMessage());
     }
 
     /**
@@ -1194,7 +1193,7 @@ public final class CommandExecuter {
      */
     private static void execGetNotifications(final CommandInput commandInput,
                                                final CommandOutput commandOutput) {
-        
+
         NormalUser normalUser = null;
         DataBase database = DataBase.getInstance();
 

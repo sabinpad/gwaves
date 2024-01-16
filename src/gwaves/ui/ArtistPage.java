@@ -9,7 +9,7 @@ import gwaves.context.Artist;
 import gwaves.misc.ArtistEvent;
 import gwaves.misc.ArtistMerch;
 
-public class ArtistPage implements Page {
+public final class ArtistPage implements Page {
     private Artist owner;
     private LinkedHashMap<String, ArtistEvent> events;
     private LinkedHashMap<String, ArtistMerch> merches;
@@ -30,16 +30,22 @@ public class ArtistPage implements Page {
         this.albums = albums;
     }
 
+    /**
+     * @return type of page (useful for casting owner)
+     */
     public Type type() {
         return Page.Type.OFARTIST;
     }
 
+    /**
+     * @return owner user of the page
+     */
     public User owner() {
         return this.owner;
     }
 
     /**
-     *
+     * @return the contens of the page in String format
      */
     public String strigify() {
         int i = 0;
