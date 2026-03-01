@@ -135,11 +135,12 @@ Example of json output object:
 ## **Implementation Details and Classes Overview**
 ---
 
-The programme works with 4 main classes
+The programme works with 5 main classes
 1. User
 2. Musicplayer
 3. Searchbar
 4. DataBase
+5. UserManager
 
 ## User
 ---
@@ -179,31 +180,38 @@ podcasts.
 
 Its main purpose is to server the searchbar the requested data. The database can
 be queried for the following types:
-* Users
-* Songs
+* users
+* artist
+* hosts
+* songs
 * public playlists and playlists owned by a user
+* albums
 * podcasts
 
 ## UserManager
 ---
 
-This class keeps track of everything that happens to the user. It runs their
+This class keeps track of everything that happens to the user. It runs its
 player, makes sure that the songs and playlists are handled properly. It is
-implemented using the observer desing pattern.
+implemented using the observer desing pattern but it is also a visitor "wanabe".
+It takes care of the links made during the execution of the programme. 
 
 ## PageCreator
 ---
 
 While at a first glance it may seem that this class is a Command pattern it is
-actually not. It is a strategy because depending on the same thing is being
-created, a page which is then stringified. It is not a command because it
-doesn't have any callback function.
+actually not. It is a strategy because the interface only has one method that
+return the content of a user's page, but strigified. It is not a command because
+it doesn't have any callback function.
 
 <br>
 <br>
 <br>
 
 ## **!!SPECIAL SCRIS IN ROMANA PENTRU ECHIPA DE POO**
+* Am folosit 100% scheletul de la etapa1 dar l-am restructurat putin
+* N-am folosit absolut nimic gen Chat GePeTo doar cred ca am luat aia de
+validare a datei de pe GeeksForGeeks sau cv
 * Am facut clase abstracte si o clasa singleton ca sa arat faptul ca stiu si eu
 ce sa intampla la poo nu pentru ca implementarea mea ar fi una foarte eficienta
 sau bine structurata, putea sa fie facuta mai bine
