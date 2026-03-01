@@ -135,7 +135,7 @@ Example of json output object:
 ## **Implementation Details and Classes Overview**
 ---
 
-The programme works with 5 main classes
+The program contains five main classes:
 1. User
 2. Musicplayer
 3. Searchbar
