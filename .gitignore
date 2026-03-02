@@ -1,10 +1,5 @@
-.idea
-lib
-/input
-ref
-result
-out.txt
-checkstyle.txt
-etapa1.iml
-README.md
-gwaves.zip
+# vscode
+/.vscode/
+
+# maven
+/target/
